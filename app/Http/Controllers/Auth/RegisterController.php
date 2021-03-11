@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\Influencers;
+use App\Models\InfluencerInfo;
 use App\Models\Brands;
+use App\Models\BrandInfo;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -80,17 +83,27 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'api_token' => Str::random(60),
         ]);
 
         if($user->id != NULL) {
-            if($data['accountType'] == 'influencer')
-                Influencers::create([
+            if($data['accountType'] == 'influencer'){
+                $influencer = Influencers::create([
                     'user_id' => $user->id,
                 ]);
+
+                $influencerInfo = new InfluencerInfo;
+                $influencerInfo->influencer_id = $influencer->id;
+                $influencerInfo->save();
+            }
             else {
-                Brands::create([
+                $brand = Brands::create([
                     'user_id' => $user->id,
                 ]);
+                
+                $brandInfo = new BrandInfo;
+                $brandInfo->brand_id = $brand->id;
+                $brandInfo.save();
             }
             return $user;
         }

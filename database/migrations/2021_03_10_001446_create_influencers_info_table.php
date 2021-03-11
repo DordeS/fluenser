@@ -15,17 +15,18 @@ class CreateInfluencersInfoTable extends Migration
     {
         Schema::create('influencers_info', function (Blueprint $table) {
             $table->id();
-            $table->string('country');
-            $table->string('state');
-            $table->integer('follows');
-            $table->integer('followings');
-            $table->integer('posts');
-            $table->string('avatar');
-            $table->string('back_img');
-            $table->float('arg_rate');
-            $table->integer('bf_rate');
-            $table->integer('tm_rate');
-            $table->integer('m_rate');
+            $table->integer('influencer_id');
+            $table->string('country')->default('unknown');
+            $table->string('state')->default('unknown');
+            $table->integer('follows')->default(0);
+            $table->integer('followings')->default(0);
+            $table->integer('posts')->default(0);
+            $table->string('avatar')->default('johndoeavatar');
+            $table->string('back_img')->default('johndoeback');
+            $table->float('arg_rate')->default(0.0);
+            $table->integer('bf_rate')->default(0);
+            $table->integer('tm_rate')->default(0);
+            $table->integer('m_rate')->default(0);
             $table->timestamps();
         });
     }

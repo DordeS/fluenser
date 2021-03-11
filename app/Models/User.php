@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -40,4 +41,30 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getAccountInfoByUserID($user_id) {
+        $accountInfo = DB::table('users')
+                    ->where('users.id', $user_id)
+                    ->join('influencers', 'users.id', '=', 'influencers.user_id')
+                    ->join('influencers_info', 'influencers.id','=','influencers_info.id')
+                    ->select('users.name', 'users.email', 'influencers_info.*')
+                    ->get();
+        if(count($accountInfo) == 0){
+            $accountInfo = DB::table('users')
+                    ->where('users.id', $user_id)
+                    ->join('brands', 'users.id', '=', 'brands.user_id')
+                    ->join('brand_info', 'brands.id','=','brand_info.id')
+                    ->select('users.name', 'users.email', 'brand_info.*')
+                    ->get();
+            if(count($accountInfo) ==0){
+                return "none";
+            } else {
+                $accountInfo[0]->accountType = 'brand';
+            }
+        } else {
+            $accountInfo[0]->accountType = 'influencer';
+        }
+        // echo $accountInfo[0]->accountType;
+        return $accountInfo;
+    }
 }

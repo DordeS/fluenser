@@ -27,9 +27,8 @@ Route::get('message', function() {
     return $success;
 });
 
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::get('react-message', function() {
-    return view('message');
+Route::middleware(['auth'])->group(function() {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    
+    // Route::get('/inbox',[App\Http\Controllers\MessageController::class, 'inbox'])->name('inbox');
 });

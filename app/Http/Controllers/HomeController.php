@@ -29,27 +29,18 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $account = Influencers::where('user_id', Auth::user()->id)->get();
+        $account = new User();
+        $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
 
-        if(count($account) == 0) {
-            $accountType = 'brand';
-            $account = Brands::where('user_id', Auth::user()->id)->get();
+        echo $accountInfo;
 
-            $accountInfo = BrandInfo::where('id', $account[0]->id)->get();
-        } else {
-            $accountType = 'influencer';
-            $accountInfo = InfluencerInfo::where('id', $account[0]->id)->get();
-        }
-        $user = User::where('id', Auth::user()->id)->get();
-
-
-        //echo $accountType, $accountInfo;
-
-        return view('home', [
-            'accountType' => $accountType,
-            'accountInfo' => $accountInfo[0],
-            'accountName' => $user[0]->name,
-            'accountEmail' => $user[0]->email,
-        ]);
+        // if($accountInfo == 'none') {
+        //     return view('home');
+        // } else {
+        //     return view('home', [
+        //         'accountType' => $accountInfo[0]->accountType,
+        //         'accountInfo' => $accountInfo[0],
+        //     ]);
+        // }
     }
 }

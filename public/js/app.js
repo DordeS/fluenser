@@ -2020,8 +2020,8 @@ var Message = /*#__PURE__*/function (_Component) {
         cluster: 'eu'
       });
       var this2 = this;
-      var channel = pusher.subscribe('my-channel');
-      channel.bind('my-event', function (data) {
+      var channel = pusher.subscribe('fluenser-channel');
+      channel.bind('fluenser-event', function (data) {
         var message = this2.state.message;
         message.push(data.data);
         console.log(message);

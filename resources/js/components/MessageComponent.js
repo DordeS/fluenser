@@ -25,7 +25,7 @@ export default class Message extends Component {
       message.push(data.data);
       console.log(message);
       this2.setState({message:message});
-    }); 
+    });
   }
 
   render() {

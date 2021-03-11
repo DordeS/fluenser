@@ -18,7 +18,7 @@
                         <img class="rounded-full shadow-lg w-3/4 mx-auto" src="{{ asset('img/avatar-image/').'/'.$accountInfo->avatar.'.jpg' }}" alt="$accountInfo->avatar">
                     </div>
                     <div class="mt-6 text-gray-500">
-                        <h3 class="text-center text-3xl">{{ $accountName }}</h3>
+                        <h3 class="text-center text-3xl">{{ $accountInfo->name }}</h3>
                         <p class="text-center text-lg">{{ $accountInfo->state.', '.$accountInfo->country }}</p>
                     </div>
                     <hr class="my-6">
