@@ -16,9 +16,15 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
-Route::middleware('auth:api')->get('/inbox',[App\Http\Controllers\MessageController::class, 'inbox'])->name('inbox');
+
+Route::middleware('auth:api')->group(function() {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    
+    Route::get('/inbox', [App\Http\Controllers\MessageController::class, 'inbox']);
+
+    Route::get('/request', [App\Http\Controllers\MessageController::class, 'requests']);
+});
 

@@ -32,15 +32,11 @@ class HomeController extends Controller
         $account = new User();
         $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
 
-        echo $accountInfo;
+        // echo $accountInfo;
 
-        // if($accountInfo == 'none') {
-        //     return view('home');
-        // } else {
-        //     return view('home', [
-        //         'accountType' => $accountInfo[0]->accountType,
-        //         'accountInfo' => $accountInfo[0],
-        //     ]);
-        // }
+        return view('home', [
+            'accountType' => $accountInfo[0]->accountType,
+            'accountInfo' => $accountInfo[0],
+        ]);
     }
 }

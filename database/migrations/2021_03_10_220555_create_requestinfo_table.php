@@ -13,11 +13,12 @@ class CreateRequestinfoTable extends Migration
      */
     public function up()
     {
-        Schema::create('requestinfo', function (Blueprint $table) {
+        Schema::create('request_info', function (Blueprint $table) {
             $table->id();
+            $table->integer('request_id');
             $table->text('content');
             $table->integer('amount');
-            $table->string('brand');
+            $table->string('unit');
             $table->integer('status');
             $table->boolean('accepted');
             $table->timestamps();
@@ -31,6 +32,6 @@ class CreateRequestinfoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('requestinfo');
+        Schema::dropIfExists('request_info');
     }
 }

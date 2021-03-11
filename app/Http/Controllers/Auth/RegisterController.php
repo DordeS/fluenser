@@ -79,31 +79,32 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'api_token' => Str::random(60),
-        ]);
+        $token = Str::random(60);
+        $user = new User;
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->password = Hash::make($data['password']);
+        $user->api_token = hash('sha256', $token);
+        $user->save();
 
         if($user->id != NULL) {
             if($data['accountType'] == 'influencer'){
-                $influencer = Influencers::create([
-                    'user_id' => $user->id,
-                ]);
+                $influencer = new Influencers;
+                $influencer->user_id = $user->id;
+                $influencer->save();
 
                 $influencerInfo = new InfluencerInfo;
                 $influencerInfo->influencer_id = $influencer->id;
                 $influencerInfo->save();
             }
             else {
-                $brand = Brands::create([
-                    'user_id' => $user->id,
-                ]);
+                $brand = new Brands;
+                $brand->user_id = $user->id;
+                $brand->save();
                 
                 $brandInfo = new BrandInfo;
                 $brandInfo->brand_id = $brand->id;
-                $brandInfo.save();
+                $brandInfo->save();
             }
             return $user;
         }
