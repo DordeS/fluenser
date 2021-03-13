@@ -29,6 +29,7 @@ Route::get('message', function() {
 
 Route::middleware(['auth'])->group(function() {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');    
-    Route::get('/inbox',[App\Http\Controllers\MessageController::class, 'index'])->name('inbox');
     Route::get('/request',[App\Http\Controllers\MessageController::class, 'index'])->name('inbox');
+    Route::get('/inbox',[App\Http\Controllers\MessageController::class, 'index'])->name('inbox');
+    Route::get('/task',[App\Http\Controllers\TaskController::class, 'index'])->name('task');
 });

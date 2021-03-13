@@ -29,6 +29,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $page = 1;
         $account = new User();
         $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
 
@@ -37,6 +38,7 @@ class HomeController extends Controller
         return view('home', [
             'accountType' => $accountInfo[0]->accountType,
             'accountInfo' => $accountInfo[0],
+            'page' => $page,
         ]);
     }
 }

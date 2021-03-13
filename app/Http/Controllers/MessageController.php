@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
-
+use Pusher;
 use Illuminate\Http\Request;
 use App\Http\Resources\Inbox as InboxResource;
 use App\Http\Resources\InboxCollection;
@@ -19,7 +19,12 @@ class MessageController extends Controller
     }
 
     public function index() {
-        return view('message');
+        $account = new User();
+        $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
+        return view('message', [
+            'page' => 2,
+            'accountInfo' => $accountInfo[0]
+            ]);
     }
 
     public function inbox() {
@@ -40,7 +45,7 @@ class MessageController extends Controller
                     $inboxesInfo[$i]->accountInfo = $accountInfo;
                 }
 
-                $inboxContent = InboxInfo::where('id', $inboxInfo->id)
+                $inboxContent = InboxInfo::where('inbox_id', $inboxInfo->id)
                             ->orderBy('created_at')
                             ->limit(1)
                             ->get();
@@ -92,9 +97,41 @@ class MessageController extends Controller
     public function chat($inbox_id) {
         $chat = new InboxInfo();
         $chatInfo = $chat->getChatInfo($inbox_id);
-        
+        $inboxes = new Inboxes;
+        $inbox = $inboxes->where('id', $inbox_id)->get();
+        $contactID = ($inbox[0]->user1_id == Auth::user()->id) ? $inbox[0]->user2_id : $inbox[0]->user1_id;
+        $users = new User();
+        $contactInfo = $users->getAccountInfoByUserID($contactID);
+
         return response()->json([
-            'data' => $chatInfo
+            'data' => $chatInfo,
+            'contactInfo' => $contactInfo,
+            'contactID' => $contactID,
+        ]);
+    }
+
+    public function receiveMessage($inbox_id, $message) {
+        $inboxes = new Inboxes;
+        $inbox = $inboxes->find($inbox_id);
+        $receive_id = ($inbox->user1_id == Auth::user()->id) ? $inbox->user2_id : $inbox->user1_id;
+        $inbox->user1_id = Auth::user()->id;
+        $inbox->user2_id = $receive_id;
+        $inbox->save();
+
+        $inboxInfo = new InboxInfo;
+        $inboxInfo->inbox_id = $inbox_id;
+        $inboxInfo->send_id = Auth::user()->id;
+        $inboxInfo->receive_id = $receive_id;
+        $inboxInfo->content =  $message;
+        $inboxInfo->upload = '';
+        $inboxInfo->save();
+
+        $pusher = new Pusher\Pusher('da7cd3b12e18c9e2e461', '566ee6622fcab95b7709', '1168466', array('cluster' => 'eu'));
+
+        $pusher->trigger('fluenser-channel', 'fluenser-event', $inboxInfo);
+
+        return response()->json([
+            'data' => true,
         ]);
     }
 }

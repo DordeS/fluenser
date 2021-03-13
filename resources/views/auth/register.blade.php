@@ -1,30 +1,26 @@
 @extends('layouts.app')
 
 @section('content')
-<header class="bg-white shadow">
-    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-bold text-gray-900 text-center">
-        {{ __('Register') }}
-      </h1>
-    </div>
-</header>
+<div style="visibility: hidden">{{$page = 0}}</div>
 <main>
-    <div class="max-w-md mx-auto py-6 sm:px-6 lg:px-8 bg-gray-100 mt-20 shadow-lg rounded">
+    <div class="max-w-md mx-auto pb-6 sm:px-6 lg:px-8 mt-5">
       <!-- Replace with your content -->
-      <div class="px-4 py-6 sm:px-0">
+      <p class="text-center text-3xl" style="font-family: 'Josefin Sans', sans-serif;">New User Registration</p>
+      <div class="px-4 py-6 sm:px-0 w-4/5 mx-auto">
         <form method="POST" action="{{ route('register') }}">
             @csrf
-            <div class="mt-4 mb-5">
-                <span class="text-gray-700">Account Type</span>
-                <div class="mt-2">
-                  <label class="inline-flex items-center">
+            <div id="togglebar" class="relative w-3/5 mx-auto">
+                <ul>
+                    <li style="float: left;width:50%"><a style="display: block;text-align:center;height:35px;line-height:35px;" class="selected" id="influencer">Influencer</a></li>
+                    <li style="float: left;width:50%"><a style="display: block;text-align:center;height:35px;line-height:35px;" class="unselected" id="brand">Brand</a></li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div id="accountAlert" class="text-center mt-2"><p class="font-bold" style="font-family: 'Josefin Sans', sans-serif;">You are registering as an Influencer</p></div>
+            <div id="radio-btn">
+                <div style="visibility: hidden">
                     <input type="radio" class="form-radio" name="accountType" value="influencer">
-                    <span class="ml-2">{{ __('Influencer') }}</span>
-                  </label>
-                  <label class="inline-flex items-center ml-6">
                     <input type="radio" class="form-radio" name="accountType" value="brand">
-                    <span class="ml-2">{{ __('Brand') }}</span>
-                  </label>
                 </div>
                 @error('accountType')
                     <span class="invalid-feedback" role="alert">
@@ -33,9 +29,9 @@
                 @enderror
             </div>
 
+
             <label class="block mb-5">
-                <span class="text-gray-700">{{ __('Name') }}</span>
-                <input id="name" type="name" class="h-12 p-4 rounded border-2 border-grey-700 form-input mt-2 block w-full @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Name">
+                <input id="name" type="name" class="h-10 p-2 rounded form-input mt-2 block w-full @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Name" style="border:1px solid rgba(220,220,220,0.5)">
                 @error('name')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -43,8 +39,7 @@
                 @enderror
             </label>
             <label class="block mb-5">
-                <span class="text-gray-700">{{ __('E-Mail Address') }}</span>
-                <input id="email" type="email" class="h-12 p-4 rounded border-2 border-grey-700 form-input mt-2 block w-full @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="E-mail">
+                <input id="email" type="email" class="h-10 p-2 rounded form-input mt-2 block w-full @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="E-mail" style="border:1px solid rgba(220,220,220,0.5)">
                 @error('email')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -52,8 +47,7 @@
                 @enderror
             </label>
             <label class="block mb-5">
-                <span class="text-gray-700">{{ __('Password') }}</span>
-                <input id="password" type="password" class="h-12 p-4 rounded border-2 border-grey-700 form-input mt-2 block w-full @error('password') is-invalid @enderror" name="password" required placeholder="Password">
+                <input id="password" type="password" class="h-10 p-2 rounded form-input mt-2 block w-full @error('password') is-invalid @enderror" name="password" required placeholder="Password" style="border:1px solid rgba(220,220,220,0.5)">
                 @error('password')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -61,8 +55,7 @@
                 @enderror
             </label>
             <label class="block mb-5">
-                <span class="text-gray-700">{{ __('Confirm Password') }}</span>
-                <input id="password-confirm" type="password" class="h-12 p-4 rounded border-2 border-grey-700 form-input mt-2 block w-full @error('password') is-invalid @enderror" name="password_confirmation" required placeholder="Confirm Password">
+                <input id="password-confirm" type="password" class="h-10 p-2 rounded form-input mt-2 block w-full @error('password') is-invalid @enderror" name="password_confirmation" required placeholder="Confirm Password" style="border:1px solid rgba(220,220,220,0.5)">
                 @error('password')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -70,9 +63,9 @@
                 @enderror
             </label>
             <div class="flex mt-6">
-                <label class="flex items-center">
-                  <input type="checkbox" class="form-checkbox" name="agreement">
-                  <span class="ml-2">I agree to the <span class="underline">Terms & Conditions</span></span>
+                <label class="flex items-center font-bold" style="font-family: 'Josefin Sans', sans-serif;">
+                  <input type="checkbox" class="form-checkbox rounded" name="agreement" >
+                  <span class="ml-2">I agree to the <span class="underline text-indigo-700">Terms & Conditions</span></span>
                 </label>
                 <div></div>
                 @error('agreement')
@@ -83,7 +76,7 @@
 
             </div>
             <div class="flex mt-6 w-4/5 mx-auto">
-                <button type="submit" class="w-full appearance-none bg-blue-700 text-white text-base font-semibold tracking-wide uppercase p-3 rounded shadow hover:bg-blue-900"> {{ __('Register') }} </button>
+                <button type="submit" class="w-full appearance-none text-white text-base font-semibold tracking-wide p-2 rounded hover:bg-blue-900" style="background:linear-gradient(to right, RGB(5,235,189), RGB(19,120,212));"> {{ __('Register') }} </button>
             </div>
 
         </form>

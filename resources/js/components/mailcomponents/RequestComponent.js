@@ -48,7 +48,8 @@ export class RequestComponent extends Component {
     });
     const this1 = this
     var channel = pusher.subscribe('fluenser-channel');
-    channel.bind('fluenser-event', function(data) { 
+    channel.bind('fluenser-event', function(data) {
+      const requests = this1.state.requests;
       requests.push(data.data);
       console.log(requests);
       this1.setState({
@@ -75,32 +76,31 @@ export class RequestComponent extends Component {
         )
       } else {
         return (
-          <div className="mt-5">
+          <div className="mt-10 mx-3 rounded" style={{boxShadow:'#eee 0 0 10px 0'}}>
             {
               this.state.requests.map((request, i)=>{
                 return(
-                  <div key={i} className="w-11/12 mx-auto rounded px-2">
-                    <div className="w-full grid grid-cols-4 gap-x-1">
-                      <div className="col-span-1">
-                        <img src={ constant.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg' } alt={ request.accountInfo[0].avatar } className="rounded-full"/>
+                  <div key={i} className="w-11/12 mx-auto">
+                    <div className="pt-8">
+                      <img src={ constant.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg' } alt={ request.accountInfo[0].avatar } className="rounded-full" style={{width:'90px', height:'90px', float:'left'}}/>
+                      <div style={{marginLeft:'105px'}}>
+                        <p className="text-lg md:text-xl font-bold">
+                          { request.accountInfo[0].name }
+                        </p>
                       </div>
-                      <div className="col-span-3 pl-3">
-                        <div className="w-full grid grid-rows-3 gap-y-1">
-                          <div className="row-span-1">
-                            <p className="text-md md:text-lg text-bold">
-                              { request.accountInfo[0].name }
-                            </p>
-                          </div>
-                          <div className="row-span-1"></div>
-                          <div className="row-span-1">
-                            <p className="text-sm md:text-md text-gray500">
-                              Offer: <span className="text-black">{request.requestContent.amount + ' ' + request.requestContent.unit} {}</span>
-                            </p>
-                          </div>
-                        </div>
+                      <div style={{margin:'3px 0 3px 105px'}}>
+                        <p className="text-md md:text-lg text-gray-500 overflow-hidden" style={{height:'25px'}}>
+                          { request.requestContent.content }
+                        </p>
                       </div>
+                      <div style={{marginLeft:'105px'}}>
+                        <p className="text-md md:text-lg text-gray-500">
+                          Offer: <span className="text-black font-bold">{request.requestContent.amount + request.requestContent.unit} {}</span>
+                        </p>
+                      </div>
+                      <div className="clearfix"></div>
                     </div>
-                    <div className="w-full grid grid-cols-6 gap-x-1">
+                    <div className="w-full grid grid-cols-6 gap-x-1 mt-3 mb-4">
                       {
                         request.requestContent.images.map((image, i) =>(
                           <div key={i} className="row-span-1">
@@ -110,9 +110,9 @@ export class RequestComponent extends Component {
                       }
                     </div>
                     <div className="w-full">
-                      <a className="block bg-green-600 rounded-lg text-center text-white w-full py-2 my-3" onClick={() => this.onRequestClick(request.id)}> Read more</a>
+                      <a className="block rounded-lg text-center text-white w-full py-2 my-3 font-bold" onClick={() => this.onRequestClick(request.id)} style={{background:'rgb(92,180,184)'}}> Read More</a>
                     </div>
-                    <hr className="mt-2 mb-5"/>
+                    <hr className="mt-5"/>
                   </div>
                 );
               })

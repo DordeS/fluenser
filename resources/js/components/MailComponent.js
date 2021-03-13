@@ -15,6 +15,12 @@ export default class Mail extends Component {
     };
   }
 
+  back() {
+    this.setState({
+      showItem: 'mail',
+    });
+  }
+
   handleInboxClick(inboxID) {
     this.setState({
       showItem: 'chat',
@@ -32,13 +38,13 @@ export default class Mail extends Component {
   render() {
     if (this.state.showItem == 'mail') {
       return (
-        <div className="max-w-lg mx-auto">
-          <div className="grid grid-cols-2 gap-y-1 w-full">
-            <div className="col-span-1 text-center text-md md:text-lg text-green-500">
-              <Link to="/inbox">Inbox</Link>
+        <div className="w-full mx-auto">
+          <div className="w-1/2 grid grid-cols-2 gap-y-1 mx-auto" id="tabMenu">
+            <div className="col-span-1 text-center text-md md:text-lg" style={{color: 'rgb(92,180,184)'}}>
+              <Link to="/inbox" className="active">Inbox</Link>
             </div>
-            <div className="col-span-1 text-center text-md md:text-lg text-green-500">
-              <Link to="/request">Request</Link>
+            <div className="col-span-1 text-center text-md md:text-lg" style={{color: 'rgb(92,180,184)' }}>
+              <Link to="/request">Requests</Link>
             </div>
           </div>
   
@@ -59,6 +65,7 @@ export default class Mail extends Component {
         return (
           <ChatComponent 
             inboxID = {this.state.inboxID}
+            back = {() => this.back()}
           />
         )
       } else {

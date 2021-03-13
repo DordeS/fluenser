@@ -45,7 +45,8 @@ export class InboxComponent extends Component {
     });
     const this1 = this
     var channel = pusher.subscribe('fluenser-channel');
-    channel.bind('fluenser-event', function(data) { 
+    channel.bind('fluenser-event', function(data) {
+      const inboxes = this1.state.inboxes;
       inboxes.push(data.data);
       console.log(inboxes);
       this1.setState({
@@ -88,32 +89,24 @@ export class InboxComponent extends Component {
                 return(
                   <div key={i} className="w-11/12 mx-auto rounded px-2">
                     <a href="#" onClick={() => this.onInboxClick(inbox.id)}>
-                      <div className="w-full grid grid-cols-12 gap-x-1">
-                        <div className="col-span-2">
-                          <img src={ constant.baseURL + 'img/avatar-image/' + inbox.accountInfo[0].avatar + '.jpg' } alt={ inbox.accountInfo[0].avatar } className="rounded-full"/>
-                        </div>
-                        <div className="col-span-6 pl-3">
-                          <div className="w-full grid grid-rows-2 gap-y-1">
-                            <div className="row-span-1">
-                              <p className="text-md md:text-lg text-bold">
-                                { inbox.accountInfo[0].name }
-                              </p>
-                            </div>
-                            <div className="row-span-1"></div>
+                      <div className="w-full">
+                        <div className="w-full">
+                          <img src={ constant.baseURL + 'img/avatar-image/' + inbox.accountInfo[0].avatar + '.jpg' } alt={ inbox.accountInfo[0].avatar} className="rounded-2xl" style={{ width:'55px', height:'55px', float:'left' }}/>
+                          <div style={{marginLeft:'75px', paddingTop:'3px'}}>
+                            <span className="text-md md:text-lg font-medium text-gray-700">
+                              { inbox.accountInfo[0].name }
+                            </span>
+                            <span className="text-xs text-gray-400" style={{float:'right'}}>
+                              { time }
+                            </span>
                           </div>
-                        </div>
-                        <div className="col-span-4">
-                          <div className="w-full grid grid-rows-2 gap-y-1">
-                            <div className="row-span-1">
-                              <p className="text-md md:text-lg text-right">
-                                { time }
-                              </p>
-                            </div>
+                          <div style={{marginLeft:'75px', height:'40px', paddingTop:'3px',paddingBottom:'10px', overflow:'hidden'}}>
+                            <p style={{height:'20px', overflow:'hidden'}} className="text-gray-500 text-md">{inbox.inboxContent[0].content}</p>
                           </div>
                         </div>
                       </div>
                     </a>
-                    <hr className="py-2"/>
+                    <hr className="pb-3"/>
                   </div>
                 );
               })

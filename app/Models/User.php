@@ -67,4 +67,15 @@ class User extends Authenticatable
         // echo $accountInfo[0]->accountType;
         return $accountInfo;
     }
+
+    public function checkIfInfluencer($user_id) {
+        $influencer = DB::table('influencers')
+                ->where('user_id', $user_id)
+                ->get();
+        if(count($influencer) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

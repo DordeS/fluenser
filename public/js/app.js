@@ -2097,6 +2097,13 @@ var Mail = /*#__PURE__*/function (_Component) {
   }
 
   _createClass(Mail, [{
+    key: "back",
+    value: function back() {
+      this.setState({
+        showItem: 'mail'
+      });
+    }
+  }, {
     key: "handleInboxClick",
     value: function handleInboxClick(inboxID) {
       this.setState({
@@ -2119,20 +2126,28 @@ var Mail = /*#__PURE__*/function (_Component) {
 
       if (this.state.showItem == 'mail') {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-          className: "max-w-lg mx-auto",
+          className: "w-full mx-auto",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-            className: "grid grid-cols-2 gap-y-1 w-full",
+            className: "w-1/2 grid grid-cols-2 gap-y-1 mx-auto",
+            id: "tabMenu",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-              className: "col-span-1 text-center text-md md:text-lg text-green-500",
+              className: "col-span-1 text-center text-md md:text-lg",
+              style: {
+                color: 'rgb(92,180,184)'
+              },
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_6__.Link, {
                 to: "/inbox",
+                className: "active",
                 children: "Inbox"
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-              className: "col-span-1 text-center text-md md:text-lg text-green-500",
+              className: "col-span-1 text-center text-md md:text-lg",
+              style: {
+                color: 'rgb(92,180,184)'
+              },
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_6__.Link, {
                 to: "/request",
-                children: "Request"
+                children: "Requests"
               })
             })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
@@ -2154,7 +2169,10 @@ var Mail = /*#__PURE__*/function (_Component) {
       } else {
         if (this.state.showItem == 'chat') {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mailcomponents_ChatComponent__WEBPACK_IMPORTED_MODULE_4__.ChatComponent, {
-            inboxID: this.state.inboxID
+            inboxID: this.state.inboxID,
+            back: function back() {
+              return _this2.back();
+            }
           });
         } else {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mailcomponents_RequestDetailComponent__WEBPACK_IMPORTED_MODULE_3__.RequestDetailComponent, {
@@ -2204,7 +2222,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 var constant = {
-  baseURL: 'http://localhost:8000/'
+  baseURL: 'http://localhost:8000/',
+  month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nev', 'Dec']
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (constant);
 
@@ -2268,12 +2287,39 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
     _this = _super.call(this);
     _this.state = {
       chats: [],
-      isWaiting: true
+      contactName: '',
+      userID: 0,
+      isWaiting: true,
+      message: '',
+      api_token: '',
+      contactInfo: [],
+      contactID: 0,
+      count: 0
     };
+    _this.sendMessage = _this.sendMessage.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(ChatComponent, [{
+    key: "sendMessage",
+    value: function sendMessage(e) {
+      e.preventDefault();
+      var message = this.message.value;
+      message = message.replace(' ', '__');
+      console.log(message);
+      _api__WEBPACK_IMPORTED_MODULE_1__.default.get('sendMessage/' + this.state.chats[0].inbox_id + '/' + message + '?api_token=' + this.state.api_token, {
+        headers: {
+          "Accept": 'application/json'
+        }
+      }).then(function (res) {
+        if (res.status == 200) {
+          console.log(res.data.data);
+        }
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
       var _this2 = this;
@@ -2283,7 +2329,7 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
         'Accept': 'application/json'
       };
       var api_token = jquery__WEBPACK_IMPORTED_MODULE_3___default()("meta[name=api-token]").attr('content');
-      _api__WEBPACK_IMPORTED_MODULE_1__.default.get('inbox?api_token=' + api_token, {
+      _api__WEBPACK_IMPORTED_MODULE_1__.default.get('chat/' + this.props.inboxID + '?api_token=' + api_token, {
         headers: headers
       }).then(function (response) {
         _this2.setState({
@@ -2292,11 +2338,22 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
 
         if (response.status == 200) {
           console.log('-------------');
-          console.log(response.data.data);
-          var inboxes = response.data.data;
+          console.log(response.data);
+          var chats = response.data.data.chatInfo;
+          var contactName = response.data.data.name;
+          var userID = response.data.data.userID;
+          var contactInfo = response.data.contactInfo[0];
+          var contactID = response.data.contactID;
+          var count = _this2.state.count++;
 
           _this2.setState({
-            inboxes: inboxes
+            chats: chats,
+            contactName: contactName,
+            userID: userID,
+            api_token: api_token,
+            contactInfo: contactInfo,
+            contactID: contactID,
+            count: count
           });
         }
       })["catch"](function (error) {
@@ -2312,17 +2369,35 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
       var this1 = this;
       var channel = pusher.subscribe('fluenser-channel');
       channel.bind('fluenser-event', function (data) {
-        var inboxes = this1.state.inboxes;
-        inboxes.push(data.data);
-        console.log(inboxes);
-        this1.setState({
-          inboxes: inboxes
-        });
+        console.log('qwer');
+        console.log(data);
+
+        if (_this2.state.userID == data.send_id && _this2.state.contactID == data.receive_id || _this2.state.userID == data.receive_id && _this2.state.contactID == data.send_id) {
+          var chats = this1.state.chats;
+          chats.push(data);
+          console.log(chats);
+          this1.setState({
+            chats: chats
+          });
+        }
       });
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      var element = document.getElementById('chatcontainer');
+      console.log("+++++++");
+      console.log(element);
+
+      if (element != null) {
+        element.scrollIntoView(false);
+      }
     }
   }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
       if (this.state.isWaiting) {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
           className: "max-w-sm mx-auto py-10 text-center",
@@ -2333,69 +2408,267 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
           })
         });
       } else {
-        if (this.state.inboxes.length == 0) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-            className: "max-w-sm mx-auto text-center py-10",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+        if (this.state.chats.length == 0) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+            className: "max-w-md md:max-w-xl mx-auto text-center pb-10",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "w-full grid grid-cols-12 gap-x-2",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "col-span-1",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                  className: "text-center text-green-500",
+                  onClick: function onClick() {
+                    return back();
+                  },
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("svg", {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20",
+                    fill: "currentColor",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
+                      fillRule: "evenodd",
+                      d: "M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z",
+                      clipRule: "evenodd"
+                    })
+                  })
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "col-span-11",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-center text-lg md:text-xl pb-3 font-bold",
+                  children: this.state.contactName
+                })
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
               className: "text-center",
-              children: "No inbox to show"
-            })
+              children: "No message to show"
+            })]
           });
         } else {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-            className: "mt-5",
-            children: this.state.inboxes.map(function (inbox, i) {
-              var time = new Date(inbox.accountInfo[0].updated_at);
+          var containerHeight = innerHeight - 255;
+          var messengerWidth = innerWidth - 110;
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+            className: "w-full text-center pb-20",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "w-full",
+              style: {
+                background: 'rgb(88,183,189)',
+                borderRadius: '10px 10px 0 0',
+                height: '70px'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                style: {
+                  "float": 'left',
+                  marginLeft: '15px'
+                },
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                  className: "text-center text-gray-300",
+                  onClick: function onClick() {
+                    return _this3.props.back();
+                  },
+                  style: {
+                    lineHeight: '70px'
+                  },
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                    className: "fas fa-chevron-left"
+                  })
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "float-left",
+                style: {
+                  width: '50px',
+                  height: '50px',
+                  margin: '10px 0',
+                  marginLeft: '28px'
+                },
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                  src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + this.state.contactInfo.avatar + '.jpg',
+                  alt: this.state.contactInfo.avatar,
+                  className: "rounded-2xl"
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "float-left",
+                style: {
+                  marginLeft: '12px'
+                },
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-center text-md md:text-xl pt-2 text-white",
+                  children: this.state.contactName
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("button", {
+                className: "float-right bg-white rounded-xl",
+                style: {
+                  marginRight: '15px',
+                  height: '50px',
+                  marginTop: '10px',
+                  boxShadow: '0 0 8px 0 #999'
+                },
+                children: [" ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
+                  style: {
+                    lineHeight: '50px'
+                  },
+                  className: "px-3 text-sm text-gray-500",
+                  children: ["Release ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                    className: "font-bold",
+                    children: "45.00GBP"
+                  })]
+                })]
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              style: {
+                height: containerHeight + 'px',
+                overflow: 'auto'
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                id: "chatcontainer",
+                children: this.state.chats.map(function (chat, i) {
+                  var datetime = new Date(chat.created_at);
 
-              if (time.getHours() >= 12) {
-                time = time.getHours() - 12 + ":" + time.getMinutes() + "PM";
-              } else {
-                time = time.getHours() + ":" + time.getMinutes() + " PM";
-              }
+                  if (datetime.getHours() >= 12) {
+                    var time = datetime.getHours() - 12 + ":" + datetime.getMinutes() + " PM";
+                  } else {
+                    var time = datetime.getHours() + ":" + datetime.getMinutes() + " AM";
+                  }
 
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                className: "w-11/12 mx-auto rounded px-2",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                  className: "w-full grid grid-cols-12 gap-x-1",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    className: "col-span-2",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                      src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + inbox.accountInfo[0].avatar + '.jpg',
-                      alt: inbox.accountInfo[0].avatar,
-                      className: "rounded-full"
-                    })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    className: "col-span-6 pl-3",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                      className: "w-full grid grid-rows-2 gap-y-1",
+                  var month = _const__WEBPACK_IMPORTED_MODULE_2__.default.month[datetime.getMonth()];
+                  var day = datetime.getDate();
+                  datetime = time + ', ' + month + ' ' + day;
+                  var isUser = chat.send_id == _this3.state.userID ? true : false;
+                  console.log(innerWidth, innerHeight);
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                    className: "w-full mx-auto rounded px-2 mt-5",
+                    children: isUser ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "row-span-1",
+                        className: "rounded-2xl",
+                        style: {
+                          background: 'rgb(88,183,189)',
+                          "float": 'right'
+                        },
                         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                          className: "text-xl text-bold",
-                          children: inbox.accountInfo[0].name
+                          className: "text-sm px-4 py-4 text-white",
+                          children: chat.content
                         })
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "row-span-1"
+                        className: "clearfix"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                        className: "text-xs text-gray-500 mt-2",
+                        style: {
+                          "float": 'right'
+                        },
+                        children: datetime
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "clearfix"
+                      })]
+                    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        style: {
+                          marginLeft: '65px'
+                        },
+                        className: "text-left text-xs text-gray-500 mb-2",
+                        children: _this3.state.contactInfo.name
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        style: {
+                          width: '55px',
+                          height: '55px',
+                          "float": 'left'
+                        },
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                          src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + _this3.state.contactInfo.avatar + '.jpg',
+                          alt: _this3.state.contactInfo.avatar,
+                          className: "rounded-xl"
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "rounded-2xl",
+                        style: {
+                          background: 'rgb(239,242,247)',
+                          "float": 'left'
+                        },
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                          className: "text-sm px-4 py-4 text-gray-500",
+                          children: chat.content
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "clearfix"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                        className: "text-xs text-gray-500 mt-2",
+                        style: {
+                          "float": 'left',
+                          marginLeft: '60px'
+                        },
+                        children: datetime
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "clearfix"
                       })]
                     })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    className: "col-span-4",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                      className: "w-full grid grid-rows-2 gap-y-1",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "row-span-1",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                          className: "text-lg text-right",
-                          children: time
-                        })
-                      })
+                  }, i);
+                })
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              className: "w-full fixed",
+              style: {
+                bottom: '55px'
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                className: "w-full px-2 mx-auto",
+                style: {
+                  height: '40px'
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "float-right",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                    onClick: this.sendMessage,
+                    style: {
+                      fontSize: '20px',
+                      lineHeight: '40px',
+                      color: 'rgb(88,183,189)'
+                    },
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                      className: "fas fa-paper-plane"
                     })
-                  })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("hr", {
-                  className: "py-2"
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "float-right mr-3",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                    href: "#",
+                    style: {
+                      fontSize: '20px',
+                      lineHeight: '40px'
+                    },
+                    className: "text-gray-400",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                      className: "far fa-image"
+                    })
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "float-right mr-3",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                    href: "#",
+                    style: {
+                      fontSize: '20px',
+                      lineHeight: '40px'
+                    },
+                    className: "text-gray-400",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                      className: "fas fa-paperclip"
+                    })
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "float-left",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+                    type: "text",
+                    name: "message",
+                    id: "message",
+                    className: "w-full border-none",
+                    placeholder: "Type your message ...",
+                    ref: function ref(e) {
+                      return _this3.message = e;
+                    },
+                    style: {
+                      width: messengerWidth + 'px'
+                    }
+                  })
                 })]
-              }, i);
-            })
+              })
+            })]
           });
         }
       }
@@ -2509,6 +2782,7 @@ var InboxComponent = /*#__PURE__*/function (_Component) {
       var this1 = this;
       var channel = pusher.subscribe('fluenser-channel');
       channel.bind('fluenser-event', function (data) {
+        var inboxes = this1.state.inboxes;
         inboxes.push(data.data);
         console.log(inboxes);
         this1.setState({
@@ -2563,45 +2837,55 @@ var InboxComponent = /*#__PURE__*/function (_Component) {
                   onClick: function onClick() {
                     return _this3.onInboxClick(inbox.id);
                   },
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                    className: "w-full grid grid-cols-12 gap-x-1",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                      className: "col-span-2",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                    className: "w-full",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                      className: "w-full",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
                         src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + inbox.accountInfo[0].avatar + '.jpg',
                         alt: inbox.accountInfo[0].avatar,
-                        className: "rounded-full"
-                      })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                      className: "col-span-6 pl-3",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                        className: "w-full grid grid-rows-2 gap-y-1",
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                          className: "row-span-1",
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                            className: "text-md md:text-lg text-bold",
-                            children: inbox.accountInfo[0].name
-                          })
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                          className: "row-span-1"
+                        className: "rounded-2xl",
+                        style: {
+                          width: '55px',
+                          height: '55px',
+                          "float": 'left'
+                        }
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                        style: {
+                          marginLeft: '75px',
+                          paddingTop: '3px'
+                        },
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                          className: "text-md md:text-lg font-medium text-gray-700",
+                          children: inbox.accountInfo[0].name
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                          className: "text-xs text-gray-400",
+                          style: {
+                            "float": 'right'
+                          },
+                          children: time
                         })]
-                      })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                      className: "col-span-4",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "w-full grid grid-rows-2 gap-y-1",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                          className: "row-span-1",
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                            className: "text-md md:text-lg text-right",
-                            children: time
-                          })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        style: {
+                          marginLeft: '75px',
+                          height: '40px',
+                          paddingTop: '3px',
+                          paddingBottom: '10px',
+                          overflow: 'hidden'
+                        },
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                          style: {
+                            height: '20px',
+                            overflow: 'hidden'
+                          },
+                          className: "text-gray-500 text-md",
+                          children: inbox.inboxContent[0].content
                         })
-                      })
-                    })]
+                      })]
+                    })
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("hr", {
-                  className: "py-2"
+                  className: "pb-3"
                 })]
               }, i);
             })
@@ -2724,6 +3008,7 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
       var this1 = this;
       var channel = pusher.subscribe('fluenser-channel');
       channel.bind('fluenser-event', function (data) {
+        var requests = this1.state.requests;
         requests.push(data.data);
         console.log(requests);
         this1.setState({
@@ -2756,45 +3041,59 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
           });
         } else {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-            className: "mt-5",
+            className: "mt-10 mx-3 rounded",
+            style: {
+              boxShadow: '#eee 0 0 10px 0'
+            },
             children: this.state.requests.map(function (request, i) {
               return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                className: "w-11/12 mx-auto rounded px-2",
+                className: "w-11/12 mx-auto",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                  className: "w-full grid grid-cols-4 gap-x-1",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    className: "col-span-1",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                      src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg',
-                      alt: request.accountInfo[0].avatar,
-                      className: "rounded-full"
+                  className: "pt-8",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                    src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg',
+                    alt: request.accountInfo[0].avatar,
+                    className: "rounded-full",
+                    style: {
+                      width: '90px',
+                      height: '90px',
+                      "float": 'left'
+                    }
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                    style: {
+                      marginLeft: '105px'
+                    },
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                      className: "text-lg md:text-xl font-bold",
+                      children: request.accountInfo[0].name
                     })
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    className: "col-span-3 pl-3",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                      className: "w-full grid grid-rows-3 gap-y-1",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "row-span-1",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                          className: "text-md md:text-lg text-bold",
-                          children: request.accountInfo[0].name
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "row-span-1"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "row-span-1",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
-                          className: "text-sm md:text-md text-gray500",
-                          children: ["Offer: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("span", {
-                            className: "text-black",
-                            children: [request.requestContent.amount + ' ' + request.requestContent.unit, " "]
-                          })]
-                        })
+                    style: {
+                      margin: '3px 0 3px 105px'
+                    },
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                      className: "text-md md:text-lg text-gray-500 overflow-hidden",
+                      style: {
+                        height: '25px'
+                      },
+                      children: request.requestContent.content
+                    })
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                    style: {
+                      marginLeft: '105px'
+                    },
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
+                      className: "text-md md:text-lg text-gray-500",
+                      children: ["Offer: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("span", {
+                        className: "text-black font-bold",
+                        children: [request.requestContent.amount + request.requestContent.unit, " "]
                       })]
                     })
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                    className: "clearfix"
                   })]
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                  className: "w-full grid grid-cols-6 gap-x-1",
+                  className: "w-full grid grid-cols-6 gap-x-1 mt-3 mb-4",
                   children: request.requestContent.images.map(function (image, i) {
                     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                       className: "row-span-1",
@@ -2808,14 +3107,17 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                   className: "w-full",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
-                    className: "block bg-green-600 rounded-lg text-center text-white w-full py-2 my-3",
+                    className: "block rounded-lg text-center text-white w-full py-2 my-3 font-bold",
                     onClick: function onClick() {
                       return _this3.onRequestClick(request.id);
                     },
-                    children: " Read more"
+                    style: {
+                      background: 'rgb(92,180,184)'
+                    },
+                    children: " Read More"
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("hr", {
-                  className: "mt-2 mb-5"
+                  className: "mt-5"
                 })]
               }, i);
             })

@@ -22,55 +22,66 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/css/all.css') }}">
     <style>
         .invalid-feedback {
             color: red;
+        }
+        a.selected {
+            background: linear-gradient(to right, RGB(5,235,189), RGB(19,120,212));
+            color: white;
+        }
+        a.unselected {
+            background: lightgrey;
+            color: grey;
+        }
+        .clearfix {
+            display: table;
+            content: '';
+            clear: both;
+        }
+        .menu_selected {
+            color: black;
+            border-bottom: solid 4px rgb(83, 181, 193);
+        }
+        #mail-component #tabMenu a.active {
+            padding-bottom: 8px;
+            font-weight: bold;
+            border-bottom: solid 3px rgb(92,180,184);
+        }
+        #lg_tabMenu a.active {
+            color: black;
         }
     </style>
 </head>
 <body>
 
     <div>
-        <nav class="bg-gray-800">
+        <nav class="bg-white">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-              <div class="flex items-center">
+              <div class="flex items-center mx-auto">
                 <div class="flex-shrink-0">
                     <a href="{{route('welcome')}}">
-                        <img class="h-10" src="{{ asset('img/logo.png') }}" alt="Workflow">
+                        <img class="h-10" src="{{ asset('img/logo.jpg') }}" alt="Workflow">
                     </a>
                 </div>
-                @guest
-                @else
-                <div class="hidden md:block">
-                  <div class="ml-10 flex items-baseline space-x-4">
-                    <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                    <a href="{{ route('home') }}" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">My account</a>
-      
-                    <a href="{{ route('inbox') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Mail</a>
-      
-                    <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Wallet</a>
-      
-                    <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Search</a>
-      
-                    <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Partnership</a>
-                  </div>
-                </div>
-                @endguest
               </div>
               <div class="md:block">
                 <div class="ml-4 flex items-center md:ml-6">
                     @guest
-                        @if (Route::has('login'))
-                            <a href="{{ route('login') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">{{ __('Login') }}</a>
+                        {{-- @if (Route::has('login'))
+                            <a href="{{ route('login') }}" class="text-gray-500 hover:text-indigo-700 px-3 py-2 rounded-md text-sm font-medium">{{ __('Login') }}</a>
                         @endif
                         
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">{{ __('Register') }}</a>
-                        @endif
+                            <a href="{{ route('register') }}" class="text-gray-500 hover:text-indigo-700 px-3 py-2 rounded-md text-sm font-medium">{{ __('Register') }}</a>
+                        @endif --}}
                     @else
                         <button class="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                         <span class="sr-only">View notifications</span>
@@ -103,7 +114,7 @@
                             From: "transform opacity-100 scale-100"
                             To: "transform opacity-0 scale-95"
                         -->
-                        <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu" id="user-menu-content">
+                        <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu" id="user-menu-content" style="display: none;">
                             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
             
                             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
@@ -131,39 +142,27 @@
           <!-- Mobile menu, show/hide based on menu state. -->
           @guest
           @else
-            <div class="md:hidden fixed bottom-0 bg-black w-full" id="mobile-menu">
-                <div class="px-1 py-1 space-y-1 grid grid-cols-5 sm:px-3 w-full">
+            <div class="fixed bottom-0 bg-white w-full" id="mobile-menu">
+                <div class="px-1 py-1 grid grid-cols-5 sm:px-3 w-full" style="border-top: 1px solid lightgrey; border-radius:15px 15px 0 0;z-index:1000">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                <div class="col-span-1">
-                    <a href="{{ route('home') }}" class="text-white block px-3 py-2 rounded-md text-center text-base font-medium">
-                        <svg class="w-10 h-10 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                    </a>
-                </div>
-        
-                <a href="{{ route('inbox') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
-                    <svg class="w-10 h-10 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
+                <a href="{{ route('home') }}" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
+                    <i class="fas fa-home"></i>
                 </a>
         
-                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base">
-                    <svg class="w-10 h-10 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                    </svg>
+                <a href="{{ route('inbox') }}" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
+                    <i class="far fa-comment-alt"></i>
                 </a>
         
-                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base">
-                    <svg class="w-10 h-10 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                <a href="{{ route('task') }}" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
+                    <i class="fas fa-paperclip"></i>
                 </a>
         
-                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base">
-                    <svg class="w-10 h-10 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                <a href="#" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
+                    <i class="fas fa-search"></i>
+                </a>
+        
+                <a href="#" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
+                    <i class="far fa-user"></i>
                 </a>
                 </div>
             </div>
@@ -173,11 +172,37 @@
     </div>
     <script>
         $(document).ready(function() {
+            var page = {{ $page }};
+            var element = $("#mobile-menu a").eq(page - 1);
+            console.log(element);
+            element.addClass('menu_selected');
+            $("#lg_tabMenu a").eq(page-1).addClass('active');
             $("#user-menu-content").css('display', 'none');
             $("#user-menu").click(function() {
                 var con = $("#user-menu-content").css('display');
                 if(con == 'block') $("#user-menu-content").css('display', 'none');
                 else $("#user-menu-content").css('display', 'block');
+            });
+            $("#togglebar a").click(function() {
+                var classname = $(this).attr('class');
+                if(classname == 'unselected') {
+                    $("#togglebar a.selected").addClass('unselected').removeClass('selected');
+                    $(this).addClass('selected').removeClass('unselected');
+                    if($(this).attr('id') == 'influencer') {
+                        $("#radio-btn input[type=radio]")[0].checked = true;
+                        $("#radio-btn input[type=radio]")[1].checked = false;
+                        $("#accountAlert p").text('You are registering as an Influencer');
+                    } else {
+                        $("#radio-btn input[type=radio]")[0].checked = false;
+                        $("#radio-btn input[type=radio]")[1].checked = true;
+                        $("#accountAlert p").text('You are registering as a Brand');
+                    }
+                };
+            });
+            $("#tabMenu a").click(function() {
+                console.log($(this).attr('href'));
+                $("#tabMenu a.active").removeClass('active');
+                $(this).addClass('active');
             });
         });
     </script>
