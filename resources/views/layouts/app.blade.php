@@ -63,7 +63,8 @@
 
     <div>
         <nav class="bg-white">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            @if ($page != 2)
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
               <div class="flex items-center mx-auto">
                 <div class="flex-shrink-0">
@@ -134,15 +135,16 @@
               </div>
               <div class="-mr-2 flex md:hidden">
               </div>
+            @endif
                 @endguest                    
 
             </div>
-          </div>
+            </div>
       
           <!-- Mobile menu, show/hide based on menu state. -->
           @guest
           @else
-            <div class="fixed bottom-0 bg-white w-full" id="mobile-menu">
+            <div class="fixed bottom-0 left- bg-white w-full md:w-7xl mx-auto object-center" id="mobile-menu">
                 <div class="px-1 py-1 grid grid-cols-5 sm:px-3 w-full" style="border-top: 1px solid lightgrey; border-radius:15px 15px 0 0;z-index:1000">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                 <a href="{{ route('home') }}" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">

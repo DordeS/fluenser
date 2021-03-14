@@ -130,11 +130,11 @@ export class ChatComponent extends Component {
           </div>
         )
       } else {
-        var containerHeight = innerHeight - 255;
+        var containerHeight = innerHeight - 165;
         var messengerWidth = innerWidth - 110;
         return (
           <div className="w-full text-center pb-20">
-            <div className="w-full" style={{background:'rgb(88,183,189)', borderRadius:'10px 10px 0 0', height:'70px'}}>
+            <div className="w-full" style={{background:'rgb(88,183,189)', borderRadius:'0 0 10px 10px', height:'70px'}}>
               <div style={{float:'left', marginLeft:'15px'}}>
                 <a className="text-center text-gray-300" onClick={()=> this.props.back()} style={{lineHeight:'70px'}}>
                   <i className="fas fa-chevron-left"></i>

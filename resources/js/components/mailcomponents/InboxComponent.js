@@ -76,8 +76,9 @@ export class InboxComponent extends Component {
           </div>
         )
       } else {
+        var containerHeight = innerHeight - 105;
         return (
-          <div className="mt-5">
+          <div className="mt-5" style={{height:containerHeight, overflow:'auto'}}>
             {
               this.state.inboxes.map((inbox, i)=>{
                 var time = new Date(inbox.accountInfo[0].updated_at);

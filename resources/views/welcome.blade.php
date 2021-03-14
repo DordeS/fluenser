@@ -130,7 +130,7 @@
                 position: absolute;
                 bottom: 150px;
                 left: 50vw;
-                margin-left: -100px;
+                margin-left: 100px;
             }
 
             #hire_btn {

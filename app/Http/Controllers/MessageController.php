@@ -134,4 +134,21 @@ class MessageController extends Controller
             'data' => true,
         ]);
     }
+
+    public function requestDetaliShow($request_id) {
+        $requests = new Requests;
+        $request = $requests->find($request_id);
+        $send_id = $request->send_id;
+
+        $user = new User();
+        $accountInfo = $user->getAccountInfoByUserID($send_id)[0];
+
+        $requestInfos = new RequestInfo();
+        $requestInfo = $requestInfos->getRequestInfoByID($request_id);
+
+        return response()->json([
+            'accountInfo' => $accountInfo,
+            'requestInfo' => $requestInfo,
+        ]);
+    }
 }

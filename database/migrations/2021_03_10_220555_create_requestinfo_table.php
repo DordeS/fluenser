@@ -16,6 +16,7 @@ class CreateRequestinfoTable extends Migration
         Schema::create('request_info', function (Blueprint $table) {
             $table->id();
             $table->integer('request_id');
+            $table->integer('title');
             $table->text('content');
             $table->integer('amount');
             $table->string('unit');

@@ -39,7 +39,7 @@ export default class Mail extends Component {
     if (this.state.showItem == 'mail') {
       return (
         <div className="w-full mx-auto">
-          <div className="w-1/2 grid grid-cols-2 gap-y-1 mx-auto" id="tabMenu">
+          <div className="w-1/2 grid grid-cols-2 gap-y-1 mx-auto" id="tabMenu" style={{marginTop:'10px'}}>
             <div className="col-span-1 text-center text-md md:text-lg" style={{color: 'rgb(92,180,184)'}}>
               <Link to="/inbox" className="active">Inbox</Link>
             </div>
@@ -72,6 +72,7 @@ export default class Mail extends Component {
         return (
           <RequestDetailComponent 
             requestID = {this.state.requestID}
+            back = {() => this.back()}
           />
         )
       }

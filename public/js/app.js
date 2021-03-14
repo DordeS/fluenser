@@ -2130,6 +2130,9 @@ var Mail = /*#__PURE__*/function (_Component) {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
             className: "w-1/2 grid grid-cols-2 gap-y-1 mx-auto",
             id: "tabMenu",
+            style: {
+              marginTop: '10px'
+            },
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
               className: "col-span-1 text-center text-md md:text-lg",
               style: {
@@ -2176,7 +2179,10 @@ var Mail = /*#__PURE__*/function (_Component) {
           });
         } else {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mailcomponents_RequestDetailComponent__WEBPACK_IMPORTED_MODULE_3__.RequestDetailComponent, {
-            requestID: this.state.requestID
+            requestID: this.state.requestID,
+            back: function back() {
+              return _this2.back();
+            }
           });
         }
       }
@@ -2444,7 +2450,7 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
             })]
           });
         } else {
-          var containerHeight = innerHeight - 255;
+          var containerHeight = innerHeight - 165;
           var messengerWidth = innerWidth - 110;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
             className: "w-full text-center pb-20",
@@ -2452,7 +2458,7 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
               className: "w-full",
               style: {
                 background: 'rgb(88,183,189)',
-                borderRadius: '10px 10px 0 0',
+                borderRadius: '0 0 10px 10px',
                 height: '70px'
               },
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
@@ -2819,8 +2825,13 @@ var InboxComponent = /*#__PURE__*/function (_Component) {
             })
           });
         } else {
+          var containerHeight = innerHeight - 105;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
             className: "mt-5",
+            style: {
+              height: containerHeight,
+              overflow: 'auto'
+            },
             children: this.state.inboxes.map(function (inbox, i) {
               var time = new Date(inbox.accountInfo[0].updated_at);
 
@@ -3040,16 +3051,18 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
             })
           });
         } else {
+          var containerHeight = innerHeight - 105;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-            className: "mt-10 mx-3 rounded",
+            className: "mt-5",
             style: {
-              boxShadow: '#eee 0 0 10px 0'
+              height: containerHeight,
+              overflow: 'auto'
             },
             children: this.state.requests.map(function (request, i) {
               return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                 className: "w-11/12 mx-auto",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                  className: "pt-8",
+                  className: "pt-5",
                   children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
                     src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg',
                     alt: request.accountInfo[0].avatar,
@@ -3189,7 +3202,8 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this);
     _this.state = {
-      inboxes: [],
+      requestInfo: {},
+      accountInfo: {},
       isWaiting: true
     };
     return _this;
@@ -3205,46 +3219,31 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
         'Accept': 'application/json'
       };
       var api_token = jquery__WEBPACK_IMPORTED_MODULE_3___default()("meta[name=api-token]").attr('content');
-      _api__WEBPACK_IMPORTED_MODULE_1__.default.get('inbox?api_token=' + api_token, {
+      _api__WEBPACK_IMPORTED_MODULE_1__.default.get('requestDetail/' + this.props.requestID + '?api_token=' + api_token, {
         headers: headers
       }).then(function (response) {
-        _this2.setState({
-          isWaiting: false
-        });
-
         if (response.status == 200) {
           console.log('-------------');
-          console.log(response.data.data);
-          var inboxes = response.data.data;
+          console.log(response.data.requestInfo);
+          var requestInfo = response.data.requestInfo;
+          var accountInfo = response.data.accountInfo;
 
           _this2.setState({
-            inboxes: inboxes
+            requestInfo: requestInfo,
+            accountInfo: accountInfo,
+            isWaiting: false
           });
         }
       })["catch"](function (error) {
         console.log(error);
       });
-      console.log("mounted component message"); // Pusher
-      // Enable pusher logging - don't include this in production
-
-      Pusher.logToConsole = true;
-      var pusher = new Pusher('da7cd3b12e18c9e2e461', {
-        cluster: 'eu'
-      });
-      var this1 = this;
-      var channel = pusher.subscribe('fluenser-channel');
-      channel.bind('fluenser-event', function (data) {
-        var inboxes = this1.state.inboxes;
-        inboxes.push(data.data);
-        console.log(inboxes);
-        this1.setState({
-          inboxes: inboxes
-        });
-      });
+      console.log("mounted component message");
     }
   }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
       if (this.state.isWaiting) {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
           className: "max-w-sm mx-auto py-10 text-center",
@@ -3255,71 +3254,141 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
           })
         });
       } else {
-        if (this.state.inboxes.length == 0) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-            className: "max-w-sm mx-auto text-center py-10",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-              className: "text-center",
-              children: "No inbox to show"
-            })
-          });
-        } else {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-            className: "mt-5",
-            children: this.state.inboxes.map(function (inbox, i) {
-              var time = new Date(inbox.accountInfo[0].updated_at);
+        var containerHeight = innerHeight - 123;
+        var status;
 
-              if (time.getHours() >= 12) {
-                time = time.getHours() - 12 + ":" + time.getMinutes() + "PM";
-              } else {
-                time = time.getHours() + ":" + time.getMinutes() + " PM";
-              }
+        switch (this.state.requestInfo.status) {
+          case 1:
+            status = "Waiting for deposite.";
+            break;
 
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                className: "w-11/12 mx-auto rounded px-2",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                  className: "w-full grid grid-cols-12 gap-x-1",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    className: "col-span-2",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                      src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + inbox.accountInfo[0].avatar + '.jpg',
-                      alt: inbox.accountInfo[0].avatar,
-                      className: "rounded-full"
-                    })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    className: "col-span-6 pl-3",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                      className: "w-full grid grid-rows-2 gap-y-1",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "row-span-1",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                          className: "text-xl text-bold",
-                          children: inbox.accountInfo[0].name
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "row-span-1"
-                      })]
-                    })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    className: "col-span-4",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                      className: "w-full grid grid-rows-2 gap-y-1",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "row-span-1",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                          className: "text-lg text-right",
-                          children: time
-                        })
-                      })
-                    })
-                  })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("hr", {
-                  className: "py-2"
-                })]
-              }, i);
-            })
-          });
+          case 2:
+            status = "Deposite made.";
+            break;
+
+          case 3:
+            status = 'Deposite release.';
+            break;
+
+          default:
+            break;
         }
+
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+            className: "w-full",
+            style: {
+              background: 'rgb(92, 180, 184)',
+              borderRadius: '0 0 10px 10px',
+              height: '70px',
+              paddingTop: '10px'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              style: {
+                "float": 'left',
+                marginLeft: '15px'
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                className: "text-center text-gray-300",
+                onClick: function onClick() {
+                  return _this3.props.back();
+                },
+                style: {
+                  lineHeight: '50px'
+                },
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                  className: "fas fa-chevron-left"
+                })
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+              className: "text-lg md:text-xl text-center text-white font-bold ml-5",
+              style: {
+                lineHeight: '50px'
+              },
+              children: "Request Detail"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+              className: "float-right bg-white text-gray-500",
+              style: {
+                lineHeight: '30px',
+                padding: '5px',
+                margin: "5px 15px 5px",
+                borderRadius: '3px',
+                boxShadow: '0 0 5px 0 rgb(100,100,100)'
+              },
+              children: "Chat"
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+            id: "detailcontainer",
+            style: {
+              height: containerHeight,
+              overflow: 'auto'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "w-10/12 md:max-w-xl relative mx-auto mb-16 px-3 mt-5",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/back-image/' + this.state.accountInfo.back_img + '.jpg',
+                alt: this.state.accountInfo.back_img
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + this.state.accountInfo.avatar + '.jpg',
+                alt: this.state.accountInfo.avatar,
+                style: {
+                  width: '30%',
+                  position: 'absolute',
+                  left: '50%',
+                  marginLeft: '-15%',
+                  bottom: '-25%',
+                  border: '3px solid white',
+                  boxShadow: '0 0 8px 0 #999'
+                },
+                className: "rounded-full"
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              id: "accountInfo",
+              className: "mb-6",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                className: "text-lg md:text-xl text-center",
+                children: this.state.accountInfo.name
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                className: "text-md md:text-lg text-center text-gray-500",
+                children: this.state.accountInfo.state + ' ' + this.state.accountInfo.country
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              id: "requestInfo",
+              className: "px-5 md:px-10",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                className: "text-lg text-center md:text-xl font-bold py-2",
+                style: {
+                  fontFamily: "'Josefin Sans', sans-serif"
+                },
+                children: this.state.requestInfo.title
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                className: "float-right text-xs md:text-sm font-normal text-gray-500",
+                children: this.state.requestInfo.amount + ' ' + this.state.requestInfo.unit
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "clearfix"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                className: "text-xs md:text-sm mx-3 py-2",
+                children: this.state.requestInfo.content
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                className: "text-right text-xs text-gray-500 md:text-sm",
+                children: this.state.requestInfo.created_at
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              id: "status",
+              className: "pt-8 pb-3",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                className: "font-bold text-center text-md md:text-lg",
+                style: {
+                  fontFamily: "'Josefin Sans', sans-serif"
+                },
+                children: "Status"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                className: "text-center text-sm md:text-md",
+                children: status
+              })]
+            })]
+          })]
+        });
       }
     }
   }]);

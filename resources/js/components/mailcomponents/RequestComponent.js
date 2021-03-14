@@ -75,13 +75,14 @@ export class RequestComponent extends Component {
           </div>
         )
       } else {
+        var containerHeight = innerHeight - 105;
         return (
-          <div className="mt-10 mx-3 rounded" style={{boxShadow:'#eee 0 0 10px 0'}}>
+          <div className="mt-5" style={{ height:containerHeight, overflow:'auto'}}>
             {
               this.state.requests.map((request, i)=>{
                 return(
                   <div key={i} className="w-11/12 mx-auto">
-                    <div className="pt-8">
+                    <div className='pt-5'>
                       <img src={ constant.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg' } alt={ request.accountInfo[0].avatar } className="rounded-full" style={{width:'90px', height:'90px', float:'left'}}/>
                       <div style={{marginLeft:'105px'}}>
                         <p className="text-lg md:text-xl font-bold">

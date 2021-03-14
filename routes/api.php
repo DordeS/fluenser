@@ -27,6 +27,8 @@ Route::middleware('auth:api')->group(function() {
 
     Route::get('/request', [App\Http\Controllers\MessageController::class, 'requests']);
 
+    Route::get('/requestDetail/{request_id}', [App\Http\Controllers\MessageController::class, 'requestDetaliShow']);
+
     Route::get('/chat/{inbox_id}', [App\Http\Controllers\MessageController::class, 'chat']);
 
     Route::get('/sendMessage/{inbox_id}/{message}', [App\Http\Controllers\MessageController::class, 'receiveMessage']);
