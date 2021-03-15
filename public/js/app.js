@@ -2039,13 +2039,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Mail)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/esm/react-router.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/esm/react-router.js");
 /* harmony import */ var _mailcomponents_InboxComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./mailcomponents/InboxComponent */ "./resources/js/components/mailcomponents/InboxComponent.js");
 /* harmony import */ var _mailcomponents_RequestComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./mailcomponents/RequestComponent */ "./resources/js/components/mailcomponents/RequestComponent.js");
 /* harmony import */ var _mailcomponents_RequestDetailComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./mailcomponents/RequestDetailComponent */ "./resources/js/components/mailcomponents/RequestDetailComponent.js");
 /* harmony import */ var _mailcomponents_ChatComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./mailcomponents/ChatComponent */ "./resources/js/components/mailcomponents/ChatComponent.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./api */ "./resources/js/components/api.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2067,6 +2068,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -2120,68 +2122,96 @@ var Mail = /*#__PURE__*/function (_Component) {
       });
     }
   }, {
-    key: "render",
-    value: function render() {
+    key: "handleChatClick",
+    value: function handleChatClick(user1_id, user2_id) {
       var _this2 = this;
 
+      console.log(user1_id, user2_id);
+      var headers = {
+        'Accept': 'application/json'
+      };
+      var api_token = $("meta[name=api-token]").attr('content');
+      _api__WEBPACK_IMPORTED_MODULE_5__.default.get('checkInbox/' + user1_id + '/' + user2_id + '?api_token=' + api_token, {
+        headers: headers
+      }).then(function (res) {
+        if (res.status == 200) {
+          console.log(res.data.inbox_id);
+
+          _this2.setState({
+            showItem: 'chat',
+            inboxID: res.data.inbox_id
+          });
+        }
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this3 = this;
+
       if (this.state.showItem == 'mail') {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
           className: "w-full mx-auto",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
             className: "w-1/2 grid grid-cols-2 gap-y-1 mx-auto",
             id: "tabMenu",
             style: {
               marginTop: '10px'
             },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
               className: "col-span-1 text-center text-md md:text-lg",
               style: {
                 color: 'rgb(92,180,184)'
               },
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_6__.Link, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Link, {
                 to: "/inbox",
                 className: "active",
                 children: "Inbox"
               })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
               className: "col-span-1 text-center text-md md:text-lg",
               style: {
                 color: 'rgb(92,180,184)'
               },
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_6__.Link, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Link, {
                 to: "/request",
                 children: "Requests"
               })
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_8__.Route, {
             path: "/inbox",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mailcomponents_InboxComponent__WEBPACK_IMPORTED_MODULE_1__.InboxComponent, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_mailcomponents_InboxComponent__WEBPACK_IMPORTED_MODULE_1__.InboxComponent, {
               inboxClickEvent: function inboxClickEvent(inboxID) {
-                return _this2.handleInboxClick(inboxID);
+                return _this3.handleInboxClick(inboxID);
               }
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Route, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_8__.Route, {
             path: "/request",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mailcomponents_RequestComponent__WEBPACK_IMPORTED_MODULE_2__.RequestComponent, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_mailcomponents_RequestComponent__WEBPACK_IMPORTED_MODULE_2__.RequestComponent, {
               requestClickEvent: function requestClickEvent(requestID) {
-                return _this2.handleRequestClick(requestID);
+                return _this3.handleRequestClick(requestID);
               }
             })
           })]
         });
       } else {
         if (this.state.showItem == 'chat') {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mailcomponents_ChatComponent__WEBPACK_IMPORTED_MODULE_4__.ChatComponent, {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_mailcomponents_ChatComponent__WEBPACK_IMPORTED_MODULE_4__.ChatComponent, {
             inboxID: this.state.inboxID,
             back: function back() {
-              return _this2.back();
+              return _this3.back();
             }
           });
         } else {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mailcomponents_RequestDetailComponent__WEBPACK_IMPORTED_MODULE_3__.RequestDetailComponent, {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_mailcomponents_RequestDetailComponent__WEBPACK_IMPORTED_MODULE_3__.RequestDetailComponent, {
             requestID: this.state.requestID,
             back: function back() {
-              return _this2.back();
+              return _this3.back();
+            },
+            onChatClick: function onChatClick(user1_id, user2_id) {
+              return _this3.handleChatClick(user1_id, user2_id);
             }
           });
         }
@@ -3204,7 +3234,12 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
     _this.state = {
       requestInfo: {},
       accountInfo: {},
-      isWaiting: true
+      contactInfo: {},
+      isWaiting: true,
+      btn1: '',
+      btn2: '',
+      btn1_status: true,
+      btn2_status: true
     };
     return _this;
   }
@@ -3224,13 +3259,15 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
       }).then(function (response) {
         if (response.status == 200) {
           console.log('-------------');
-          console.log(response.data.requestInfo);
+          console.log(response.data);
           var requestInfo = response.data.requestInfo;
           var accountInfo = response.data.accountInfo;
+          var contactInfo = response.data.contactInfo;
 
           _this2.setState({
             requestInfo: requestInfo,
             accountInfo: accountInfo,
+            contactInfo: contactInfo,
             isWaiting: false
           });
         }
@@ -3238,6 +3275,57 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
         console.log(error);
       });
       console.log("mounted component message");
+      var btn1, btn2, btn1_status, btn2_status;
+
+      if (this.state.accountInfo.accountType == 'influencer') {
+        btn2 = 'Decline';
+        btn2_status = this.state.requestInfo.status == 3 ? false : true;
+        btn1 = this.state.requestInfo.accepted ? 'Accepted' : 'Accept';
+        btn1_status = this.state.requestInfo.accepted ? false : true;
+        this.setState({
+          btn1: btn1,
+          btn2: btn2,
+          btn1_status: btn1_status,
+          btn2_status: btn2_status
+        });
+      } else {
+        switch (this.state.requestInfo.status) {
+          case 1:
+            btn1 = 'Create Deposit';
+            btn1_status = true;
+            btn2 = 'Release Deposit';
+            btn2_status = true;
+            break;
+
+          case 2:
+            btn1 = 'Deposit made';
+            btn1_status = false;
+            btn2 = 'Release Deposit';
+            btn2_status = true;
+            break;
+
+          case 3:
+            btn1 = 'Deposit made';
+            btn1_status = false;
+            btn2 = 'Deposit released';
+            btn2_status = false;
+
+          default:
+            break;
+        }
+
+        this.setState({
+          btn1: btn1,
+          btn2: btn2,
+          btn1_status: btn1_status,
+          btn2_status: btn2_status
+        });
+      }
+    }
+  }, {
+    key: "onClickBtn",
+    value: function onClickBtn() {
+      console.log('clicked');
     }
   }, {
     key: "render",
@@ -3259,15 +3347,15 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
 
         switch (this.state.requestInfo.status) {
           case 1:
-            status = "Waiting for deposite.";
+            status = "Waiting for Deposit.";
             break;
 
           case 2:
-            status = "Deposite made.";
+            status = "Deposit made.";
             break;
 
           case 3:
-            status = 'Deposite release.';
+            status = 'Deposit release.';
             break;
 
           default:
@@ -3306,7 +3394,7 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
                 lineHeight: '50px'
               },
               children: "Request Detail"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+            }), this.state.accountInfo.accountType == 'influencer' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
               className: "float-right bg-white text-gray-500",
               style: {
                 lineHeight: '30px',
@@ -3315,8 +3403,11 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
                 borderRadius: '3px',
                 boxShadow: '0 0 5px 0 rgb(100,100,100)'
               },
+              onClick: function onClick() {
+                return _this3.props.onChatClick(_this3.state.accountInfo.user_id, _this3.state.contactInfo.user_id);
+              },
               children: "Chat"
-            })]
+            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {})]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
             id: "detailcontainer",
             style: {
@@ -3326,11 +3417,11 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
               className: "w-10/12 md:max-w-xl relative mx-auto mb-16 px-3 mt-5",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/back-image/' + this.state.accountInfo.back_img + '.jpg',
-                alt: this.state.accountInfo.back_img
+                src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/back-image/' + this.state.contactInfo.back_img + '.jpg',
+                alt: this.state.contactInfo.back_img
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + this.state.accountInfo.avatar + '.jpg',
-                alt: this.state.accountInfo.avatar,
+                src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + this.state.contactInfo.avatar + '.jpg',
+                alt: this.state.contactInfo.avatar,
                 style: {
                   width: '30%',
                   position: 'absolute',
@@ -3343,14 +3434,14 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
                 className: "rounded-full"
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-              id: "accountInfo",
+              id: "contactInfo",
               className: "mb-6",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
                 className: "text-lg md:text-xl text-center",
-                children: this.state.accountInfo.name
+                children: this.state.contactInfo.name
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
                 className: "text-md md:text-lg text-center text-gray-500",
-                children: this.state.accountInfo.state + ' ' + this.state.accountInfo.country
+                children: this.state.contactInfo.state + ' ' + this.state.contactInfo.country
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
               id: "requestInfo",
@@ -3386,6 +3477,35 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
                 className: "text-center text-sm md:text-md",
                 children: status
               })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              id: "buttons",
+              className: "pt-5 pb-3",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                className: "w-3/5 mx-auto",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                  href: "#",
+                  className: "float-left px-2 py-2 w-2/5 text-center text-sm md:text-md font-bold rounded text-white",
+                  style: {
+                    background: 'rgb(92, 180, 184)'
+                  },
+                  disabled: !this.state.btn1_status,
+                  onClick: function onClick() {
+                    return _this3.onClickBtn();
+                  },
+                  children: this.state.btn1
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                  href: "#",
+                  className: "float-right px-2 py-2 w-2/5 text-center text-sm md:text-md font-bold rounded text-white",
+                  style: {
+                    background: 'rgb(92, 180, 184)'
+                  },
+                  disabled: !this.state.btn2_status,
+                  onClick: function onClick() {
+                    return _this3.onClickBtn();
+                  },
+                  children: this.state.btn2
+                })]
+              })
             })]
           })]
         });

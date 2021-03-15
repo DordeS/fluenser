@@ -32,4 +32,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/request',[App\Http\Controllers\MessageController::class, 'index'])->name('inbox');
     Route::get('/inbox',[App\Http\Controllers\MessageController::class, 'index'])->name('inbox');
     Route::get('/task',[App\Http\Controllers\TaskController::class, 'index'])->name('task');
+    Route::get('/search',[App\Http\Controllers\TaskController::class, 'search'])->name('search');
+    Route::get('/findInfluencers',[App\Http\Controllers\TaskController::class, 'findInfluencers']);
+    Route::get('/collaborate/{influencer_id}',[App\Http\Controllers\CollaborateContorller::class, 'index'])->name('collaborate');
 });

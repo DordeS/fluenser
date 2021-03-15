@@ -1,19 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- <header class="bg-white shadow">
+<header class="bg-white">
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-bold text-gray-900 text-center">
-        {{ __('My account') }}
-      </h1>
-    </div>
-</header> --}}
-<main>
-    <div class="max-w-md mx-auto py-6 sm:px-6 lg:px-8 mt-10">
-      <!-- Replace with your content -->
       <p class="text-center text-3xl" style="font-family: 'Josefin Sans', sans-serif;">My Account</p>
-        <div class="px-4 sm:px-0 bg-white pt-12">
-            <div class="mt-6">
+    </div>
+  </header>
+  
+    <main class="md:max-w-7xl mx-auto">
+      <div class="max-w-md mx-auto sm:px-6 lg:px-8">
+        <!-- Replace with your content -->
+          <div class="px-4 sm:px-0 bg-white">
+              <div class="mt-6">
                 <div class="w-10/12 mx-auto">
                     <div class="w-full mx-auto relative" style="margin-bottom: 20%;">
                         <img class="w-full mx-auto" src="{{ asset('img/back-image/').'/'.$accountInfo->back_img.'.jpg' }}" alt="$accountInfo->avatar">

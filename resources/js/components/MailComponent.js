@@ -4,6 +4,7 @@ import { InboxComponent } from './mailcomponents/InboxComponent';
 import { RequestComponent } from './mailcomponents/RequestComponent';
 import { RequestDetailComponent } from './mailcomponents/RequestDetailComponent';
 import { ChatComponent } from './mailcomponents/ChatComponent';
+import API from './api';
 
 export default class Mail extends Component {
   constructor() {
@@ -33,6 +34,23 @@ export default class Mail extends Component {
       showItem: "requestDetail",
       requestID: requestID,
     });
+  }
+
+  handleChatClick(user1_id, user2_id) {
+    console.log(user1_id, user2_id);
+    const headers ={
+      'Accept': 'application/json'
+    };
+    var api_token = $("meta[name=api-token]").attr('content');
+    API.get('checkInbox/' + user1_id + '/' + user2_id + '?api_token=' + api_token, {headers:headers}).then((res) => {
+      if(res.status == 200) {
+        console.log(res.data.inbox_id);
+        this.setState({
+          showItem: 'chat',
+          inboxID: res.data.inbox_id,
+        })
+      }
+    }).catch(err => {console.log(err)});
   }
 
   render() {
@@ -73,6 +91,7 @@ export default class Mail extends Component {
           <RequestDetailComponent 
             requestID = {this.state.requestID}
             back = {() => this.back()}
+            onChatClick = {(user1_id, user2_id) => this.handleChatClick(user1_id, user2_id)}
           />
         )
       }

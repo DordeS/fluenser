@@ -67,6 +67,7 @@ class MessageController extends Controller
 
         $requests = new Requests();
         $requestsInfo = $requests->where('receive_id', $user_id)
+                ->orWhere('send_id', $user_id)
                 ->orderBy('updated_at')
                 ->get();
         if(count($requestsInfo) > 0) {
@@ -141,14 +142,25 @@ class MessageController extends Controller
         $send_id = $request->send_id;
 
         $user = new User();
-        $accountInfo = $user->getAccountInfoByUserID($send_id)[0];
+        $contactInfo = $user->getAccountInfoByUserID($send_id)[0];
+        $accountInfo = $user->getAccountInfoByUserID(Auth::user()->id)[0];
 
         $requestInfos = new RequestInfo();
         $requestInfo = $requestInfos->getRequestInfoByID($request_id);
 
         return response()->json([
             'accountInfo' => $accountInfo,
+            'contactInfo' => $contactInfo,
             'requestInfo' => $requestInfo,
+        ]);
+    }
+
+    public function checkInbox($user1_id, $user2_id) {
+        $inboxes = new Inboxes();
+        $inbox = $inboxes->checkInbox($user1_id, $user2_id);
+
+        return response()->json([
+            'inbox_id' => $inbox->id,
         ]);
     }
 }

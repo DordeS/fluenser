@@ -64,6 +64,7 @@ class User extends Authenticatable
         } else {
             $accountInfo[0]->accountType = 'influencer';
         }
+        $accountInfo[0]->user_id = $user_id;
         // echo $accountInfo[0]->accountType;
         return $accountInfo;
     }

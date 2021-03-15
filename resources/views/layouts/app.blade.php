@@ -57,6 +57,12 @@
         #lg_tabMenu a.active {
             color: black;
         }
+        #buttons button:hover {
+            color:lightgrey;
+        }
+        #buttons button:disabled:hover {
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -64,7 +70,7 @@
     <div>
         <nav class="bg-white">
             @if ($page != 2)
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 shadow-lg">
             <div class="flex items-center justify-between h-16">
               <div class="flex items-center mx-auto">
                 <div class="flex-shrink-0">
@@ -159,7 +165,7 @@
                     <i class="fas fa-paperclip"></i>
                 </a>
         
-                <a href="#" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
+                <a href="{{ route('search') }}" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
                     <i class="fas fa-search"></i>
                 </a>
         
@@ -174,6 +180,8 @@
     </div>
     <script>
         $(document).ready(function() {
+            var searchContainerHeight = window.innerHeight - 470;
+            $("#influencers").css('height', searchContainerHeight + 'px');
             var page = {{ $page }};
             var element = $("#mobile-menu a").eq(page - 1);
             console.log(element);

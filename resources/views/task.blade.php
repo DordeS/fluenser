@@ -1,11 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<main>
-  <div class="max-w-md mx-auto py-6 sm:px-6 lg:px-8 mt-10">
-    <!-- Replace with your content -->
+<header class="bg-white">
+  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <p class="text-center text-3xl" style="font-family: 'Josefin Sans', sans-serif;">Tasks</p>
-      <div class="px-4 sm:px-0 bg-white pt-5">
+  </div>
+</header>
+<main>
+  <div class="max-w-md mx-auto sm:px-6 lg:px-8">
+    <!-- Replace with your content -->
+      <div class="px-4 sm:px-0 bg-white">
           <div class="mt-6">
             <div class="w-10/12 mx-auto">
               @foreach ($tasks as $task)
@@ -47,7 +51,18 @@
                         Status
                       </div>
                       <div class="col-span-2">
-                        {{ $task->status }}
+                        @switch($task->status)
+                            @case(1)
+                                Waiting for Deposit
+                                @break
+                            @case(2)
+                                Deposit Made
+                                @break
+                            @case(3)
+                                Deposit Released
+                            @default
+                                
+                        @endswitch
                       </div>
                     </div>
                     <div class="w-full grid grid-cols-3" style="overflow: hidden;height:28px;">

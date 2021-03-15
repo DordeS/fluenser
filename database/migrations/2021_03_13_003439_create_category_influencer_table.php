@@ -14,7 +14,8 @@ class CreateCategoryInfluencerTable extends Migration
     public function up()
     {
         Schema::create('category_influencer', function (Blueprint $table) {
-            $table->id();
+            $table->integer('influencer_id');
+            $table->integer('category_id');
             $table->timestamps();
         });
     }
