@@ -9,6 +9,8 @@ use App\Models\Influencers;
 use App\Models\InfluencerInfo;
 use App\Models\Brands;
 use App\Models\BrandInfo;
+use App\Models\Profile;
+use App\Models\Portfolio;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -96,6 +98,8 @@ class RegisterController extends Controller
                 $influencerInfo = new InfluencerInfo;
                 $influencerInfo->influencer_id = $influencer->id;
                 $influencerInfo->save();
+
+                $profile = new Profile;
             }
             else {
                 $brand = new Brands;

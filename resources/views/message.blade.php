@@ -8,7 +8,7 @@
   </div>
 </header> --}}
 
-  <main class="md:max-w-7xl mx-auto">
+  <main class="md:max-w-7xl mx-auto mt-24">
     <div class="w-full">
       <!-- Replace with your content -->
         <div class="sm:px-0 bg-white">

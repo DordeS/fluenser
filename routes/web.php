@@ -34,5 +34,6 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/task',[App\Http\Controllers\TaskController::class, 'index'])->name('task');
     Route::get('/search',[App\Http\Controllers\TaskController::class, 'search'])->name('search');
     Route::get('/findInfluencers',[App\Http\Controllers\TaskController::class, 'findInfluencers']);
-    Route::get('/collaborate/{influencer_id}',[App\Http\Controllers\CollaborateContorller::class, 'index'])->name('collaborate');
+    Route::get('/collaborate/{user_id}',[App\Http\Controllers\CollaborateController::class, 'index'])->name('collaborate');
+    Route::get('/profile/{user_id}',[App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 });

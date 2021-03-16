@@ -75,49 +75,52 @@ export class RequestComponent extends Component {
           </div>
         )
       } else {
-        var containerHeight = innerHeight - 105;
+        var containerHeight = innerHeight - 214;
         return (
-          <div className="mt-5" style={{ height:containerHeight, overflow:'auto'}}>
-            {
-              this.state.requests.map((request, i)=>{
-                return(
-                  <div key={i} className="w-11/12 mx-auto">
-                    <div className='pt-5'>
-                      <img src={ constant.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg' } alt={ request.accountInfo[0].avatar } className="rounded-full" style={{width:'90px', height:'90px', float:'left'}}/>
-                      <div style={{marginLeft:'105px'}}>
-                        <p className="text-lg md:text-xl font-bold">
-                          { request.accountInfo[0].name }
-                        </p>
+          <div className="pt-2 mt-8 w-11/12 mx-auto rounded" style={{boxShadow:'0 0 3px 3px #eee'}}>
+            <div style={{ height:containerHeight, overflow:'auto'}}>
+              {
+                this.state.requests.map((request, i)=>{
+                  return(
+                    <div key={i} className="w-11/12 mx-auto">
+                      <div className='pt-5'>
+                        <img src={ constant.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg' } alt={ request.accountInfo[0].avatar } className="rounded-full" style={{width:'55px', height:'55px', float:'left'}}/>
+                        <div style={{marginLeft:'70px'}}>
+                          <p className="text-sm md:text-md font-bold">
+                            { request.accountInfo[0].name }
+                          </p>
+                        </div>
+                        <div style={{margin:'0 0 0 70px'}}>
+                          <p className="text-xs md:text-sm text-gray-500 overflow-hidden" style={{height:'17px'}}>
+                            { request.requestContent.content }
+                          </p>
+                        </div>
+                        <div style={{marginLeft:'70px'}}>
+                          <p className="text-xs md:text-sm text-gray-500">
+                            Offer: <span className="text-black font-bold">{request.requestContent.amount + request.requestContent.unit} {}</span>
+                          </p>
+                        </div>
+                        <div className="clearfix"></div>
                       </div>
-                      <div style={{margin:'3px 0 3px 105px'}}>
-                        <p className="text-md md:text-lg text-gray-500 overflow-hidden" style={{height:'25px'}}>
-                          { request.requestContent.content }
-                        </p>
-                      </div>
-                      <div style={{marginLeft:'105px'}}>
-                        <p className="text-md md:text-lg text-gray-500">
-                          Offer: <span className="text-black font-bold">{request.requestContent.amount + request.requestContent.unit} {}</span>
-                        </p>
+                      <div className="w-full mt-3 mb-4">
+                        {
+                          request.requestContent.images.map((image, i) =>(
+                            <div key={i} className="float-left ml-2" style={{ width:'40px', height:'40px' }}>
+                              <img src={constant.baseURL + 'img/task-image/' + image.image + '.jpg'} alt={image.image} className="w-full"/>
+                            </div>
+                          ))
+                        }
                       </div>
                       <div className="clearfix"></div>
+                      <div className="w-full">
+                        <a className="block rounded-md text-center text-white w-full py-2 my-3 font-bold text-xs md:text-sm" onClick={() => this.onRequestClick(request.id)} style={{background:'#119dac'}}> Read More</a>
+                      </div>
+                      <hr className="mt-5"/>
                     </div>
-                    <div className="w-full grid grid-cols-6 gap-x-1 mt-3 mb-4">
-                      {
-                        request.requestContent.images.map((image, i) =>(
-                          <div key={i} className="row-span-1">
-                            <img src={constant.baseURL + 'img/task-image/' + image.image + '.jpg'} alt={image.image} className="w-full"/>
-                          </div>
-                        ))
-                      }
-                    </div>
-                    <div className="w-full">
-                      <a className="block rounded-lg text-center text-white w-full py-2 my-3 font-bold" onClick={() => this.onRequestClick(request.id)} style={{background:'rgb(92,180,184)'}}> Read More</a>
-                    </div>
-                    <hr className="mt-5"/>
-                  </div>
-                );
-              })
-            }
+                  );
+                })
+              }
+            </div>
           </div>
         );
       }

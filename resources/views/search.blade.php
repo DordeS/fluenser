@@ -7,7 +7,7 @@
   </div>
 </header>
 
-  <main class="md:max-w-7xl mx-auto">
+  <main class="md:max-w-7xl mx-auto"  id="influencers" style="overflow: auto">
     <div class="max-w-md mx-auto sm:px-6 lg:px-8">
       <!-- Replace with your content -->
         <div class="px-4 sm:px-0 bg-white">
@@ -52,7 +52,7 @@
           </form>
         </div>
         <hr class="my-4">
-        <div id="influencers" style="overflow: auto">
+        <div>
           <div class="w-10/12 mx-auto">
           @if (count($influencers) == 0)
               <p class="text-center">No matching influencers.</p>
@@ -68,9 +68,13 @@
                   <h3 class="text-center text-xl">{{ $influencer->name }}</h3>
                   <p class="text-center text-sm">{{ $influencer->state.', '.$influencer->country }}</p>
               </div>
-              <div class="w-4/5 mx-auto">
-                <a href="#" class="float-left">Profile</a>
-                <a href={{ route('collaborate', ['influencer_id' => $influencer->influencer_id]) }} class="float-right">Collaborate</a>
+              <div class="w-9/12 mx-auto my-5">
+                <div class="float-left w-1/2">
+                  <a href={{ route('profile', ['user_id' => $influencer->id]) }} class="block w-full py-2 text-center text-white rounded-l-lg" style="background: #119dac"><i class="fas fa-user"></i> Profile</a>
+                </div>
+                <div class="float-right w-1/2">
+                  <a href={{ route('collaborate', ['user_id' => $influencer->id]) }} class="block w-full py-2 text-center text-white bg-yellow-400 rounded-r-lg"><i class="fas fa-comment-alt"></i> Collaborate</a>
+                </div>
               </div>
             @endforeach
           @endif

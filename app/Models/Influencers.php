@@ -36,7 +36,20 @@ class Influencers extends Model
         // if($keyword != '')
         //     $influencers = $influencers->where('users.email', '=')
 
-        $influencers = $influencers->get();
+        $influencers = $influencers->select([
+            'users.id',
+            'users.name',
+            'influencers_info.influencer_id',
+            'influencers_info.country',
+            'influencers_info.state',
+            'influencers_info.follows',
+            'influencers_info.followings',
+            'influencers_info.posts',
+            'influencers_info.avatar',
+            'influencers_info.back_img',
+            'categories.category_name',
+        ])->limit(1)->get();
+
         return $influencers;
     }
 }

@@ -2855,80 +2855,85 @@ var InboxComponent = /*#__PURE__*/function (_Component) {
             })
           });
         } else {
-          var containerHeight = innerHeight - 105;
+          var containerHeight = innerHeight - 215;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-            className: "mt-5",
+            className: "pt-6 mt-8 w-11/12 mx-auto rounded",
             style: {
-              height: containerHeight,
-              overflow: 'auto'
+              boxShadow: '0 0 3px 3px #eee'
             },
-            children: this.state.inboxes.map(function (inbox, i) {
-              var time = new Date(inbox.accountInfo[0].updated_at);
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              style: {
+                height: containerHeight,
+                overflow: 'auto'
+              },
+              children: this.state.inboxes.map(function (inbox, i) {
+                var time = new Date(inbox.accountInfo[0].updated_at);
 
-              if (time.getHours() >= 12) {
-                time = time.getHours() - 12 + ":" + time.getMinutes() + "PM";
-              } else {
-                time = time.getHours() + ":" + time.getMinutes() + " PM";
-              }
+                if (time.getHours() >= 12) {
+                  time = time.getHours() - 12 + ":" + time.getMinutes() + "PM";
+                } else {
+                  time = time.getHours() + ":" + time.getMinutes() + " PM";
+                }
 
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                className: "w-11/12 mx-auto rounded px-2",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
-                  href: "#",
-                  onClick: function onClick() {
-                    return _this3.onInboxClick(inbox.id);
-                  },
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    className: "w-full",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                  className: "w-11/12 mx-auto rounded px-2",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                    href: "#",
+                    onClick: function onClick() {
+                      return _this3.onInboxClick(inbox.id);
+                    },
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                       className: "w-full",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                        src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + inbox.accountInfo[0].avatar + '.jpg',
-                        alt: inbox.accountInfo[0].avatar,
-                        className: "rounded-2xl",
-                        style: {
-                          width: '55px',
-                          height: '55px',
-                          "float": 'left'
-                        }
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                        style: {
-                          marginLeft: '75px',
-                          paddingTop: '3px'
-                        },
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-                          className: "text-md md:text-lg font-medium text-gray-700",
-                          children: inbox.accountInfo[0].name
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-                          className: "text-xs text-gray-400",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                        className: "w-full",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                          src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + inbox.accountInfo[0].avatar + '.jpg',
+                          alt: inbox.accountInfo[0].avatar,
+                          className: "rounded-full",
                           style: {
-                            "float": 'right'
+                            width: '55px',
+                            height: '55px',
+                            "float": 'left'
+                          }
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                          style: {
+                            marginLeft: '75px',
+                            paddingTop: '3px'
                           },
-                          children: time
-                        })]
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        style: {
-                          marginLeft: '75px',
-                          height: '40px',
-                          paddingTop: '3px',
-                          paddingBottom: '10px',
-                          overflow: 'hidden'
-                        },
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                            className: "text-md md:text-lg font-medium text-gray-700",
+                            children: inbox.accountInfo[0].name
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                            className: "text-xs text-gray-400",
+                            style: {
+                              "float": 'right'
+                            },
+                            children: time
+                          })]
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                           style: {
-                            height: '20px',
+                            marginLeft: '75px',
+                            height: '40px',
+                            paddingTop: '3px',
+                            paddingBottom: '10px',
                             overflow: 'hidden'
                           },
-                          className: "text-gray-500 text-md",
-                          children: inbox.inboxContent[0].content
-                        })
-                      })]
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                            style: {
+                              height: '20px',
+                              overflow: 'hidden'
+                            },
+                            className: "text-gray-500 text-md",
+                            children: inbox.inboxContent[0].content
+                          })
+                        })]
+                      })
                     })
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("hr", {
-                  className: "pb-3"
-                })]
-              }, i);
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("hr", {
+                    className: "pb-3"
+                  })]
+                }, i);
+              })
             })
           });
         }
@@ -3081,88 +3086,99 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
             })
           });
         } else {
-          var containerHeight = innerHeight - 105;
+          var containerHeight = innerHeight - 214;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-            className: "mt-5",
+            className: "pt-2 mt-8 w-11/12 mx-auto rounded",
             style: {
-              height: containerHeight,
-              overflow: 'auto'
+              boxShadow: '0 0 3px 3px #eee'
             },
-            children: this.state.requests.map(function (request, i) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                className: "w-11/12 mx-auto",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                  className: "pt-5",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                    src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg',
-                    alt: request.accountInfo[0].avatar,
-                    className: "rounded-full",
-                    style: {
-                      width: '90px',
-                      height: '90px',
-                      "float": 'left'
-                    }
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    style: {
-                      marginLeft: '105px'
-                    },
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                      className: "text-lg md:text-xl font-bold",
-                      children: request.accountInfo[0].name
-                    })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    style: {
-                      margin: '3px 0 3px 105px'
-                    },
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                      className: "text-md md:text-lg text-gray-500 overflow-hidden",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              style: {
+                height: containerHeight,
+                overflow: 'auto'
+              },
+              children: this.state.requests.map(function (request, i) {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                  className: "w-11/12 mx-auto",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                    className: "pt-5",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                      src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg',
+                      alt: request.accountInfo[0].avatar,
+                      className: "rounded-full",
                       style: {
-                        height: '25px'
+                        width: '55px',
+                        height: '55px',
+                        "float": 'left'
+                      }
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                      style: {
+                        marginLeft: '70px'
                       },
-                      children: request.requestContent.content
-                    })
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                        className: "text-sm md:text-md font-bold",
+                        children: request.accountInfo[0].name
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                      style: {
+                        margin: '0 0 0 70px'
+                      },
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                        className: "text-xs md:text-sm text-gray-500 overflow-hidden",
+                        style: {
+                          height: '17px'
+                        },
+                        children: request.requestContent.content
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                      style: {
+                        marginLeft: '70px'
+                      },
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
+                        className: "text-xs md:text-sm text-gray-500",
+                        children: ["Offer: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("span", {
+                          className: "text-black font-bold",
+                          children: [request.requestContent.amount + request.requestContent.unit, " "]
+                        })]
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                      className: "clearfix"
+                    })]
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                    style: {
-                      marginLeft: '105px'
-                    },
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
-                      className: "text-md md:text-lg text-gray-500",
-                      children: ["Offer: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("span", {
-                        className: "text-black font-bold",
-                        children: [request.requestContent.amount + request.requestContent.unit, " "]
-                      })]
+                    className: "w-full mt-3 mb-4",
+                    children: request.requestContent.images.map(function (image, i) {
+                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "float-left ml-2",
+                        style: {
+                          width: '40px',
+                          height: '40px'
+                        },
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                          src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/task-image/' + image.image + '.jpg',
+                          alt: image.image,
+                          className: "w-full"
+                        })
+                      }, i);
                     })
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                     className: "clearfix"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                    className: "w-full",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                      className: "block rounded-md text-center text-white w-full py-2 my-3 font-bold text-xs md:text-sm",
+                      onClick: function onClick() {
+                        return _this3.onRequestClick(request.id);
+                      },
+                      style: {
+                        background: '#119dac'
+                      },
+                      children: " Read More"
+                    })
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("hr", {
+                    className: "mt-5"
                   })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                  className: "w-full grid grid-cols-6 gap-x-1 mt-3 mb-4",
-                  children: request.requestContent.images.map(function (image, i) {
-                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                      className: "row-span-1",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                        src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/task-image/' + image.image + '.jpg',
-                        alt: image.image,
-                        className: "w-full"
-                      })
-                    }, i);
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                  className: "w-full",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
-                    className: "block rounded-lg text-center text-white w-full py-2 my-3 font-bold",
-                    onClick: function onClick() {
-                      return _this3.onRequestClick(request.id);
-                    },
-                    style: {
-                      background: 'rgb(92,180,184)'
-                    },
-                    children: " Read More"
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("hr", {
-                  className: "mt-5"
-                })]
-              }, i);
+                }, i);
+              })
             })
           });
         }
