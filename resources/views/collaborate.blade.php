@@ -6,8 +6,8 @@
   </div>
 </header>
 
-  <main class="md:max-w-7xl mx-auto">
-    <div class="max-w-lg mx-auto sm:px-6 lg:px-8" id="collaborate" style="overflow: auto">
+  <main class="w-full md:max-w-7xl mx-auto">
+    <div class="w-full md:max-w-7xl mx-auto sm:px-6 lg:px-8" id="collaborate" style="overflow: auto">
       <!-- Replace with your content -->
         <div class="px-4 sm:px-0 bg-white w-11/12 mx-auto my-3 md:max-w-lg">
           <img src={{ asset('img/avatar-image/'.$influencerInfo->avatar.'.jpg') }} alt="$influencerInfo->avatar" class="w-4/5 mx-auto rounded-lg">
@@ -23,15 +23,15 @@
               <textarea name="detail" id="detail" class="w-full rounded-lg bg-gray-200 border-none my-5" placeholder="Describe your project" rows='5'></textarea>
               <div class="attach w-full rounded-lg my-5">
                 {{-- file upload --}}
-                <div class="w-full h-xl sm:px-8 md:px-16 sm:py-8">
-                  <main class="container mx-auto max-w-screen-lg h-full">
+                <div class="w-full min-h-xl sm:py-8">
+                  <main class="mx-auto max-w-screen-lg h-full">
                     <!-- file upload modal -->
-                    <article aria-label="File Upload Modal" class="relative h-full flex flex-col bg-white rounded-lg" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);" ondragleave="dragLeaveHandler(event);" ondragenter="dragEnterHandler(event);">
+                    <article aria-label="File Upload Modal" class="relative h-full flex flex-col bg-white rounded-lg">
            
                       <!-- scroll area -->
                       <section class="h-full w-full h-full flex flex-col">
                         <header class="border-dashed border-2 border-gray-200 py-12 flex flex-col justify-center items-center rounded-lg">
-                          <input id="hidden-input" type="file" name="images" multiple class="hidden" />
+                          <input id="hidden-input" type="file" name="image" class="image hidden" />
                           <a id="button" class="mt-2 rounded-sm px-3 py-1 bg-gray-700 hover:bg-gray-500 focus:shadow-outline focus:outline-none rounded-xl text-white">
                             <i class="fas fa-plus-circle"></i>
                             Attach File
@@ -39,18 +39,9 @@
                           <p class="mb-3 font-semibold text-gray-900 flex flex-wrap justify-center underline text-xs md:text-sm text-gray-300">
                             Max size is 20MB.
                           </p>
+                          <ul id="gallery" class="w-11/12 mx-auto">
+                          </ul>
                         </header>
-            
-                        <h1 class="pt-8 pb-3 font-semibold sm:text-lg text-gray-900">
-                          To Upload
-                        </h1>
-            
-                        <ul id="gallery" class="flex flex-1 flex-wrap -m-1">
-                          <li id="empty" class="h-full w-full text-center flex flex-col items-center justify-center items-center">
-                            <img class="mx-auto w-32" src="https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png" alt="no data" />
-                            <span class="text-small text-gray-500">No files selected</span>
-                          </li>
-                        </ul>
                       </section>
             
                       <!-- sticky footer -->
@@ -60,61 +51,6 @@
                   </main>
                 </div>
             
-                <!-- using two similar templates for simplicity in js code -->
-                <template id="file-template">
-                  <li class="block p-1 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 xl:w-1/8 h-24">
-                    <article tabindex="0" class="group w-full h-full rounded-md focus:outline-none focus:shadow-outline elative bg-gray-100 cursor-pointer relative shadow-sm">
-                      <img alt="upload preview" class="img-preview hidden w-full h-full sticky object-cover rounded-md bg-fixed" />
-            
-                      <section class="flex flex-col rounded-md text-xs break-words w-full h-full z-20 absolute top-0 py-2 px-3">
-                        <h1 class="flex-1 group-hover:text-blue-800"></h1>
-                        <div class="flex">
-                          <span class="p-1 text-blue-800">
-                            <i>
-                              <svg class="fill-current w-4 h-4 ml-auto pt-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                <path d="M15 2v5h5v15h-16v-20h11zm1-2h-14v24h20v-18l-6-6z" />
-                              </svg>
-                            </i>
-                          </span>
-                          <p class="p-1 size text-xs text-gray-700"></p>
-                          <button class="delete ml-auto focus:outline-none hover:bg-gray-300 p-1 rounded-md text-gray-800">
-                            <svg class="pointer-events-none fill-current w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                              <path class="pointer-events-none" d="M3 6l3 18h12l3-18h-18zm19-4v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.316c0 .901.73 2 1.631 2h5.711z" />
-                            </svg>
-                          </button>
-                        </div>
-                      </section>
-                    </article>
-                  </li>
-                </template>
-            
-                <template id="image-template">
-                  <li class="block p-1 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 xl:w-1/8 h-24">
-                    <article tabindex="0" class="group hasImage w-full h-full rounded-md focus:outline-none focus:shadow-outline bg-gray-100 cursor-pointer relative text-transparent hover:text-white shadow-sm">
-                      <img alt="upload preview" class="img-preview w-full h-full sticky object-cover rounded-md bg-fixed" />
-            
-                      <section class="flex flex-col rounded-md text-xs break-words w-full h-full z-20 absolute top-0 py-2 px-3">
-                        <h1 class="flex-1"></h1>
-                        <div class="flex">
-                          <span class="p-1">
-                            <i>
-                              <svg class="fill-current w-4 h-4 ml-auto pt-" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                <path d="M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z" />
-                              </svg>
-                            </i>
-                          </span>
-            
-                          <p class="p-1 size text-xs"></p>
-                          <button class="delete ml-auto focus:outline-none hover:bg-gray-300 p-1 rounded-md">
-                            <svg class="pointer-events-none fill-current w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                              <path class="pointer-events-none" d="M3 6l3 18h12l3-18h-18zm19-4v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.316c0 .901.73 2 1.631 2h5.711z" />
-                            </svg>
-                          </button>
-                        </div>
-                      </section>
-                    </article>
-                  </li>
-                </template>
                 <div class="w-full mx-auto my-5">
                   <p class="text-center text-gray-500 text-sm md:text-md mb-5">
                     How will you compensate the influencers?
@@ -155,6 +91,7 @@
                         <option value="usd">USD</option>
                         <option value="eur">EUR</option>
                       </select>
+                      <input type="text" name="files" id="files" hidden>
                     </div>
                   </div>
                 </div>
@@ -167,4 +104,124 @@
         </div>
     </div>
   </main>
+
+  {{-- upload modal --}}
+  <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="img-container">
+              <div class="row">
+                  <div class="col-md-8">
+                      <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
+                  </div>
+                  <div class="col-md-4">
+                      <div class="preview"></div>
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="crop">Crop</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var $modal = $('#modal');
+    var image = document.getElementById('image');
+    var cropper;
+    var filesValue;
+
+    const hidden = document.getElementById("hidden-input");
+        document.getElementById("button").onclick = () => hidden.click();
+        hidden.onchange = (e) => {
+        var files = e.target.files;
+        var done = function (url) {
+          console.log(url);
+          image.src = url;
+          $modal.modal('show');
+        };
+        var reader;
+        var file;
+        var url;
+
+        if (files && files.length > 0) {
+          file = files[0];
+
+          if (URL) {
+            done(URL.createObjectURL(file));
+          } else if (FileReader) {
+            reader = new FileReader();
+            reader.onload = function (e) {
+              done(reader.result);
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+    };
+
+    $modal.on('shown.bs.modal', function () {
+        cropper = new Cropper(image, {
+        aspectRatio: 1,
+        viewMode: 3,
+        preview: '.preview'
+        });
+    }).on('hidden.bs.modal', function () {
+      cropper.destroy();
+      cropper = null;
+    });
+
+
+
+    $("#crop").click(function(){
+        canvas = cropper.getCroppedCanvas({
+          width: 160,
+          height: 160,
+          });
+
+        canvas.toBlob(function(blob) {
+          url = URL.createObjectURL(blob);
+          var reader = new FileReader();
+          reader.readAsDataURL(blob); 
+          reader.onloadend = function() {
+            var base64data = reader.result;
+            var element = '<li class="float-left w-1/2 md:w-1/4 px-2 py-2 relative"><img src="" class="w-full rounded-lg"></li>';
+            var deleteBtn = '<a class="delete absolute bottom-5 right-5 z-10" onclick="$(this).parent().remove()"><i class=" text-gray-100 hover:text-gray-700 far fa-trash-alt"></i></a>'
+            $("ul#gallery").prepend(element);
+            $("ul#gallery li:first-child img").attr('src', base64data);
+            $("ul#gallery li:first-child").append(deleteBtn);
+            $modal.modal('hide');
+                // $.ajax({
+                //     type: "POST",
+                //     dataType: "json",
+                //     url: '/upload',
+                //     data: {'image': base64data},
+                //     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                //     success: function(data){
+                //         var getdata = data.data;
+                //         var public_path = "{{ asset('/') }}";
+                //         var img_path = "img/task-image/"
+                //         img_url = public_path + img_path + data.data;
+                //         console.log(img_url);
+                //         $("#gallery li:first-child img").attr('src', img_url);
+                //         filesValue = $("input#files").val();
+                //         filesValue += data.data;
+                //         $("input#files").val(filesValue);
+                //         console.log(filesValue);
+                //     }
+                //   });
+            }
+        });
+    })
+
+  </script>
+  
 @endsection

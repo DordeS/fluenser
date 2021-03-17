@@ -18,6 +18,7 @@ class CreateReviewsTable extends Migration
             $table->integer('influencer_id');
             $table->integer('brand_id');
             $table->text('review');
+            $table->float('star');
             $table->integer('amount');
             $table->string('unit');
             $table->timestamps();

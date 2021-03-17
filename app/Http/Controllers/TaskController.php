@@ -8,7 +8,9 @@ use App\Models\Requests;
 use App\Models\Influencers;
 use App\Models\User;
 use App\Models\Category;
-use Illuminate\Support\Facades\Request;
+use App\Models\Review;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
@@ -35,32 +37,46 @@ class TaskController extends Controller
     }
 
     public function search(Request $request) {
-        $input = $request::all();
+        $input = $request->all();
+        $rule = [
+            'name' => 'regex:/^[A-Za-z]+$/',
+            'category' => 'regex:/^[a-zA-Z,]+$/',
+        ];
+
+        $message = [
+            'name.regex' => 'You can enter only letters',
+            'category.regex' => 'Errors',
+        ];
+
+        $validator = Validator::make($input, $rule, $message);
+
+        if($validator->fails()) {
+            return redirect('search')
+                ->withErrors($validator)
+                ->withInput($input);
+        }
+
         $category = (isset($input['category'])) ? $input['category'] : 'Category';
-        $country = (isset($input['country'])) ? $input['country'] : 'Location';
         $name = (isset($input['name'])) ? $input['name'] : '';
-        $keyword = (isset($input['keyword'])) ? $input['keyword'] : '';
+
+        // echo $category;
+
+        $categories = explode(',', $category);
 
         $account = new User();
         $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
 
         // Get categories
-        $categories = Category::all();
-
-        // get countries
-        $response = Http::get('https://restcountries.eu/rest/v2/all?fields=name');
-        $countries = $response->body();
-        $countries = json_decode($countries);
+        $allCategories = Category::all();
 
         // search influencers
         $influencers = new Influencers();
-        $foundInfluencers = $influencers->findInfluencers($category, $country, $name, $keyword);
-        
+        $foundInfluencers = $influencers->findInfluencers($categories, $name);
+
         return view('search', [
             'page' => 4,
             'accountInfo' => $accountInfo[0],
-            'categories' => $categories,
-            'countries' => $countries,
+            'categories' => $allCategories,
             'influencers' => $foundInfluencers,
         ]);
     }

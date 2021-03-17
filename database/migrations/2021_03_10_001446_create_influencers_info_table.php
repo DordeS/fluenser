@@ -27,6 +27,8 @@ class CreateInfluencersInfoTable extends Migration
             $table->integer('bf_rate')->default(0);
             $table->integer('tm_rate')->default(0);
             $table->integer('m_rate')->default(0);
+            $table->integer('reviews')->default(0);
+            $table->float('rating')->default(0);
             $table->timestamps();
         });
     }

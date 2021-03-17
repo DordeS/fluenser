@@ -36,4 +36,5 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/findInfluencers',[App\Http\Controllers\TaskController::class, 'findInfluencers']);
     Route::get('/collaborate/{user_id}',[App\Http\Controllers\CollaborateController::class, 'index'])->name('collaborate');
     Route::get('/profile/{user_id}',[App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
+    Route::post('/upload',[App\Http\Controllers\CollaborateController::class, 'upload'])->name('imageUpload');
 });

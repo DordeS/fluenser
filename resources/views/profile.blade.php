@@ -8,7 +8,7 @@
           <div class="relative overflow-hidden">
             <img src={{ asset('img/profile-image/'.$profile->top_img.'.jpg') }} alt={{ $profile->top_img }} class="w-full">
             <img src="{{ asset('img/gradient.png') }}" alt="gradient" style="position: absolute; bottom:-50%;" class="w-full">
-            <div class="w-10/12 mx-auto absolute px-2 pb-2 bottom-5 bg-white h-36 md:h-40" style="left: 50%; margin-left: -41%; bottom:30px">
+            <div class="w-10/12 absolute px-2 pb-2 bottom-5 bg-white h-36 md:h-40" style="left: 50%; margin-left: -41%; bottom:30px">
               <div class="relative ml-2 h-8">
                 <div class="absolute" style="width: 33%;bottom:0;">
                   <img src={{ asset('img/profile-image/'.$profile->round_img.'.jpg') }} alt={{ $profile->round_img }} class="rounded-full" style="border:3px solid white">
@@ -90,8 +90,8 @@
                 </div>
               @endfor
               <div>
-                <div class="w-11/12 mx-auto bg-gray-300 h-20 rounded-xl absolute" style="left: 50%; margin-left: -46%; bottom:-1rem; z-index:2"></div>
-                <div class="w-10/12 mx-auto bg-gray-200 h-20 rounded-xl absolute" style="left: 50%;margin-left: -42%; bottom:-2rem; z-index:1"></div>
+                <div class="w-11/12 bg-gray-300 h-20 rounded-xl absolute" style="left: 50%; margin-left: -46%; bottom:-1rem; z-index:2"></div>
+                <div class="w-10/12 bg-gray-200 h-20 rounded-xl absolute" style="left: 50%;margin-left: -42%; bottom:-2rem; z-index:1"></div>
               </div>
             </div>
           </div>

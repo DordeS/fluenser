@@ -18,17 +18,26 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- pusher scripts-->
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha256-WqU1JavFxSAMcLP2WIOI+GB2zWmShMI82mTpLDcqFUg=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css" integrity="sha256-jKV9n9bkk/CTP8zbtEtnKaKf+ehRovOYeKoyfthwbC8=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js" integrity="sha256-CgvH7sz3tHhkiVKh05kSUgG97YtzYNnWt6OXcmYzqHY=" crossorigin="anonymous"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/css/all.css') }}">
     <style>
+        a:hover {
+            text-decoration: none;
+        }
         .invalid-feedback {
             color: red;
         }
@@ -86,6 +95,38 @@
         .group:hover .group-hover\:text-blue-800 {
         color: #2b6cb0;
         }    
+
+        img#image {
+        display: block;
+        max-width: 100%;
+        }
+        .preview {
+        overflow: hidden;
+        width: 160px; 
+        height: 160px;
+        margin: 10px;
+        border: 1px solid red;
+        }
+        .modal-lg{
+        max-width: 1000px !important;
+        }
+        #searchCategory input:checked {
+            background-image: url({{ asset('img/check.png') }});
+        }
+        #searchCategory label {
+            font-family:'Poppins', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #bbf3f1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2bc5b5;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body onresize="resize()">
@@ -233,123 +274,12 @@
                 $("#tabMenu a.active").removeClass('active');
                 $(this).addClass('active');
             });
-        });
-        const fileTempl = document.getElementById("file-template"),
-        imageTempl = document.getElementById("image-template"),
-        empty = document.getElementById("empty");
-
-        // use to store pre selected files
-        let FILES = {};
-
-        // check if file is of type image and prepend the initialied
-        // template to the target element
-        function addFile(target, file) {
-        const isImage = file.type.match("image.*"),
-            objectURL = URL.createObjectURL(file);
-
-        const clone = isImage
-            ? imageTempl.content.cloneNode(true)
-            : fileTempl.content.cloneNode(true);
-
-        clone.querySelector("h1").textContent = file.name;
-        clone.querySelector("li").id = objectURL;
-        clone.querySelector(".delete").dataset.target = objectURL;
-        clone.querySelector(".size").textContent =
-            file.size > 1024
-            ? file.size > 1048576
-                ? Math.round(file.size / 1048576) + "mb"
-                : Math.round(file.size / 1024) + "kb"
-            : file.size + "b";
-
-        isImage &&
-            Object.assign(clone.querySelector("img"), {
-            src: objectURL,
-            alt: file.name
+            $("#gallery .delete").click(function() {
+                console.log('ok');
+                $(this).parent().remove();
             });
 
-        empty.classList.add("hidden");
-        target.prepend(clone);
-
-        FILES[objectURL] = file;
-        }
-
-        const gallery = document.getElementById("gallery"),
-        overlay = document.getElementById("overlay");
-
-        // click the hidden input of type file if the visible button is clicked
-        // and capture the selected files
-        const hidden = document.getElementById("hidden-input");
-        document.getElementById("button").onclick = () => hidden.click();
-        hidden.onchange = (e) => {
-        for (const file of e.target.files) {
-            addFile(gallery, file);
-        }
-        };
-
-        // use to check if a file is being dragged
-        const hasFiles = ({ dataTransfer: { types = [] } }) =>
-        types.indexOf("Files") > -1;
-
-        // use to drag dragenter and dragleave events.
-        // this is to know if the outermost parent is dragged over
-        // without issues due to drag events on its children
-        let counter = 0;
-
-        // reset counter and append file to gallery when file is dropped
-        function dropHandler(ev) {
-        ev.preventDefault();
-        for (const file of ev.dataTransfer.files) {
-            addFile(gallery, file);
-            overlay.classList.remove("draggedover");
-            counter = 0;
-        }
-        }
-
-        // only react to actual files being dragged
-        function dragEnterHandler(e) {
-        e.preventDefault();
-        if (!hasFiles(e)) {
-            return;
-        }
-        ++counter && overlay.classList.add("draggedover");
-        }
-
-        function dragLeaveHandler(e) {
-        1 > --counter && overlay.classList.remove("draggedover");
-        }
-
-        function dragOverHandler(e) {
-        if (hasFiles(e)) {
-            e.preventDefault();
-        }
-        }
-
-        // event delegation to caputre delete events
-        // fron the waste buckets in the file preview cards
-        gallery.onclick = ({ target }) => {
-        if (target.classList.contains("delete")) {
-            const ou = target.dataset.target;
-            document.getElementById(ou).remove(ou);
-            gallery.children.length === 1 && empty.classList.remove("hidden");
-            delete FILES[ou];
-        }
-        };
-
-        // print all selected files
-        document.getElementById("submit").onclick = () => {
-        alert(`Submitted Files:\n${JSON.stringify(FILES)}`);
-        console.log(FILES);
-        };
-
-        // clear entire selection
-        document.getElementById("cancel").onclick = () => {
-        while (gallery.children.length > 0) {
-            gallery.lastChild.remove();
-        }
-        FILES = {};
-        empty.classList.remove("hidden");
-        gallery.append(empty);
-        };
+        });
     </script>
 </body>
 </html>

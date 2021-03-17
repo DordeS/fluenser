@@ -14,7 +14,7 @@
                 <div class="w-10/12 mx-auto">
                     <div class="w-full mx-auto relative" style="margin-bottom: 20%;">
                         <img class="w-full mx-auto" src="{{ asset('img/back-image/').'/'.$accountInfo->back_img.'.jpg' }}" alt="$accountInfo->avatar" id="avatar_back_img">
-                        <div class="w-3/12 mx-auto absolute" style="bottom: -23%;left:50%;margin-left:-12.5%;">
+                        <div class="w-3/12 absolute" style="bottom: -23%;left:50%;margin-left:-12.5%;">
                             <img class="rounded-full w-full" src="{{ asset('img/avatar-image/').'/'.$accountInfo->avatar.'.jpg' }}" alt="$accountInfo->avatar" style="border:solid 8px white;box-shadow: 0 2px 1px 1px lightgrey">
                         </div>
                     </div>
