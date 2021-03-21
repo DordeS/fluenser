@@ -29,12 +29,14 @@ Route::get('message', function() {
 
 Route::middleware(['auth'])->group(function() {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');    
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard');
     Route::get('/request',[App\Http\Controllers\MessageController::class, 'index'])->name('inbox');
     Route::get('/inbox',[App\Http\Controllers\MessageController::class, 'index'])->name('inbox');
     Route::get('/task',[App\Http\Controllers\TaskController::class, 'index'])->name('task');
     Route::get('/search',[App\Http\Controllers\TaskController::class, 'search'])->name('search');
     Route::get('/findInfluencers',[App\Http\Controllers\TaskController::class, 'findInfluencers']);
     Route::get('/collaborate/{user_id}',[App\Http\Controllers\CollaborateController::class, 'index'])->name('collaborate');
-    Route::get('/profile/{user_id}',[App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
+    Route::get('/{username}',[App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
     Route::post('/upload',[App\Http\Controllers\CollaborateController::class, 'upload'])->name('imageUpload');
+    Route::get('/saveRequest',[App\Http\Controllers\CollaborateController::class, 'saveRequest'])->name('saveRequest');
 });

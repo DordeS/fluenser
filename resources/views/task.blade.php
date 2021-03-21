@@ -53,7 +53,7 @@
                       <div class="col-span-2">
                         @switch($task->status)
                             @case(1)
-                                Waiting for Deposit
+                                Awaiting for Deposit
                                 @break
                             @case(2)
                                 Deposit Made
@@ -75,6 +75,13 @@
                     </div>
                     <hr class="mt-3 mb-8">
                   </div>
+                  @if ($accountInfo->accountType == 'brand')
+                  <button id="action_btn" class="float-right">
+                    @if ($task->status == 1)
+                        Deposit funds
+                    @endif
+                  </button>
+                  @endif
               @endforeach
             </div>
           </div>

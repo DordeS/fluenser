@@ -17,7 +17,9 @@ class ProfileController extends Controller
         $this->middleware('auth');
     }
 
-    public function index($user_id) {
+    public function index($username) {
+        $userInfo = User::where('username', '=', $username)->get();
+        $user_id = $userInfo[0]->id;
         $user = new User();
         $influencerInfo = $user->getAccountInfoByUserID($user_id);
         

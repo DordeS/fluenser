@@ -59,8 +59,6 @@ class TaskController extends Controller
         $category = (isset($input['category'])) ? $input['category'] : 'Category';
         $name = (isset($input['name'])) ? $input['name'] : '';
 
-        // echo $category;
-
         $categories = explode(',', $category);
 
         $account = new User();
@@ -68,6 +66,10 @@ class TaskController extends Controller
 
         // Get categories
         $allCategories = Category::all();
+
+        // Get countries
+        $response = Http::get('https://restcountries.eu/rest/v2/all?fields=name');
+        $countries = json_decode($response->body());
 
         // search influencers
         $influencers = new Influencers();
@@ -77,6 +79,7 @@ class TaskController extends Controller
             'page' => 4,
             'accountInfo' => $accountInfo[0],
             'categories' => $allCategories,
+            'countries' => $countries,
             'influencers' => $foundInfluencers,
         ]);
     }

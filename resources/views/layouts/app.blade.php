@@ -15,11 +15,16 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- pusher scripts-->
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha256-WqU1JavFxSAMcLP2WIOI+GB2zWmShMI82mTpLDcqFUg=" crossorigin="anonymous"></script>
+    
+    <!-- bootstarp -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- croper js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css" integrity="sha256-jKV9n9bkk/CTP8zbtEtnKaKf+ehRovOYeKoyfthwbC8=" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js" integrity="sha256-CgvH7sz3tHhkiVKh05kSUgG97YtzYNnWt6OXcmYzqHY=" crossorigin="anonymous"></script>
 
@@ -37,6 +42,10 @@
     <style>
         a:hover {
             text-decoration: none;
+            cursor: pointer;
+        }
+        input[type='checkbox']:focus {
+            border: none;
         }
         .invalid-feedback {
             color: red;
@@ -127,74 +136,19 @@
             background: #2bc5b5;
             border-radius: 4px;
         }
+        a.payMethod.active div.payMethod {
+            background: #2bc5b5 !important;
+            border: none;
+        }
+        a.payMethod.active div.payMethod p {
+            color: white;
+        }
     </style>
 </head>
 <body onresize="resize()">
 
     <div>
-        <nav class="shadow-xl">
-            <div class="bg-white w-full px-4 lg:px-8 fixed top-0 shadow-xl py-3 z-50">
-              <div class="w-full mx-auto md:max-w-7xl">
-                <div class="float-right">
-                    <div class="ml-4 flex items-center md:ml-6">
-                        @guest
-                            {{-- @if (Route::has('login'))
-                                <a href="{{ route('login') }}" class="text-gray-500 hover:text-indigo-700 px-3 py-2 rounded-md text-sm font-medium">{{ __('Login') }}</a>
-                            @endif
-                            
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="text-gray-500 hover:text-indigo-700 px-3 py-2 rounded-md text-sm font-medium">{{ __('Register') }}</a>
-                            @endif --}}
-                        @else
-                            <button class="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                            <span class="sr-only">View notifications</span>
-                            <!-- Heroicon name: outline/bell -->
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
-                            </button>
-                
-                            <!-- Profile dropdown -->
-                            <div class="ml-3 relative">
-                              <div>
-                                  <button type="button" class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" id="user-menu" aria-expanded="false" aria-haspopup="true">
-                                  <span class="sr-only">Open user menu</span>
-                                  @if (isset($accountInfo->avatar))
-                                      <img class="h-8 w-8 rounded-full" src="{{ asset('img/avatar-image').'/'.$accountInfo->avatar.'.jpg' }}" alt="{{ asset('img/avatar-img').'/'.$accountInfo->avatar }}">
-                                  @else
-                                      <img class="h-8 w-8 rounded-full" src="{{ asset('img/avatar-image/johndoeavatar.jpg') }}" alt="John Doe Avatar">
-                                      @endif
-                                  </button>
-                              </div>
-                
-    
-                              <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu" id="user-menu-content" style="display: none;">
-                                  <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
-                  
-                                  <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
-                  
-                                  <a class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="{{ route('logout') }}"
-                                  onclick="event.preventDefault();
-                                              document.getElementById('logout-form').submit();" role="menuitem">
-                                  {{ __('Logout') }}
-                                  </a>
-    
-                                  <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                      @csrf
-                                  </form>
-                              </div>
-                            </div>
-                            @endguest                    
-                    </div>
-                </div>
-                <div class="w-full">
-                  <a href="{{route('welcome')}}" class="block w-32 mx-auto">
-                    <img class="w-full" src="{{ asset('img/logo1.png') }}" alt="site_logo">
-                  </a>
-                </div>
-              </div>
-            </div>
-      
+        <nav class="shadow-xl">      
           <!-- Mobile menu, show/hide based on menu state. -->
           @guest
           @else
@@ -202,23 +156,23 @@
               <div class="bg-white w-full md:max-w-7xl mx-auto object-center" id="mobile-menu">
                   <div class="px-1 py-1 grid grid-cols-5 sm:px-3 w-full border-t-xl" style="border-top: 1px solid lightgrey; border-radius:15px 15px 0 0;">
                   <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                  <a href="{{ route('home') }}" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
+                  <a href="{{ route('home') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
                       <i class="fas fa-home"></i>
                   </a>
           
-                  <a href="{{ route('inbox') }}" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
-                      <i class="far fa-comment-alt"></i>
+                  <a href="{{ route('inbox') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
+                      <i class="far fa-envelope"></i>
                   </a>
           
-                  <a href="{{ route('task') }}" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
+                  <a href="{{ route('task') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
                       <i class="fas fa-paperclip"></i>
                   </a>
           
-                  <a href="{{ route('search') }}" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
+                  <a href="{{ route('search') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
                       <i class="fas fa-search"></i>
                   </a>
           
-                  <a href="#" class="text-gray-400 hover:text-black block mx-5 py-2 text-center">
+                  <a href="{{ route('dashboard') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
                       <i class="far fa-user"></i>
                   </a>
                   </div>
@@ -278,6 +232,10 @@
                 console.log('ok');
                 $(this).parent().remove();
             });
+            $("a.payMethod").click(function() {
+                $("a.payMethod.active").removeClass('active');
+                $(this).addClass('active');
+            })
 
         });
     </script>

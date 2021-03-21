@@ -50,11 +50,14 @@ class Influencers extends Model
             ->where('category_influencer.influencer_id', '=', $influencer->influencer_id)
             ->join('categories', 'category_influencer.category_id', '=', 'categories.id');
             if($categories[0] != 'Category') {
-                foreach ($categories as $category) {
-                    $foundCategories = $foundCategories->where('categories.category_name','=', $category);
-                }
                 $foundCategories = $foundCategories->get();
-                if(count($foundCategories) != 0) {
+                $containCount = 0;
+                foreach ($foundCategories as $foundCategory) {
+                    foreach ($categories as $category) {
+                        if($category == $foundCategory->category_name) $containCount ++;
+                    }
+                }
+                if($containCount == count($categories)) {
                     $influencer->category = $foundCategories;
                     $foundInfluencers[$count] = $influencer;
                     $count ++;
@@ -66,8 +69,8 @@ class Influencers extends Model
             }
         }
 
-        // echo $foundInfluencers;
-
+        if($name == '' && $categories[0] == 'Category')
+            $foundInfluencers = [];
         return $foundInfluencers;
     }
 }

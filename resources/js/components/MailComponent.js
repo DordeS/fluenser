@@ -57,7 +57,7 @@ export default class Mail extends Component {
     if (this.state.showItem == 'mail') {
       return (
         <div className="w-full mx-auto">
-          <div className="w-1/2 grid grid-cols-2 gap-y-1 mx-auto" id="tabMenu" style={{marginTop:'10px'}}>
+          <div className="w-1/2 grid grid-cols-2 gap-y-1 mx-auto mt-5" id="tabMenu">
             <div className="col-span-1 text-center text-md md:text-lg" style={{color: 'rgb(92,180,184)'}}>
               <Link to="/inbox" className="active">Inbox</Link>
             </div>

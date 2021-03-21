@@ -18,12 +18,12 @@
             {{ $influencerInfo->country." ".$influencerInfo->state }}
           </p>
           <div class="w-full mt-10">
-            <form action="" method="get">
-              <input type="text" name="title" id="title" class="w-full rounded-lg bg-gray-200 border-none my-5" placeholder="Project Title">
-              <textarea name="detail" id="detail" class="w-full rounded-lg bg-gray-200 border-none my-5" placeholder="Describe your project" rows='5'></textarea>
-              <div class="attach w-full rounded-lg my-5">
+            <form action={{ route('saveRequest') }} method="get">
+              <input type="text" name="title" id="title" class="w-full rounded-lg bg-gray-200 border-none my-2" placeholder="Project Title">
+              <textarea name="detail" id="detail" class="w-full rounded-lg bg-gray-200 border-none my-2" placeholder="Describe your project" rows='5'></textarea>
+              <div class="attach w-full rounded-lg my-2">
                 {{-- file upload --}}
-                <div class="w-full min-h-xl sm:py-8">
+                <div class="w-full min-h-lg sm:py-8">
                   <main class="mx-auto max-w-screen-lg h-full">
                     <!-- file upload modal -->
                     <article aria-label="File Upload Modal" class="relative h-full flex flex-col bg-white rounded-lg">
@@ -45,8 +45,6 @@
                       </section>
             
                       <!-- sticky footer -->
-                      <footer class="flex justify-end px-8 pb-8 pt-4">
-                      </footer>
                     </article>
                   </main>
                 </div>
@@ -55,24 +53,30 @@
                   <p class="text-center text-gray-500 text-sm md:text-md mb-5">
                     How will you compensate the influencers?
                   </p>
-                  <div class="float-left active" style="width: 90px; height: 90px; border-radius:50%; background:white; border: 1px solid lightgray; padding:15px">
-                    <p class="text-3xl text-gray-500 text-center" style="line-height: 35px"><i class="fas fa-dollar-sign"></i></p>
-                    <p class="text-center text-sm text-gray-500" style="line-height: 25px">
-                      Money
-                    </p>
-                  </div>
-                  <div class="float-right mx-auto" style="width: 90px; height: 90px; border-radius:50%; background:white; border: 1px solid lightgray; padding:15px">
-                    <p class="text-3xl text-white text-center text-gray-500" style="line-height: 35px"><i class="fas fa-shopping-bag"></i></p>
-                    <p class="text-center text-sm  text-gray-500" style="line-height: 25px">
-                      Both
-                    </p>
-                  </div>
-                  <div class="mx-auto" style="width: 90px; height: 90px; border-radius:50%; background:white; border: 1px solid lightgray; padding:15px">
-                    <p class="text-3xl text-white text-center text-gray-500" style="line-height: 35px"><i class="fas fa-shopping-bag"></i></p>
-                    <p class="text-center text-sm  text-gray-500" style="line-height: 25px">
-                      Product
-                    </p>
-                  </div>
+                  <a href="#" class="payMethod active">
+                    <div class="payMethod float-left" style="width: 90px; height: 90px; border-radius:50%; background:white; border: 1px solid lightgray; padding:15px">
+                      <p class="text-3xl text-gray-500 text-center" style="line-height: 35px"><i class="fas fa-dollar-sign"></i></p>
+                      <p class="text-center text-sm text-gray-500" style="line-height: 25px">
+                        Money
+                      </p>
+                    </div>
+                  </a>
+                  <a href="#" class="payMethod">
+                    <div class="payMethod float-right mx-auto" style="width: 90px; height: 90px; border-radius:50%; background:white; border: 1px solid lightgray; padding:15px">
+                      <p class="text-3xl text-gray-500 text-center text-gray-500" style="line-height: 35px"><i class="fas fa-shopping-bag"></i></p>
+                      <p class="text-center text-sm  text-gray-500" style="line-height: 25px">
+                        Both
+                      </p>
+                    </div>
+                  </a>
+                  <a href="#" class="payMethod">
+                    <div class="payMethod mx-auto" style="width: 90px; height: 90px; border-radius:50%; background:white; border: 1px solid lightgray; padding:15px">
+                      <p class="text-3xl text-gray-500 text-center text-gray-500" style="line-height: 35px"><i class="fas fa-shopping-bag"></i></p>
+                      <p class="text-center text-sm  text-gray-500" style="line-height: 25px">
+                        Product
+                      </p>
+                    </div>
+                  </a>
                   <div class="clearfix"></div>
                 </div>
                 <div class="w-full">
@@ -86,7 +90,7 @@
                     <input type="text" name="price" id="price" class="block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00" style="height: 38px">
                     <div class="absolute inset-y-0 right-0 flex items-center">
                       <label for="currency" class="sr-only">Currency</label>
-                      <select id="currency" name="currency" class="h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md bg-gray-300" style="height: 34px; margin-right:2px;">
+                      <select id="currency" name="currency" class="h-full py-0 pl-2 pr-7 border-transparent text-black sm:text-sm rounded-md bg-gray-300" style="height: 34px; margin-right:2px;">
                         <option value="gbp">GBP</option>
                         <option value="usd">USD</option>
                         <option value="eur">EUR</option>
@@ -96,7 +100,7 @@
                   </div>
                 </div>
                 <div class="w-5/12 mx-auto mt-3 mb-5">
-                  <button type="submit" class="w-full py-1 text-white rounded-md text-sm md:text-md" style="background: #119dac">Send</button>
+                  <button type="submit" class="w-full py-2 text-white rounded-md text-sm md:text-md font-bold" style="background: #2bc5b5">Send</button>
                 </div>
               </div>
             </form>

@@ -2,7 +2,7 @@
 
 @section('content')
 <header class="bg-white">
-    <div class="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8 mt-20">
+    <div class="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8 mt-5">
       <p class="text-center text-3xl" style="font-family: 'Josefin Sans', sans-serif;">My Account</p>
     </div>
   </header>
@@ -15,7 +15,7 @@
                     <div class="w-full mx-auto relative" style="margin-bottom: 20%;">
                         <img class="w-full mx-auto" src="{{ asset('img/back-image/').'/'.$accountInfo->back_img.'.jpg' }}" alt="$accountInfo->avatar" id="avatar_back_img">
                         <div class="w-3/12 absolute" style="bottom: -23%;left:50%;margin-left:-12.5%;">
-                            <img class="rounded-full w-full" src="{{ asset('img/avatar-image/').'/'.$accountInfo->avatar.'.jpg' }}" alt="$accountInfo->avatar" style="border:solid 8px white;box-shadow: 0 2px 1px 1px lightgrey">
+                            <img class="rounded-full w-full" src="{{ asset('img/avatar-image/').'/'.$accountInfo->avatar.'.jpg' }}" alt="$accountInfo->avatar" style="border:solid 3px white;box-shadow: 0 2px 1px 1px lightgrey">
                         </div>
                     </div>
                     <div class="mt-6 text-gray-500">

@@ -41,4 +41,19 @@ class HomeController extends Controller
             'page' => $page,
         ]);
     }
+
+    public function dashboard()
+    {
+        $page = 5;
+        $account = new User();
+        $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
+
+        // echo $accountInfo;
+
+        return view('dashboard', [
+            'accountType' => $accountInfo[0]->accountType,
+            'accountInfo' => $accountInfo[0],
+            'page' => $page,
+        ]);
+    }
 }

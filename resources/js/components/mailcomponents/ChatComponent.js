@@ -23,7 +23,6 @@ export class ChatComponent extends Component {
   sendMessage(e) {
     e.preventDefault();
     var message = this.message.value;
-    message = message.replace(' ', '__');
     console.log(message);
     API.get('sendMessage/' + this.state.chats[0].inbox_id + '/' + message + '?api_token=' + this.state.api_token, {
       headers : {
@@ -130,10 +129,11 @@ export class ChatComponent extends Component {
           </div>
         )
       } else {
-        var containerHeight = innerHeight - 165;
-        var messengerWidth = innerWidth - 110;
+        var containerHeight = innerHeight - 180;
+        console.log($('main').css('width'));
+        var messengerWidth = $('main').css('width').slice(0, -2) - 110;
         return (
-          <div className="w-full text-center pb-20">
+          <div className="w-full text-center">
             <div className="w-full" style={{background:'rgb(88,183,189)', borderRadius:'0 0 10px 10px', height:'70px'}}>
               <div style={{float:'left', marginLeft:'15px'}}>
                 <a className="text-center text-gray-300" onClick={()=> this.props.back()} style={{lineHeight:'70px'}}>
@@ -164,7 +164,6 @@ export class ChatComponent extends Component {
                     var day = datetime.getDate();
                     datetime = time + ', ' + month + ' ' + day;
                     var isUser = (chat.send_id == this.state.userID) ? true : false;
-                    console.log(innerWidth, innerHeight);
                     return(
                       <div key={i} className="w-full mx-auto rounded px-2 mt-5">
                           {isUser
@@ -205,7 +204,7 @@ export class ChatComponent extends Component {
                 }
               </div>
             </div>
-            <div className="w-full fixed" style={{bottom:'55px'}}>
+            <div className="w-full md:max-w-7xl fixed" style={{bottom:'55px'}}>
               <div className="w-full px-2 mx-auto" style={{height:'40px'}}>
                 <div className="float-right">
                   <a onClick={this.sendMessage} style={{fontSize:'20px', lineHeight:'40px', color:'rgb(88,183,189)'}}>

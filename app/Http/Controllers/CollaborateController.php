@@ -69,9 +69,7 @@ class CollaborateController extends Controller
         if($validator->fails()) {
             return redirect('collaborate')
                     ->withErrors($validator)
-                    ->withInput();
+                    ->withInput($input);
         }
-
-
     }
 }
