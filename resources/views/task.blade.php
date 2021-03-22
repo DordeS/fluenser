@@ -76,7 +76,7 @@
                     <hr class="mt-3 mb-8">
                   </div>
                   @if ($accountInfo->accountType == 'brand')
-                  <button id="action_btn" class="float-right">
+                  <button id="action_btn" class="float-right px-2 py-1 rounded text-white" style="background: #119dab">
                     @if ($task->status == 1)
                         Deposit funds
                     @endif

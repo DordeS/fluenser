@@ -33,7 +33,7 @@ class MessageController extends Controller
         $inboxes = new Inboxes();
         $inboxesInfo = $inboxes->where('user1_id', $user_id)
                 ->orWhere('user2_id', $user_id)
-                ->orderBy('updated_at')
+                ->orderBy('updated_at', 'desc')
                 ->get();
         if(count($inboxesInfo) > 0) {
             $i = 0;
@@ -46,7 +46,7 @@ class MessageController extends Controller
                 }
 
                 $inboxContent = InboxInfo::where('inbox_id', $inboxInfo->id)
-                            ->orderBy('created_at')
+                            ->orderBy('created_at', 'desc')
                             ->limit(1)
                             ->get();
                 $inboxesInfo[$i]->inboxContent = $inboxContent;
@@ -64,11 +64,13 @@ class MessageController extends Controller
 
     public function requests() {
         $user_id = Auth::user()->id;
+        $account = new User();
+        $influencerInfo = $account->getAccountInfoByUserID($user_id);
 
         $requests = new Requests();
         $requestsInfo = $requests->where('receive_id', $user_id)
                 ->orWhere('send_id', $user_id)
-                ->orderBy('updated_at')
+                ->orderBy('updated_at', 'desc')
                 ->get();
         if(count($requestsInfo) > 0) {
             $i = 0;

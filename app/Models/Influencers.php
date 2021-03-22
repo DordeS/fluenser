@@ -16,7 +16,7 @@ class Influencers extends Model
         'user_id',
     ];
 
-    public function findInfluencers($categories, $name) {
+    public function findInfluencers($category, $location, $name, $keyword) {
         $influencers = DB::table('users')
                 ->join('influencers', 'influencers.user_id', '=', 'users.id')
                 ->join('influencers_info', 'influencers.id', '=', 'influencers_info.influencer_id');
@@ -25,6 +25,10 @@ class Influencers extends Model
             $influencers = $influencers
                     ->where('users.name', 'LIKE', '%'.$name.'%')
                     ->orWhere('users.username', 'LIKE', '%'.$name.'%');
+
+        if($location != 'Any')
+            $influencers = $influencers
+                    ->where('influencers_info.country', '=', $location);
         
         $influencers = $influencers->select([
             'users.id',
@@ -41,7 +45,7 @@ class Influencers extends Model
             'influencers_info.reviews',
             'influencers_info.rating',
         ])->get();
-        
+
         $foundInfluencers = [];
         $count = 0;
         for ($i=0; $i < count($influencers); $i++) {
@@ -49,15 +53,13 @@ class Influencers extends Model
             $foundCategories = DB::table('category_influencer')
             ->where('category_influencer.influencer_id', '=', $influencer->influencer_id)
             ->join('categories', 'category_influencer.category_id', '=', 'categories.id');
-            if($categories[0] != 'Category') {
+            if($category != 'Any') {
                 $foundCategories = $foundCategories->get();
                 $containCount = 0;
                 foreach ($foundCategories as $foundCategory) {
-                    foreach ($categories as $category) {
-                        if($category == $foundCategory->category_name) $containCount ++;
-                    }
+                    if($category == $foundCategory->category_name) $containCount ++;
                 }
-                if($containCount == count($categories)) {
+                if($containCount == 1) {
                     $influencer->category = $foundCategories;
                     $foundInfluencers[$count] = $influencer;
                     $count ++;
@@ -69,7 +71,7 @@ class Influencers extends Model
             }
         }
 
-        if($name == '' && $categories[0] == 'Category')
+        if($name == '' && $category == 'Any' && $location == 'Any' && $keyword == '')
             $foundInfluencers = [];
         return $foundInfluencers;
     }

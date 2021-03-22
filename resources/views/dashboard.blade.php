@@ -91,6 +91,12 @@
                     </div>
                 </div>
             </div>
+            <div>
+                <form action="{{ route('logout') }}" id="logout-form" method="post">
+                    {{ csrf_field() }}
+                    <button type="submit">{{ __('Logout') }}</button>
+                </form>
+            </div>
         </div>
     </main>
 @endsection

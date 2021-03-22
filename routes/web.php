@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Auth::routes();
 
 Route::get('/', function () {
     return view('welcome');
 });
-Auth::routes();
 
 Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index'])->name('welcome');
 
@@ -36,7 +36,6 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/search',[App\Http\Controllers\TaskController::class, 'search'])->name('search');
     Route::get('/findInfluencers',[App\Http\Controllers\TaskController::class, 'findInfluencers']);
     Route::get('/collaborate/{user_id}',[App\Http\Controllers\CollaborateController::class, 'index'])->name('collaborate');
+    Route::post('/request/save',[App\Http\Controllers\CollaborateController::class, 'saveRequest'])->name('saveRequest');
     Route::get('/{username}',[App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
-    Route::post('/upload',[App\Http\Controllers\CollaborateController::class, 'upload'])->name('imageUpload');
-    Route::get('/saveRequest',[App\Http\Controllers\CollaborateController::class, 'saveRequest'])->name('saveRequest');
 });

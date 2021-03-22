@@ -10,32 +10,34 @@
               @csrf
 
               <select name="category" id="category" class="w-full border-none rounded-md my-2" style="box-shadow: 0 0 3px 0 #999999">
-                <option value="Category"><label class="text-xs md:text-sm"  for="category">Category</label></option>
+                <option value="Any"><label class="text-xs md:text-sm"  for="category">Any</label></option>
                 @foreach ($categories as $category)
+                  @if ($category->category_name == $selectedCategory)
+                    <option value={{ $category->category_name }} selected> <label class="text-xs md:text-sm" for='category'>{{ $category->category_name }}</label> </option>
+                  @else
                     <option value={{ $category->category_name }}> <label class="text-xs md:text-sm" for='category'>{{ $category->category_name }}</label> </option>
+                  @endif
                 @endforeach
               </select>
 
               <select name="country" id="country" class="w-full border-none rounded-md my-2" style="box-shadow: 0 0 3px 0 #999999">
-                <option value="Location"><label class="text-xs md:text-sm" for="location">Location</label></option>
+                <option value="Any"><label class="text-xs md:text-sm" for="location">Any</label></option>
                 @foreach ($countries as $country)
-                    <option value={{ $country->name }}> <label class="text-xs md:text-sm" for='location'>{{ $country->name }}</label> </option>
+                  @if ($country->Name == $selectedLocation)
+                    <option value={{ $country->Name }} selected> <label class="text-xs md:text-sm" for='location'>{{ $country->Name }}</label> </option>
+                  @else
+                    <option value={{ $country->Name }}> <label class="text-xs md:text-sm" for='location'>{{ $country->Name }}</label> </option>
+                  @endif
                 @endforeach
               </select>
 
-                <input type="text" name="name" id="name" class="block w-full mx-auto rounded text-gray-700 font-semibold my-2 h-10 @error('name') is-invalid @enderror" placeholder="Search influencer by name or username" value={{old('name')}}>
-                @error('name')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-                @enderror
-                <input name="keyword" id="keyword" class="block w-full mx-auto rounded text-gray-700 font-semibold h-10 px-4 py-2 text-sm md:text-lg" placeholder="Search influencer by category"  value = {{old('category')}}>
-                <div class="w-full rounded-lg mt-8 py-3" style="box-shadow: 0 0 3px 3px #eee; display:none;" id="category_select_menu">
-                  <div class="w-7/12 mx-auto">
-                    <button type="submit" class="w-full mx-auto rounded-lg py-2 text-white mt-1" style="background: linear-gradient(to right, #06ebbe, #1277d3)" id="category_search_btn">Search</button>
-                  </div>
-                </div>
+                <input type="text" name="name" id="name" style="border: 1px solid lightgray" class="block w-full mx-auto rounded text-gray-700 font-semibold my-2 h-10 shadow-inner @error('name') is-invalid @enderror" placeholder="Name" value={{$selectedName}} >
+
+                <input type="text" name="keyword" id="keyword" style="border: 1px solid lightgray" class="block w-full mx-auto rounded text-gray-700 font-semibold my-2 h-10 shadow-inner" placeholder="keyword"  value = {{$selectedKeyword}}>
+
+                <button type="submit" class="block w-1/3 mx-auto rounded-lg py-2 text-white mt-4 bg-yellow-400"  id="category_search_btn">Search</button>
             </form>
+            <hr class="my-6">
           </div>
         </div>
         <div>

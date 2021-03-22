@@ -18,7 +18,8 @@
             {{ $influencerInfo->country." ".$influencerInfo->state }}
           </p>
           <div class="w-full mt-10">
-            <form action={{ route('saveRequest') }} method="get">
+            <form action={{ route('saveRequest') }} method="post" id="requestForm">
+              {{ csrf_field() }}
               <input type="text" name="title" id="title" class="w-full rounded-lg bg-gray-200 border-none my-2" placeholder="Project Title">
               <textarea name="detail" id="detail" class="w-full rounded-lg bg-gray-200 border-none my-2" placeholder="Describe your project" rows='5'></textarea>
               <div class="attach w-full rounded-lg my-2">
@@ -99,10 +100,11 @@
                     </div>
                   </div>
                 </div>
-                <div class="w-5/12 mx-auto mt-3 mb-5">
-                  <button type="submit" class="w-full py-2 text-white rounded-md text-sm md:text-md font-bold" style="background: #2bc5b5">Send</button>
-                </div>
               </div>
+              <input type="text" name="brand_id" id="brand_id" value="{{ $accountInfo->id }}" hidden>
+              <input type="text" name="influencer_id" id="influencer_id" value="{{ $influencerInfo->id }}" hidden>
+              <textarea name="images" id="images" cols="30" rows="10"></textarea>
+              <button id="sendRequest" type="submit" class="w-full py-2 text-white rounded-md text-sm md:text-md font-bold" style="background: #2bc5b5">Send</button>
             </form>
           </div>
         </div>
@@ -203,29 +205,23 @@
             $("ul#gallery li:first-child img").attr('src', base64data);
             $("ul#gallery li:first-child").append(deleteBtn);
             $modal.modal('hide');
-                // $.ajax({
-                //     type: "POST",
-                //     dataType: "json",
-                //     url: '/upload',
-                //     data: {'image': base64data},
-                //     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                //     success: function(data){
-                //         var getdata = data.data;
-                //         var public_path = "{{ asset('/') }}";
-                //         var img_path = "img/task-image/"
-                //         img_url = public_path + img_path + data.data;
-                //         console.log(img_url);
-                //         $("#gallery li:first-child img").attr('src', img_url);
-                //         filesValue = $("input#files").val();
-                //         filesValue += data.data;
-                //         $("input#files").val(filesValue);
-                //         console.log(filesValue);
-                //     }
-                //   });
             }
         });
-    })
+    });
+
+    $('button#sendRequest').click(function() {
+      var imageData = $("ul#gallery img");
+      var images = [];
+      console.log(imageData);
+      if(imageData.length > 0) {
+        for (let i = 0; i < imageData.length; i++) {
+          const image = imageData[i];
+          images.push(image.src);
+        }
+      }
+      $("textarea#images").val(JSON.stringify(images));
+    });
 
   </script>
-  
+
 @endsection

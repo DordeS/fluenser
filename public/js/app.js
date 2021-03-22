@@ -2531,13 +2531,13 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
                 className: "float-right bg-white rounded-xl",
                 style: {
                   marginRight: '15px',
-                  height: '50px',
+                  height: '35px',
                   marginTop: '10px',
                   boxShadow: '0 0 8px 0 #999'
                 },
                 children: [" ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
                   style: {
-                    lineHeight: '50px'
+                    lineHeight: '35px'
                   },
                   className: "px-3 text-sm text-gray-500",
                   children: ["Release ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
@@ -2546,12 +2546,13 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
                   })]
                 })]
               })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
               style: {
                 height: containerHeight + 'px',
                 overflow: 'auto'
               },
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              className: "bg-gray-100 pb-32",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                 id: "chatcontainer",
                 children: this.state.chats.map(function (chat, i) {
                   var datetime = new Date(chat.created_at);
@@ -2570,13 +2571,13 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
                     className: "w-full mx-auto rounded px-2 mt-5",
                     children: isUser ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "rounded-2xl",
                         style: {
-                          background: 'rgb(88,183,189)',
-                          "float": 'right'
+                          border: '1px solid #999',
+                          "float": 'right',
+                          marginLeft: '30px'
                         },
                         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                          className: "text-sm px-4 py-4 text-white",
+                          className: "text-sm px-4 py-2 text-gray-700",
                           children: chat.content
                         })
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
@@ -2592,30 +2593,13 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
                       })]
                     }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "bg-white",
                         style: {
-                          marginLeft: '65px'
-                        },
-                        className: "text-left text-xs text-gray-500 mb-2",
-                        children: _this3.state.contactInfo.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        style: {
-                          width: '55px',
-                          height: '55px',
-                          "float": 'left'
-                        },
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                          src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + _this3.state.contactInfo.avatar + '.jpg',
-                          alt: _this3.state.contactInfo.avatar,
-                          className: "rounded-xl"
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "rounded-2xl",
-                        style: {
-                          background: 'rgb(239,242,247)',
-                          "float": 'left'
+                          "float": 'left',
+                          marginRight: '30px'
                         },
                         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                          className: "text-sm px-4 py-4 text-gray-500",
+                          className: "text-sm px-4 py-2 text-gray-700",
                           children: chat.content
                         })
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
@@ -2633,7 +2617,7 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
                     })
                   }, i);
                 })
-              })
+              }), {}]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
               className: "w-full md:max-w-7xl fixed",
               style: {
@@ -3080,6 +3064,7 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this);
     _this.state = {
+      user_id: 0,
       requests: [],
       showRequests: [],
       isWaiting: true
@@ -3132,12 +3117,13 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
 
         if (response.status == 200) {
           console.log('-------------');
-          console.log(response.data.data);
+          console.log(response.data);
           requests = response.data.data;
 
           _this2.setState({
             requests: requests,
-            showRequests: requests
+            showRequests: requests,
+            user_id: response.data.user_id
           });
         }
       })["catch"](function (error) {
@@ -3153,13 +3139,21 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
       var this1 = this;
       var channel = pusher.subscribe('fluenser-channel');
       channel.bind('fluenser-event', function (data) {
-        var requests = this1.state.requests;
-        requests.push(data.data);
-        console.log(requests);
-        this1.setState({
-          requests: requests,
-          showRequests: requests
-        });
+        console.log('pusher_data');
+
+        if (data.trigger == 'request') {
+          console.log(data.influencer_id);
+
+          if (data.influencer_id == this1.state.user_id) {
+            console.log(data.request);
+            var requests = this1.state.requests;
+            requests.unshift(data.request);
+            console.log(requests);
+            this1.setState({
+              requests: requests
+            });
+          }
+        }
       });
     }
   }, {
@@ -3295,7 +3289,7 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
                           className: "text-xs md:text-sm text-gray-500",
                           children: ["Offer: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("span", {
                             className: "text-black font-bold",
-                            children: [request.requestContent.amount + request.requestContent.unit, " "]
+                            children: [request.requestContent.amount + ' ' + request.requestContent.unit.toUpperCase(), " "]
                           })]
                         })
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
@@ -3409,11 +3403,7 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
       requestInfo: {},
       accountInfo: {},
       contactInfo: {},
-      isWaiting: true,
-      btn1: '',
-      btn2: '',
-      btn1_status: true,
-      btn2_status: true
+      isWaiting: true
     };
     return _this;
   }
@@ -3449,52 +3439,6 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
         console.log(error);
       });
       console.log("mounted component message");
-      var btn1, btn2, btn1_status, btn2_status;
-
-      if (this.state.accountInfo.accountType == 'influencer') {
-        btn2 = 'Decline';
-        btn2_status = this.state.requestInfo.status == 3 ? false : true;
-        btn1 = this.state.requestInfo.accepted ? 'Accepted' : 'Accept';
-        btn1_status = this.state.requestInfo.accepted ? false : true;
-        this.setState({
-          btn1: btn1,
-          btn2: btn2,
-          btn1_status: btn1_status,
-          btn2_status: btn2_status
-        });
-      } else {
-        switch (this.state.requestInfo.status) {
-          case 1:
-            btn1 = 'Create Deposit';
-            btn1_status = true;
-            btn2 = 'Release Deposit';
-            btn2_status = true;
-            break;
-
-          case 2:
-            btn1 = 'Deposit made';
-            btn1_status = false;
-            btn2 = 'Release Deposit';
-            btn2_status = true;
-            break;
-
-          case 3:
-            btn1 = 'Deposit made';
-            btn1_status = false;
-            btn2 = 'Deposit released';
-            btn2_status = false;
-
-          default:
-            break;
-        }
-
-        this.setState({
-          btn1: btn1,
-          btn2: btn2,
-          btn1_status: btn1_status,
-          btn2_status: btn2_status
-        });
-      }
     }
   }, {
     key: "onClickBtn",
@@ -3517,31 +3461,10 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
         });
       } else {
         var containerHeight = innerHeight - 123;
-        var status;
-
-        switch (this.state.requestInfo.status) {
-          case 1:
-            status = "Waiting for Deposit.";
-            break;
-
-          case 2:
-            status = "Deposit made.";
-            break;
-
-          case 3:
-            status = 'Deposit release.';
-            break;
-
-          default:
-            break;
-        }
-
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-            className: "w-full",
+            className: "w-full bg-white",
             style: {
-              background: 'rgb(92, 180, 184)',
-              borderRadius: '0 0 10px 10px',
               height: '70px',
               paddingTop: '10px'
             },
@@ -3551,7 +3474,7 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
                 marginLeft: '15px'
               },
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
-                className: "text-center text-gray-300",
+                className: "text-center text-gray-500",
                 onClick: function onClick() {
                   return _this3.props.back();
                 },
@@ -3562,125 +3485,53 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
                   className: "fas fa-chevron-left"
                 })
               })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-              className: "text-lg md:text-xl text-center text-white font-bold ml-5",
-              style: {
-                lineHeight: '50px'
-              },
-              children: "Request Detail"
-            }), this.state.accountInfo.accountType == 'influencer' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
-              className: "float-right bg-white text-gray-500",
-              style: {
-                lineHeight: '30px',
-                padding: '5px',
-                margin: "5px 15px 5px",
-                borderRadius: '3px',
-                boxShadow: '0 0 5px 0 rgb(100,100,100)'
-              },
-              onClick: function onClick() {
-                return _this3.props.onChatClick(_this3.state.accountInfo.user_id, _this3.state.contactInfo.user_id);
-              },
-              children: "Chat"
-            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {})]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-            id: "detailcontainer",
-            style: {
-              height: containerHeight,
-              overflow: 'auto'
-            },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-              className: "w-10/12 md:max-w-xl relative mx-auto mb-16 px-3 mt-5",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/back-image/' + this.state.contactInfo.back_img + '.jpg',
-                alt: this.state.contactInfo.back_img
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              className: "float-left ml-4",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
                 src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + this.state.contactInfo.avatar + '.jpg',
                 alt: this.state.contactInfo.avatar,
+                className: "rounded-full",
                 style: {
-                  width: '30%',
-                  position: 'absolute',
-                  left: '50%',
-                  marginLeft: '-15%',
-                  bottom: '-25%',
-                  border: '3px solid white',
-                  boxShadow: '0 0 8px 0 #999'
-                },
-                className: "rounded-full"
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-              id: "contactInfo",
-              className: "mb-6",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                className: "text-lg md:text-xl text-center",
-                children: this.state.contactInfo.name
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                className: "text-md md:text-lg text-center text-gray-500",
-                children: this.state.contactInfo.state + ' ' + this.state.contactInfo.country
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-              id: "requestInfo",
-              className: "px-5 md:px-10",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                className: "text-lg text-center md:text-xl font-bold py-2",
-                style: {
-                  fontFamily: "'Josefin Sans', sans-serif"
-                },
-                children: this.state.requestInfo.title
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-                className: "float-right text-xs md:text-sm font-normal text-gray-500",
-                children: this.state.requestInfo.amount + ' ' + this.state.requestInfo.unit
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                className: "clearfix"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                className: "text-xs md:text-sm mx-3 py-2",
-                children: this.state.requestInfo.content
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                className: "text-right text-xs text-gray-500 md:text-sm",
-                children: this.state.requestInfo.created_at
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-              id: "status",
-              className: "pt-8 pb-3",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                className: "font-bold text-center text-md md:text-lg",
-                style: {
-                  fontFamily: "'Josefin Sans', sans-serif"
-                },
-                children: "Status"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                className: "text-center text-sm md:text-md",
-                children: status
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-              id: "buttons",
-              className: "pt-5 pb-3",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                className: "w-3/5 mx-auto",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
-                  href: "#",
-                  className: "float-left px-2 py-2 w-2/5 text-center text-sm md:text-md font-bold rounded text-white",
-                  style: {
-                    background: 'rgb(92, 180, 184)'
-                  },
-                  disabled: !this.state.btn1_status,
-                  onClick: function onClick() {
-                    return _this3.onClickBtn();
-                  },
-                  children: this.state.btn1
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
-                  href: "#",
-                  className: "float-right px-2 py-2 w-2/5 text-center text-sm md:text-md font-bold rounded text-white",
-                  style: {
-                    background: 'rgb(92, 180, 184)'
-                  },
-                  disabled: !this.state.btn2_status,
-                  onClick: function onClick() {
-                    return _this3.onClickBtn();
-                  },
-                  children: this.state.btn2
-                })]
+                  width: '50px',
+                  height: '50px'
+                }
               })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
+              className: "float-left text-lg md:text-xl text-center text-gray-500 font-bold ml-4",
+              children: [this.state.contactInfo.name, " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                className: "text-sm md:text-md font-normal",
+                children: "Last seen 5 min ago"
+              })]
             })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            id: "requestChatContainer",
+            className: "bg-gray-100 pt-5",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              id: "requestdetail",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "w-10/12 mx-auto bg-white py-1 py-2",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-center text-gray-700",
+                  children: this.state.requestInfo.content
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                id: "reqeustImages",
+                children: this.state.requestInfo.images.map(function (key, requestInfo) {
+                  /*#__PURE__*/
+                  (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                      className: "float-left",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                        src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/task-image/' + requestInfo + '/jpg',
+                        alt: ""
+                      })
+                    }, key), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                      className: "clearfix"
+                    })]
+                  }, key);
+                })
+              })]
+            })
           })]
         });
       }

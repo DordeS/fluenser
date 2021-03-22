@@ -148,9 +148,9 @@ export class ChatComponent extends Component {
                   {this.state.contactName}
                 </p>
               </div>
-              <button className="float-right bg-white rounded-xl" style={{marginRight:'15px', height:'50px', marginTop:'10px', boxShadow:'0 0 8px 0 #999'}}> <p style={{lineHeight:'50px'}} className="px-3 text-sm text-gray-500">Release <span className="font-bold">45.00GBP</span></p></button>
+              <button className="float-right bg-white rounded-xl" style={{marginRight:'15px', height:'35px', marginTop:'10px', boxShadow:'0 0 8px 0 #999'}}> <p style={{lineHeight:'35px'}} className="px-3 text-sm text-gray-500">Release <span className="font-bold">45.00GBP</span></p></button>
             </div>
-            <div style={{height:containerHeight+'px', overflow:'auto'}}>
+            <div style={{height:containerHeight+'px', overflow:'auto'}} className="bg-gray-100 pb-32">
               <div id="chatcontainer">
                 {
                   this.state.chats.map((chat, i)=>{
@@ -168,8 +168,8 @@ export class ChatComponent extends Component {
                       <div key={i} className="w-full mx-auto rounded px-2 mt-5">
                           {isUser
                             ? <div>
-                                <div className="rounded-2xl" style={{background:'rgb(88,183,189)', float:'right'}}>
-                                  <p className="text-sm px-4 py-4 text-white">
+                                <div style={{border:'1px solid #999', float:'right', marginLeft:'30px'}}>
+                                  <p className="text-sm px-4 py-2 text-gray-700">
                                     {chat.content}
                                   </p>
                                 </div>
@@ -180,14 +180,8 @@ export class ChatComponent extends Component {
                                 <div className="clearfix"></div>
                               </div>
                             : <div>
-                                <div style={{marginLeft:'65px'}} className="text-left text-xs text-gray-500 mb-2">
-                                  {this.state.contactInfo.name}
-                                </div>
-                                <div style={{width:'55px', height:'55px', float:'left'}}>
-                                  <img src={constant.baseURL + 'img/avatar-image/' + this.state.contactInfo.avatar + '.jpg'} alt={this.state.contactInfo.avatar} className="rounded-xl"/>
-                                </div>
-                                <div className="rounded-2xl" style={{background:'rgb(239,242,247)', float:'left'}}>
-                                  <p className="text-sm px-4 py-4 text-gray-500">
+                                <div className="bg-white" style={{ float:'left', marginRight:'30px'}}>
+                                  <p className="text-sm px-4 py-2 text-gray-700">
                                     {chat.content}
                                   </p>
                                 </div>
@@ -203,6 +197,7 @@ export class ChatComponent extends Component {
                   })
                 }
               </div>
+              {{}}
             </div>
             <div className="w-full md:max-w-7xl fixed" style={{bottom:'55px'}}>
               <div className="w-full px-2 mx-auto" style={{height:'40px'}}>

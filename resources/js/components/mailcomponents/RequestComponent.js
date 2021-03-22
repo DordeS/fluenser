@@ -7,6 +7,7 @@ export class RequestComponent extends Component {
   constructor() {
     super();
     this.state = {
+      user_id: 0,
       requests:[],
       showRequests:[],
       isWaiting: true,
@@ -48,9 +49,9 @@ export class RequestComponent extends Component {
       this.setState({ isWaiting: false });
       if(response.status == 200) {
         console.log('-------------');
-        console.log(response.data.data);
+        console.log(response.data);
         requests = response.data.data;
-        this.setState({requests, showRequests:requests});
+        this.setState({requests, showRequests:requests, user_id:response.data.user_id});
       }
     }).catch(error => {
       console.log(error);
@@ -67,13 +68,17 @@ export class RequestComponent extends Component {
     const this1 = this
     var channel = pusher.subscribe('fluenser-channel');
     channel.bind('fluenser-event', function(data) {
-      const requests = this1.state.requests;
-      requests.push(data.data);
-      console.log(requests);
-      this1.setState({
-        requests:requests,
-        showRequests: requests,
-      });
+      console.log('pusher_data');
+      if(data.trigger == 'request') {
+        console.log(data.influencer_id);
+        if(data.influencer_id == this1.state.user_id) {
+          console.log(data.request);
+          var requests = this1.state.requests;
+          requests.unshift(data.request);
+          console.log(requests);
+          this1.setState({requests});
+        }
+      }
     });
   }
   
@@ -135,7 +140,7 @@ export class RequestComponent extends Component {
                           </div>
                           <div style={{marginLeft:'70px'}}>
                             <p className="text-xs md:text-sm text-gray-500">
-                              Offer: <span className="text-black font-bold">{request.requestContent.amount + request.requestContent.unit} {}</span>
+                              Offer: <span className="text-black font-bold">{request.requestContent.amount + ' ' + request.requestContent.unit.toUpperCase()} {}</span>
                             </p>
                           </div>
                           <div className="clearfix"></div>

@@ -9,6 +9,7 @@ use App\Models\Influencers;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Review;
+use App\Models\Countries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -38,15 +39,9 @@ class TaskController extends Controller
 
     public function search(Request $request) {
         $input = $request->all();
-        $rule = [
-            'name' => 'regex:/^[A-Za-z]+$/',
-            'category' => 'regex:/^[a-zA-Z,]+$/',
-        ];
+        $rule = [];
 
-        $message = [
-            'name.regex' => 'You can enter only letters',
-            'category.regex' => 'Errors',
-        ];
+        $message = [];
 
         $validator = Validator::make($input, $rule, $message);
 
@@ -56,10 +51,10 @@ class TaskController extends Controller
                 ->withInput($input);
         }
 
-        $category = (isset($input['category'])) ? $input['category'] : 'Category';
+        $category = (isset($input['category'])) ? $input['category'] : 'Any';
+        $location = (isset($input['country'])) ? $input['country'] : 'Any';
         $name = (isset($input['name'])) ? $input['name'] : '';
-
-        $categories = explode(',', $category);
+        $keyword = (isset($input['keyword'])) ? $input['keyword'] : '';
 
         $account = new User();
         $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
@@ -68,14 +63,18 @@ class TaskController extends Controller
         $allCategories = Category::all();
 
         // Get countries
-        $response = Http::get('https://restcountries.eu/rest/v2/all?fields=name');
-        $countries = json_decode($response->body());
+        $countries = Countries::all();
 
         // search influencers
+
         $influencers = new Influencers();
-        $foundInfluencers = $influencers->findInfluencers($categories, $name);
+        $foundInfluencers = $influencers->findInfluencers($category, $location, $name, $keyword);
 
         return view('search', [
+            'selectedCategory' => $category,
+            'selectedLocation' => $location,
+            'selectedName' => $name,
+            'selectedKeyword' => $keyword,
             'page' => 4,
             'accountInfo' => $accountInfo[0],
             'categories' => $allCategories,

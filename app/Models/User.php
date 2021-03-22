@@ -47,14 +47,14 @@ class User extends Authenticatable
                     ->where('users.id', $user_id)
                     ->join('influencers', 'users.id', '=', 'influencers.user_id')
                     ->join('influencers_info', 'influencers.id','=','influencers_info.influencer_id')
-                    ->select('users.name', 'users.email', 'users.username', 'influencers_info.*')
+                    ->select('influencers_info.*', 'users.id' ,'users.name', 'users.email', 'users.username',)
                     ->get();
         if(count($accountInfo) == 0){
             $accountInfo = DB::table('users')
                     ->where('users.id', $user_id)
                     ->join('brands', 'users.id', '=', 'brands.user_id')
                     ->join('brand_info', 'brands.id','=','brand_info.brand_id')
-                    ->select('users.name', 'users.email', 'brand_info.*')
+                    ->select('brand_info.*', 'users.id', 'users.name', 'users.email', 'users.username')
                     ->get();
             if(count($accountInfo) ==0){
                 return "none";
