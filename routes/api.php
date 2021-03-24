@@ -34,4 +34,11 @@ Route::middleware('auth:api')->group(function() {
     Route::get('/sendMessage/{inbox_id}/{message}', [App\Http\Controllers\MessageController::class, 'receiveMessage']);
 
     Route::get('/checkInbox/{user1_id}/{user2_id}', [App\Http\Controllers\MessageController::class, 'checkInbox']);
+
+    Route::get('/updateRequest/{request_id}/{price}/{unit}', [App\Http\Controllers\MessageController::class, 'updateRequest']);
+
+    Route::get('/saveRequestChat/{request_id}/{send_id}/{receive_id}/{message}', [App\Http\Controllers\MessageController::class, 'saveRequestChat']);
+    
+    Route::get('/acceptRequest/{request_id}', [App\Http\Controllers\MessageController::class, 'acceptRequest']);
+    Route::get('/declineRequest/{request_id}', [App\Http\Controllers\MessageController::class, 'declineRequest']);
 });

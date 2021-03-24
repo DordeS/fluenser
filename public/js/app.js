@@ -2404,13 +2404,15 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
         console.log('qwer');
         console.log(data);
 
-        if (_this2.state.userID == data.send_id && _this2.state.contactID == data.receive_id || _this2.state.userID == data.receive_id && _this2.state.contactID == data.send_id) {
-          var chats = this1.state.chats;
-          chats.push(data);
-          console.log(chats);
-          this1.setState({
-            chats: chats
-          });
+        if (data.trigger == 'chat') {
+          if (_this2.state.userID == data.inboxInfo.send_id && _this2.state.contactID == data.inboxInfo.receive_id || _this2.state.userID == data.inboxInfo.receive_id && _this2.state.contactID == data.inboxInfo.send_id) {
+            var chats = this1.state.chats;
+            chats.push(data.inboxInfo);
+            console.log(chats);
+            this1.setState({
+              chats: chats
+            });
+          }
         }
       });
     }
@@ -2887,7 +2889,7 @@ var InboxComponent = /*#__PURE__*/function (_Component) {
             })]
           });
         } else {
-          var containerHeight = innerHeight - 225;
+          var containerHeight = innerHeight - 255;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
               id: "inboxSearch",
@@ -3209,7 +3211,7 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
             })]
           });
         } else {
-          var containerHeight = innerHeight - 214;
+          var containerHeight = innerHeight - 255;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
               id: "requestSearch",
@@ -3403,8 +3405,13 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
       requestInfo: {},
       accountInfo: {},
       contactInfo: {},
+      requestChats: {},
       isWaiting: true
     };
+    _this.updateOffer = _this.updateOffer.bind(_assertThisInitialized(_this));
+    _this.sendMessage = _this.sendMessage.bind(_assertThisInitialized(_this));
+    _this.onAccept = _this.onAccept.bind(_assertThisInitialized(_this));
+    _this.onDecline = _this.onDecline.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -3427,28 +3434,156 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
           var requestInfo = response.data.requestInfo;
           var accountInfo = response.data.accountInfo;
           var contactInfo = response.data.contactInfo;
+          var requestChats = response.data.requestChats;
 
           _this2.setState({
             requestInfo: requestInfo,
             accountInfo: accountInfo,
             contactInfo: contactInfo,
+            requestChats: requestChats,
             isWaiting: false
           });
         }
       })["catch"](function (error) {
         console.log(error);
       });
-      console.log("mounted component message");
+      console.log('component mounted!');
+      Pusher.logToConsole = true;
+      var pusher = new Pusher('da7cd3b12e18c9e2e461', {
+        cluster: 'eu'
+      });
+      var this1 = this;
+      var channel = pusher.subscribe('fluenser-channel');
+      channel.bind('fluenser-event', function (data) {
+        console.log('qwer');
+        console.log(data);
+
+        if (data.trigger == 'requestChat' && data.requestChat.request_id == _this2.state.requestInfo.id) {
+          var requestChats = _this2.state.requestChats;
+          requestChats.push(data.requestChat);
+
+          _this2.setState({
+            requestChats: requestChats
+          });
+        }
+      });
     }
   }, {
-    key: "onClickBtn",
-    value: function onClickBtn() {
-      console.log('clicked');
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      var element = document.getElementById('requestChatContainer');
+      console.log("+++++++");
+      console.log(element);
+
+      if (element != null) {
+        element.scrollIntoView(false);
+      }
+    }
+  }, {
+    key: "sendMessage",
+    value: function sendMessage(e) {
+      e.preventDefault();
+      var message = this.message.value;
+      console.log(message);
+
+      if (message != '') {
+        var headers = {
+          'Accept': 'application/json'
+        };
+        var api_token = jquery__WEBPACK_IMPORTED_MODULE_3___default()("meta[name=api-token]").attr('content');
+        _api__WEBPACK_IMPORTED_MODULE_1__.default.get('saveRequestChat/' + this.state.requestInfo.id + '/' + this.state.accountInfo.id + '/' + this.state.contactInfo.id + '/' + message + '?api_token=' + api_token, {
+          headers: headers
+        }).then(function (response) {
+          console.log(response);
+        });
+      }
+    }
+  }, {
+    key: "updateOffer",
+    value: function updateOffer(e) {
+      var _this3 = this;
+
+      e.preventDefault();
+      var price = this.price.value;
+      var unit = this.currency.value;
+
+      if (price != '') {
+        console.log(price, unit);
+        var headers = {
+          'Accept': 'application/json'
+        };
+        var api_token = jquery__WEBPACK_IMPORTED_MODULE_3___default()("meta[name=api-token]").attr('content');
+        _api__WEBPACK_IMPORTED_MODULE_1__.default.get('updateRequest/' + this.state.requestInfo.id + '/' + price + '/' + unit + '?api_token=' + api_token, {
+          headers: headers
+        }).then(function (response) {
+          console.log(response.data);
+
+          if (response.data.status == 200) {
+            _this3.popUpToggle('hide');
+
+            var requestinfo = _this3.state.requestInfo;
+            requestinfo.amount = price;
+            requestinfo.unit = unit;
+
+            _this3.setState({
+              requestinfo: requestinfo
+            });
+          }
+        });
+      }
+    }
+  }, {
+    key: "onAccept",
+    value: function onAccept() {
+      var _this4 = this;
+
+      var headers = {
+        'Accept': 'application/json'
+      };
+      var api_token = jquery__WEBPACK_IMPORTED_MODULE_3___default()("meta[name=api-token]").attr('content');
+      _api__WEBPACK_IMPORTED_MODULE_1__.default.get('acceptRequest/' + this.state.requestInfo.id + '?api_token=' + api_token, {
+        headers: headers
+      }).then(function (response) {
+        if (response.status == 200) var requestInfo = _this4.state.requestInfo;
+        requestInfo.accepted = 1;
+
+        _this4.setState({
+          requestInfo: requestInfo
+        });
+      });
+    }
+  }, {
+    key: "onDecline",
+    value: function onDecline() {
+      var _this5 = this;
+
+      var headers = {
+        'Accept': 'application/json'
+      };
+      var api_token = jquery__WEBPACK_IMPORTED_MODULE_3___default()("meta[name=api-token]").attr('content');
+      _api__WEBPACK_IMPORTED_MODULE_1__.default.get('declineRequest/' + this.state.requestInfo.id + '?api_token=' + api_token, {
+        headers: headers
+      }).then(function (response) {
+        if (response.status == 200) _this5.props.back();
+      });
+    }
+  }, {
+    key: "popUpToggle",
+    value: function popUpToggle(a) {
+      console.log(a);
+
+      if (a == 'show') {
+        jquery__WEBPACK_IMPORTED_MODULE_3___default()("div#modal").css('display', 'block');
+        jquery__WEBPACK_IMPORTED_MODULE_3___default()("div#modal input#price").val(this.state.requestInfo.amount);
+        jquery__WEBPACK_IMPORTED_MODULE_3___default()("div#modal option[value='" + this.state.requestInfo.unit + "']").attr('selected', true);
+      }
+
+      if (a == 'hide') jquery__WEBPACK_IMPORTED_MODULE_3___default()("div#modal").css('display', 'none');
     }
   }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
+      var _this6 = this;
 
       if (this.state.isWaiting) {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
@@ -3460,10 +3595,121 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
           })
         });
       } else {
-        var containerHeight = innerHeight - 123;
+        var containerHeight = innerHeight - 175;
+        console.log(jquery__WEBPACK_IMPORTED_MODULE_3___default()('main').css('width'));
+        var messengerWidth = jquery__WEBPACK_IMPORTED_MODULE_3___default()('main').css('width').slice(0, -2) - 110;
         console.log(this.state.requestInfo.images);
+        var datetime = new Date(this.state.requestInfo.created_at);
+
+        if (datetime.getHours() >= 12) {
+          var time = datetime.getHours() - 12 + ":" + datetime.getMinutes() + " PM";
+        } else {
+          var time = datetime.getHours() + ":" + datetime.getMinutes() + " AM";
+        }
+
+        var month = _const__WEBPACK_IMPORTED_MODULE_2__.default.month[datetime.getMonth()];
+        var day = datetime.getDate();
+        datetime = time + ', ' + month + ' ' + day;
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            id: "modal",
+            className: "h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "w-11/12 h-48 bg-white absolute rounded-xl",
+              style: {
+                top: '50%',
+                marginTop: '-6rem',
+                left: '50%',
+                marginLeft: '-45.83333%'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                className: "rounded-t-xl h-10",
+                style: {
+                  background: 'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))'
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-md md:text-lg text-center text-white font-bold leading-10",
+                  children: "Update Offer"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                  className: "block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center",
+                  onClick: function onClick() {
+                    return _this6.popUpToggle('hide');
+                  },
+                  style: {
+                    boxShadow: '0 0 8px #353535'
+                  },
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                    className: "leading-6",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                      className: "fas fa-times"
+                    })
+                  })
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                className: "w-11/12 mx-auto grid grid-cols-2 gap-x-4",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                  className: "col-span-1",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("label", {
+                    htmlFor: "price",
+                    className: "block text-xs md:text-sm font-medium text-gray-700 mt-4",
+                    children: ["Project Amount", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("sup", {
+                      style: {
+                        color: 'red'
+                      },
+                      children: "*"
+                    })]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+                    type: "number",
+                    name: "price",
+                    id: "price",
+                    className: "w-full rounded-lg text-xs md:text-sm bg-gray-200 text-gray-500 border-none",
+                    ref: function ref(e) {
+                      return _this6.price = e;
+                    }
+                  })]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                  className: "col-span-1",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("label", {
+                    htmlFor: "price",
+                    className: "block text-xs md:text-sm font-medium text-gray-700 mt-4",
+                    children: ["Currency", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("sup", {
+                      style: {
+                        color: 'red'
+                      },
+                      children: "*"
+                    })]
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("select", {
+                    name: "currency",
+                    id: "currency",
+                    className: "w-full rounded-lg text-xs md:text-sm bg-gray-200 text-gray-500 border-none",
+                    ref: function ref(e) {
+                      return _this6.currency = e;
+                    },
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
+                      value: "gbp",
+                      children: "GBP"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
+                      value: "usd",
+                      children: "USD"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
+                      value: "eur",
+                      children: "EUR"
+                    })]
+                  })]
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "w-11/12 mx-auto mt-3",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                  className: "block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md",
+                  style: {
+                    background: 'rgb(88,183,189)'
+                  },
+                  onClick: this.updateOffer,
+                  children: "Update"
+                })
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
             className: "w-full bg-white",
             style: {
               height: '70px',
@@ -3477,7 +3723,7 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
                 className: "text-center text-gray-500",
                 onClick: function onClick() {
-                  return _this3.props.back();
+                  return _this6.props.back();
                 },
                 style: {
                   lineHeight: '50px'
@@ -3504,33 +3750,226 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
                 children: "Last seen 5 min ago"
               })]
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
             id: "requestChatContainer",
-            className: "bg-gray-100 pt-5",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+            className: "bg-gray-100 pt-2",
+            style: {
+              height: containerHeight + 'px',
+              overflow: 'auto'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
               id: "requestdetail",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                className: "text-center text-xs md:text-sm text-gray-400",
+                children: datetime
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                 className: "w-10/12 mx-auto bg-white py-1 py-2",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                  className: "text-center text-gray-700",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-center text-gray-700 text-sm md:text-md",
                   children: this.state.requestInfo.content
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                id: "reqeustImages",
-                children: this.state.requestInfo.images.map(function (requestInfo, key) {
-                  /*#__PURE__*/
-                  (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                      className: "float-left",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                        src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/task-image/' + requestInfo.image + '/jpg',
-                        alt: ""
-                      })
-                    }, key), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
+                  className: "text-gray-500 text-xs md:text-sm ml-2",
+                  children: ["Offer: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                    className: "text-gray-600",
+                    children: this.state.requestInfo.amount + this.state.requestInfo.unit.toUpperCase()
+                  })]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                  id: "reqeustImages",
+                  className: "mt-2",
+                  children: [this.state.requestInfo.images.map(function (requestInfo, key) {
+                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                      className: "float-left ml-2",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+                          src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/task-image/' + requestInfo.image + '.jpg',
+                          alt: "",
+                          style: {
+                            width: '40px',
+                            height: '40px'
+                          }
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "clearfix"
+                      })]
+                    }, key);
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                    className: "clearfix"
+                  })]
+                })]
+              })]
+            }), this.state.requestChats.length == 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              id: "chatContainer",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                className: "text-sm md:text-md text-center",
+                children: "Start your chat here."
+              })
+            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              id: "chatContainer",
+              children: this.state.requestChats.map(function (chat, i) {
+                var datetime = new Date(chat.created_at);
+
+                if (datetime.getHours() >= 12) {
+                  var time = datetime.getHours() - 12 + ":" + datetime.getMinutes() + " PM";
+                } else {
+                  var time = datetime.getHours() + ":" + datetime.getMinutes() + " AM";
+                }
+
+                var month = _const__WEBPACK_IMPORTED_MODULE_2__.default.month[datetime.getMonth()];
+                var day = datetime.getDate();
+                datetime = time + ', ' + month + ' ' + day;
+                var isUser = chat.send_id == _this6.state.accountInfo.id ? true : false;
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "w-full mx-auto rounded px-2 mt-5",
+                  children: isUser ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                      className: "relative float-right",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        style: {
+                          border: '1px solid #999',
+                          "float": 'right'
+                        },
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                          className: "text-sm px-4 py-2 text-gray-700",
+                          children: chat.content
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "clearfix"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                        className: "text-xs text-gray-500 mt-2 absolute left-0",
+                        children: datetime
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "clearfix"
+                      })]
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                       className: "clearfix"
                     })]
-                  }, key);
+                  }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                      className: "relative float-left",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "bg-white",
+                        style: {
+                          "float": 'left'
+                        },
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                          className: "text-sm px-4 py-2 text-gray-700",
+                          children: chat.content
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "clearfix"
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                        className: "text-xs text-gray-500 mt-2 absolute right-0",
+                        children: datetime
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "clearfix"
+                      })]
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                      className: "clearfix"
+                    })]
+                  })
+                }, i);
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              id: "buttons",
+              className: "mt-16",
+              children: this.state.accountInfo.accountType == 'influencer' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                className: "w-full grid grid-cols-2 gap-x-4",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "col-span-1",
+                  children: this.state.requestInfo.accepted ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                    className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-gray-500",
+                    disabled: true,
+                    children: "Accepted"
+                  }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                    className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-green-600",
+                    onClick: this.onAccept,
+                    children: "Accept"
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "col-span-1",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                    className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-red-600",
+                    onClick: this.onDecline,
+                    children: "Decline"
+                  })
+                })]
+              }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "w-full",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                  className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md",
+                  style: {
+                    background: 'rgb(88,183,189)'
+                  },
+                  onClick: function onClick() {
+                    return _this6.popUpToggle('show');
+                  },
+                  children: "Update offer"
                 })
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              className: "h-40"
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            className: "w-full md:max-w-7xl fixed",
+            style: {
+              bottom: '55px'
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "w-full bg-white",
+              style: {
+                height: '60px',
+                borderTop: '1px solid lightgray'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "float-right",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                  onClick: this.sendMessage,
+                  style: {
+                    display: 'block',
+                    height: '60px',
+                    width: '60px',
+                    background: 'rgb(88,183,189)',
+                    fontSize: '20px',
+                    lineHeight: '60px',
+                    color: 'white',
+                    textAlign: 'center'
+                  },
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                    className: "fas fa-paper-plane"
+                  })
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "float-left",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                  href: "#",
+                  style: {
+                    fontSize: '20px',
+                    lineHeight: '60px',
+                    padding: '0 10px'
+                  },
+                  className: "text-gray-400",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                    className: "fas fa-paperclip"
+                  })
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+                  type: "text",
+                  name: "message",
+                  id: "message",
+                  className: "w-full border-none",
+                  autoComplete: "off",
+                  placeholder: "Type your message ...",
+                  ref: function ref(e) {
+                    return _this6.message = e;
+                  },
+                  style: {
+                    width: messengerWidth + 'px',
+                    margin: '10px 0'
+                  }
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "clearfix"
               })]
             })
           })]

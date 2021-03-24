@@ -114,8 +114,11 @@ class RegisterController extends Controller
             $profile->top_img = "default_top";
             $profile->round_img = "default_round";
             $profile->instagram = "";
+            $profile->instagram_follows = "";
             $profile->youtube = '';
+            $profile->youtube_follows = '';
             $profile->tiktok = '';
+            $profile->tiktok_follows = '';
             $profile->save();
 
             $portfolio = new Portfolio;

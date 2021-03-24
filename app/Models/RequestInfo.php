@@ -15,6 +15,7 @@ class RequestInfo extends Model
     protected $fillable = [
         'content',
         'amount',
+        'unit',
         'brand',
         'status',
         'accepted',

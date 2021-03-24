@@ -10,6 +10,8 @@ use App\Models\Inboxes;
 use App\Models\InboxInfo;
 use App\Models\Requests;
 use App\Models\RequestInfo;
+use App\Models\RequestChat;
+use App\Models\RequestImg;
 use App\Models\User;
 
 class MessageController extends Controller
@@ -126,12 +128,15 @@ class MessageController extends Controller
         $inboxInfo->send_id = Auth::user()->id;
         $inboxInfo->receive_id = $receive_id;
         $inboxInfo->content =  $message;
-        $inboxInfo->upload = '';
+        $inboxInfo->upload = 'none';
         $inboxInfo->save();
 
         $pusher = new Pusher\Pusher('da7cd3b12e18c9e2e461', '566ee6622fcab95b7709', '1168466', array('cluster' => 'eu'));
 
-        $pusher->trigger('fluenser-channel', 'fluenser-event', $inboxInfo);
+        $pusher->trigger('fluenser-channel', 'fluenser-event', [
+            'trigger' => 'chat',
+            'inboxInfo' => $inboxInfo
+        ]);
 
         return response()->json([
             'data' => true,
@@ -150,10 +155,16 @@ class MessageController extends Controller
         $requestInfos = new RequestInfo();
         $requestInfo = $requestInfos->getRequestInfoByID($request_id);
 
+        $requestChat = new RequestChat();
+        $requestChats = $requestChat->getRequestChatInfo($request_id, $send_id, Auth::user()->id);
+
+        // echo $accountInfo.'<br>'.$contactInfo;
+
         return response()->json([
             'accountInfo' => $accountInfo,
             'contactInfo' => $contactInfo,
             'requestInfo' => $requestInfo,
+            'requestChats' => $requestChats,
         ]);
     }
 
@@ -163,6 +174,84 @@ class MessageController extends Controller
 
         return response()->json([
             'inbox_id' => $inbox->id,
+        ]);
+    }
+
+    public function updateRequest($request_id, $price, $unit) {
+        $request = RequestInfo::where('request_id', '=', $request_id)->get();
+
+        $request = RequestInfo::find($request[0]->id);
+        $request->amount = $price;
+        $request->unit = $unit;
+        $request->save();
+
+        return response()->json([
+            'status' => 200,
+        ]);
+    }
+
+    public function saveRequestChat($request_id, $send_id, $receive_id, $message) {
+        $requestChat = new RequestChat;
+        $requestChat->request_id = $request_id;
+        $requestChat->send_id = $send_id;
+        $requestChat->receive_id = $receive_id;
+        $requestChat->content = $message;
+        $requestChat->upload = 'none';
+        $requestChat->save();
+
+        $pusher = new Pusher\Pusher('da7cd3b12e18c9e2e461', '566ee6622fcab95b7709', '1168466', array('cluster' => 'eu'));
+
+        $pusher->trigger('fluenser-channel', 'fluenser-event', [
+            'trigger' => 'requestChat',
+            'requestChat' => $requestChat,
+        ]);
+
+        return response()->json([
+            'status' => 200,
+        ]);
+    }
+
+    public function acceptRequest($request_id) {
+        $request = RequestInfo::where('request_id', '=', $request_id)->get();
+
+        $request = RequestInfo::find($request[0]->id);
+        $request->accepted = 1;
+        $request->save();
+
+        return response()->json([
+            'status' => 200,
+        ]);
+
+    }
+
+    public function declineRequest($request_id) {
+        echo $request_id;
+        // delete form the request_info table
+        $requestInfo = RequestInfo::where('request_id', '=', $request_id)->get();
+        if(count($requestInfo) > 0) $requestInfo[0]->delete();
+        
+        // delete form the request_images table
+        $requestImages = RequestImg::where('request_id', '=', $request_id)->get();
+        if(count($requestImages) > 0) {
+            foreach ($requestImages as $requestImage) {
+                $requestImage->delete();
+            }
+        }
+
+        // delete from the request_chat table
+        $requestChats = RequestChat::where('request_id', '=', $request_id)->get();
+        if(count($requestChats) > 0) {
+            foreach ($requestChats as $requestChat) {
+                $requestChat->delete();
+            }
+        }
+       
+        // delete from the request table
+        $request = Requests::find($request_id);
+        $request->delete();
+
+        return response()->json([
+            'status' => true,
         ]);
     }
 }

@@ -77,16 +77,18 @@ export class ChatComponent extends Component {
       console.log('qwer');
       console.log(data);
 
-      if(this.state.userID == data.send_id &&
-          this.state.contactID == data.receive_id ||
-          this.state.userID == data.receive_id &&
-          this.state.contactID == data.send_id){
-            const chats = this1.state.chats;
-            chats.push(data);
-            console.log(chats);
-            this1.setState({chats:chats});
-          }
-        });
+      if(data.trigger == 'chat') {
+        if(this.state.userID == data.inboxInfo.send_id &&
+            this.state.contactID == data.inboxInfo.receive_id ||
+            this.state.userID == data.inboxInfo.receive_id &&
+            this.state.contactID == data.inboxInfo.send_id){
+          const chats = this1.state.chats;
+          chats.push(data.inboxInfo);
+          console.log(chats);
+          this1.setState({chats:chats});
+        }
+      }
+    });
   }
 
   componentDidUpdate() {

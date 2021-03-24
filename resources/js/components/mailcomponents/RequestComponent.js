@@ -109,7 +109,7 @@ export class RequestComponent extends Component {
           </div>
         )
       } else {
-        var containerHeight = innerHeight - 214;
+        var containerHeight = innerHeight - 255;
         return (
           <div>
             <div id="requestSearch">

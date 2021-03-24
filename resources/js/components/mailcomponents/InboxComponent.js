@@ -105,7 +105,7 @@ export class InboxComponent extends Component {
           </div>
         )
       } else {
-        var containerHeight = innerHeight - 225;
+        var containerHeight = innerHeight - 255;
         return (
           <div>
             <div id="inboxSearch">
