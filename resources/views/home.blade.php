@@ -2,55 +2,47 @@
 
 @section('content')
 <header class="bg-white">
-    <div class="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8 mt-5">
-      <p class="text-center text-3xl" style="font-family: 'Josefin Sans', sans-serif;">My Account</p>
+    <div class="w-full md:max-w-7xl mx-auto py-1 px-3 sm:px-6 lg:px-8 bg-gray-800 h-10">
+      <p class="italic text-lg md:text-xl text-white font-bold leading-8" style="font-family: 'Josefin Sans', sans-serif;">{{ __('HOME') }}</p>
+    </div>
+    <div class="w-full md:max-w-7xl mx-auto px-2 h-8" style="border-bottom: 1px solid lightgray">
+        <span class="px-1 pt-2 pb-1 font-bold text-md md:text-lg leading-8" style="border-bottom: 2px solid #4db3c1">{{ __('NEWS FEED') }}</span>
+    </div>
+    <div class="w-full md:max-w-7xl mx-auto">
+        <a href="#">
+            <div class="w-11/12 mx-auto rounded-xl px-2 py-2 mt-3" style="box-shadow: 0 0 10px 0 #999">
+                <div class="float-left h-12 w-12 px-1 py-1 rounded-full my-2" style="background: #feeaef">
+                    <img src="{{ asset('img/caution.png') }}" alt="caution" class="w-full">
+                </div>
+                <div class="float-right py-2 px-1 my-2">
+                    <i class="fas fa-chevron-right text-gray-500" style="line-height: 1.75rem"></i>
+                </div>
+                <p class="text-sm md:text-md font-bold pl-14">Connect to Stripe</p>
+                <p class="text-gray-500 text-xs md:text-sm tracking-tighter pl-14">We've partnered with stripe for fast, secure payments. Fill out a few more details to complete your profile and start getting paid.</p>
+                <div class="clearfix"></div>
+            </div>
+        </a>
     </div>
   </header>
   
-    <main class="w-full md:max-w-7xl mx-auto">
-        <!-- Replace with your content -->
-        <div class="px-4 sm:px-0 bg-white">
-            <div class="mt-6">
-                <div class="w-10/12 mx-auto">
-                    <div class="w-full mx-auto relative" style="margin-bottom: 20%;">
-                        <img class="w-full mx-auto" src="{{ asset('img/back-image/').'/'.$accountInfo->back_img.'.jpg' }}" alt="$accountInfo->avatar" id="avatar_back_img">
-                        <div class="w-3/12 absolute" style="bottom: -23%;left:50%;margin-left:-12.5%;">
-                            <img class="rounded-full w-full" src="{{ asset('img/avatar-image/').'/'.$accountInfo->avatar.'.jpg' }}" alt="$accountInfo->avatar" style="border:solid 3px white;box-shadow: 0 2px 1px 1px lightgrey">
-                        </div>
-                    </div>
-                    <div class="mt-6 text-gray-500">
-                        <h3 class="text-center text-xl md:text-2xl">{{ $accountInfo->name }}</h3>
-                        <p class="text-center text-sm md:text-md">{{ $accountInfo->state.', '.$accountInfo->country }}</p>
-                    </div>
-                    <hr class="my-6">
-                    @if ($accountType == 'influencer')
-                        <div class="text-black pb-20" style="font-family: 'Josefin Sans', sans-serif;">
-                            <h2 class="font-bold text-xl text-center mt-12 md:text-2xl">{{ __('Social Activity Status') }}</h2>
-                            <p class="text-lg md:text-xl text-center mt-10">{{ __('Engagement Rate') }}</p>
-                            <h2 class="text-2xl md:text-3xl text-center mt-3">{{ $accountInfo->arg_rate.'%' }}</h2>
-                            <p class="text-lg text-center mt-10 md:text-xl">{{ __('Audience Interests') }}</p>
-                            <div>
-                                <p class="text-lg mt-3 md:text-xl">{{ __('Beauty & Fashion: ').$accountInfo->bf_rate.'%' }}</p>
-                                <div class="w-full h-5 bg-white border-solid border-2 border-gray-100 mt-1 rounded">
-                                    <div class="h-4" style="width: {{ $accountInfo->bf_rate }}%;background:rgb(23,165,52);;border-radius:3px 0 0 3px;"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <p class="text-lg mt-3 md:text-xl">{{ __('TV & Media: ').$accountInfo->tm_rate.'%' }}</p>
-                                <div class="w-full h-5 bg-white border-solid border-2 border-gray-100 mt-1 rounded">
-                                    <div class="h-4 bg-blue-500 " style="width: {{ $accountInfo->tm_rate }}%;background:rgb(3,159,184);;border-radius:3px 0 0 3px;"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <p class="text-lg mt-3 md:text-xl">{{ __('Music: ').$accountInfo->m_rate.'%' }}</p>
-                                <div class="w-full h-5 bg-white border-solid border-2 border-gray-100 mt-1 rounded">
-                                    <div class="h-4 bg-red-500 " style="width: {{ $accountInfo->m_rate }}%;background:rgb(238,35,52);;border-radius:3px 0 0 3px;"></div>
-                                </div>
-                            </div>
-                        </div>                        
-                    @endif
-                </div>
-            </div>
-        </div>
-    </main>
+	<main class="w-full md:max-w-7xl mx-auto pb-20">
+		@foreach ($portfolios as $portfolio)
+				<div class="w-11/12 mx-auto rounded-xl mt-3 pb-3" style="box-shadow: 0 0 10px 0 #999">
+					<img class="w-full rounded-t-xl" src="{{ asset('img/profile-image/'.$portfolio->slide_img.'.jpg') }}" alt={{ $portfolio->slide_img }}>
+					<div class="w-full rounded-b-xl mt-3">
+						<p class="text-md md:text-lg font-bold pl-3">There are many variations of passages</p>
+						<div class="mt-2 w-11/12 mx-auto">
+							<div class="float-left w-14 h-14">
+								<img class="w-full rounded-full" src="{{ asset('img/avatar-image/'.$accountInfo->avatar.'.jpg') }}" alt={{ $accountInfo->avatar }}>
+							</div>
+							<div class="float-left h-14 py-1 pl-3">
+								<p class="text-sm:md:text-md leading-6 font-bold">{{ $accountInfo->name }}</p>
+								<p class="text-xs:md:text-sm leading-6">{{ '@'.$accountInfo->username }}</p>
+							</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+				</div>
+		@endforeach
+	</main>
 @endsection

@@ -51,6 +51,7 @@ export class RequestDetailComponent extends Component {
       )
     } else {
       var containerHeight = innerHeight - 123;
+      console.log(this.state.requestInfo.images);
       return (
         <div>
           <div className="w-full bg-white" style={{height:'70px', paddingTop:'10px'}}>
@@ -77,11 +78,11 @@ export class RequestDetailComponent extends Component {
               </div>
               <div id="reqeustImages">
                 {
-                  this.state.requestInfo.images.map((key, requestInfo) => {
+                  this.state.requestInfo.images.map((requestInfo, key) => {
                     <div key={key}>
                       <div key={key} className="float-left">
 
-                        <img src={constant.baseURL + 'img/task-image/'  + requestInfo + '/jpg'} alt=""/>
+                        <img src={constant.baseURL + 'img/task-image/'  + requestInfo.image + '/jpg'} alt=""/>
                       </div>
 
                       <div className="clearfix"></div>

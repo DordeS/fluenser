@@ -129,28 +129,28 @@ export class ChatComponent extends Component {
           </div>
         )
       } else {
-        var containerHeight = innerHeight - 180;
+        var containerHeight = innerHeight - 175;
         console.log($('main').css('width'));
         var messengerWidth = $('main').css('width').slice(0, -2) - 110;
         return (
           <div className="w-full text-center">
-            <div className="w-full" style={{background:'rgb(88,183,189)', borderRadius:'0 0 10px 10px', height:'70px'}}>
+            <div className="w-full" style={{height:'70px'}}>
               <div style={{float:'left', marginLeft:'15px'}}>
-                <a className="text-center text-gray-300" onClick={()=> this.props.back()} style={{lineHeight:'70px'}}>
+                <a className="text-center text-gray-500" onClick={()=> this.props.back()} style={{lineHeight:'70px'}}>
                   <i className="fas fa-chevron-left"></i>
                 </a>
               </div>
               <div className="float-left" style={{width:'50px', height:'50px', margin:'10px 0', marginLeft:'28px'}}>
-                <img src={constant.baseURL + 'img/avatar-image/' + this.state.contactInfo.avatar + '.jpg'} alt={this.state.contactInfo.avatar} className="rounded-2xl"/>
+                <img src={constant.baseURL + 'img/avatar-image/' + this.state.contactInfo.avatar + '.jpg'} alt={this.state.contactInfo.avatar} className="rounded-full"/>
               </div>
               <div className="float-left" style={{marginLeft:'12px'}}>
-                <p className="text-center text-md md:text-xl pt-2 text-white">
+                <p className="text-center text-md md:text-xl pt-2 text-gray-700 font-bold" style={{lineHeight:'50px'}}>
                   {this.state.contactName}
                 </p>
               </div>
               <button className="float-right bg-white rounded-xl" style={{marginRight:'15px', height:'35px', marginTop:'10px', boxShadow:'0 0 8px 0 #999'}}> <p style={{lineHeight:'35px'}} className="px-3 text-sm text-gray-500">Release <span className="font-bold">45.00GBP</span></p></button>
             </div>
-            <div style={{height:containerHeight+'px', overflow:'auto'}} className="bg-gray-100 pb-32">
+            <div style={{height:containerHeight+'px', overflow:'auto'}} className="bg-gray-100">
               <div id="chatcontainer">
                 {
                   this.state.chats.map((chat, i)=>{
@@ -168,27 +168,33 @@ export class ChatComponent extends Component {
                       <div key={i} className="w-full mx-auto rounded px-2 mt-5">
                           {isUser
                             ? <div>
-                                <div style={{border:'1px solid #999', float:'right', marginLeft:'30px'}}>
-                                  <p className="text-sm px-4 py-2 text-gray-700">
-                                    {chat.content}
+                                <div className="relative float-right">
+                                  <div style={{border:'1px solid #999', float:'right'}}>
+                                    <p className="text-sm px-4 py-2 text-gray-700">
+                                      {chat.content}
+                                    </p>
+                                  </div>
+                                  <div className="clearfix"></div>
+                                  <p className="text-xs text-gray-500 mt-2 absolute left-0">
+                                    {datetime}
                                   </p>
+                                  <div className="clearfix"></div>
                                 </div>
-                                <div className="clearfix"></div>
-                                <p className="text-xs text-gray-500 mt-2" style={{float:'right'}}>
-                                  {datetime}
-                                </p>
                                 <div className="clearfix"></div>
                               </div>
                             : <div>
-                                <div className="bg-white" style={{ float:'left', marginRight:'30px'}}>
-                                  <p className="text-sm px-4 py-2 text-gray-700">
-                                    {chat.content}
+                                <div className="relative float-left">
+                                  <div className="bg-white" style={{ float:'left'}}>
+                                    <p className="text-sm px-4 py-2 text-gray-700">
+                                      {chat.content}
+                                    </p>
+                                  </div>
+                                  <div className="clearfix"></div>
+                                  <p className="text-xs text-gray-500 mt-2 absolute right-0">
+                                      {datetime}
                                   </p>
+                                  <div className="clearfix"></div>
                                 </div>
-                                <div className="clearfix"></div>
-                                <p className="text-xs text-gray-500 mt-2" style={{float:'left', marginLeft:'60px'}}>
-                                    {datetime}
-                                </p>
                                 <div className="clearfix"></div>
                               </div>                        
                           }
@@ -196,29 +202,25 @@ export class ChatComponent extends Component {
                     );
                   })
                 }
+                <div className="h-40"></div>
               </div>
-              {{}}
             </div>
             <div className="w-full md:max-w-7xl fixed" style={{bottom:'55px'}}>
-              <div className="w-full px-2 mx-auto" style={{height:'40px'}}>
+              <div className="w-full bg-white" style={{height:'60px', borderTop:'1px solid lightgray'}}>
                 <div className="float-right">
-                  <a onClick={this.sendMessage} style={{fontSize:'20px', lineHeight:'40px', color:'rgb(88,183,189)'}}>
+                  <a onClick={this.sendMessage} style={{display:'block',height:'60px', width:'60px', background:'rgb(88,183,189)', fontSize:'20px', lineHeight:'60px', color:'white'}}>
                     <i className="fas fa-paper-plane"></i>
                   </a>
                 </div>
-                <div className="float-right mr-3">
-                  <a href="#" style={{fontSize:'20px', lineHeight:'40px'}} className="text-gray-400">
-                    <i className="far fa-image"></i>
-                  </a>                  
-                </div>
-                <div className="float-right mr-3">
-                  <a href="#" style={{fontSize:'20px', lineHeight:'40px'}} className="text-gray-400">
+                <div className="float-left">
+                  <a href="#" style={{fontSize:'20px', lineHeight:'60px', padding:'0 10px'}} className="text-gray-400">
                     <i className="fas fa-paperclip"></i>
                   </a>                  
                 </div>
-                <div className="float-left">
-                  <input type="text" name="message" id="message" className="w-full border-none" placeholder="Type your message ..." ref={(e) => this.message = e} style={{width:messengerWidth+'px'}}/>
+                <div>
+                  <input type="text" name="message" id="message" className="w-full border-none" autoComplete="off" placeholder="Type your message ..." ref={(e) => this.message = e} style={{width:messengerWidth+'px', margin:'10px 0'}}/>
                 </div>
+                <div className="clearfix"></div>
               </div>
             </div>
           </div>

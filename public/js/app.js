@@ -2476,7 +2476,7 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
             })]
           });
         } else {
-          var containerHeight = innerHeight - 180;
+          var containerHeight = innerHeight - 175;
           console.log(jquery__WEBPACK_IMPORTED_MODULE_3___default()('main').css('width'));
           var messengerWidth = jquery__WEBPACK_IMPORTED_MODULE_3___default()('main').css('width').slice(0, -2) - 110;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
@@ -2484,8 +2484,6 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
               className: "w-full",
               style: {
-                background: 'rgb(88,183,189)',
-                borderRadius: '0 0 10px 10px',
                 height: '70px'
               },
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
@@ -2494,7 +2492,7 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
                   marginLeft: '15px'
                 },
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
-                  className: "text-center text-gray-300",
+                  className: "text-center text-gray-500",
                   onClick: function onClick() {
                     return _this3.props.back();
                   },
@@ -2516,7 +2514,7 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
                   src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + this.state.contactInfo.avatar + '.jpg',
                   alt: this.state.contactInfo.avatar,
-                  className: "rounded-2xl"
+                  className: "rounded-full"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                 className: "float-left",
@@ -2524,7 +2522,10 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
                   marginLeft: '12px'
                 },
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                  className: "text-center text-md md:text-xl pt-2 text-white",
+                  className: "text-center text-md md:text-xl pt-2 text-gray-700 font-bold",
+                  style: {
+                    lineHeight: '50px'
+                  },
                   children: this.state.contactName
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("button", {
@@ -2546,15 +2547,15 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
                   })]
                 })]
               })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
               style: {
                 height: containerHeight + 'px',
                 overflow: 'auto'
               },
-              className: "bg-gray-100 pb-32",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              className: "bg-gray-100",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                 id: "chatcontainer",
-                children: this.state.chats.map(function (chat, i) {
+                children: [this.state.chats.map(function (chat, i) {
                   var datetime = new Date(chat.created_at);
 
                   if (datetime.getHours() >= 12) {
@@ -2570,97 +2571,93 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
                   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                     className: "w-full mx-auto rounded px-2 mt-5",
                     children: isUser ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        style: {
-                          border: '1px solid #999',
-                          "float": 'right',
-                          marginLeft: '30px'
-                        },
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                          className: "text-sm px-4 py-2 text-gray-700",
-                          children: chat.content
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "clearfix"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                        className: "text-xs text-gray-500 mt-2",
-                        style: {
-                          "float": 'right'
-                        },
-                        children: datetime
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                        className: "relative float-right",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                          style: {
+                            border: '1px solid #999',
+                            "float": 'right'
+                          },
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                            className: "text-sm px-4 py-2 text-gray-700",
+                            children: chat.content
+                          })
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                          className: "clearfix"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                          className: "text-xs text-gray-500 mt-2 absolute left-0",
+                          children: datetime
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                          className: "clearfix"
+                        })]
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                         className: "clearfix"
                       })]
                     }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "bg-white",
-                        style: {
-                          "float": 'left',
-                          marginRight: '30px'
-                        },
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                          className: "text-sm px-4 py-2 text-gray-700",
-                          children: chat.content
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                        className: "clearfix"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                        className: "text-xs text-gray-500 mt-2",
-                        style: {
-                          "float": 'left',
-                          marginLeft: '60px'
-                        },
-                        children: datetime
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                        className: "relative float-left",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                          className: "bg-white",
+                          style: {
+                            "float": 'left'
+                          },
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                            className: "text-sm px-4 py-2 text-gray-700",
+                            children: chat.content
+                          })
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                          className: "clearfix"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                          className: "text-xs text-gray-500 mt-2 absolute right-0",
+                          children: datetime
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                          className: "clearfix"
+                        })]
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                         className: "clearfix"
                       })]
                     })
                   }, i);
-                })
-              }), {}]
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "h-40"
+                })]
+              })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
               className: "w-full md:max-w-7xl fixed",
               style: {
                 bottom: '55px'
               },
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                className: "w-full px-2 mx-auto",
+                className: "w-full bg-white",
                 style: {
-                  height: '40px'
+                  height: '60px',
+                  borderTop: '1px solid lightgray'
                 },
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                   className: "float-right",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
                     onClick: this.sendMessage,
                     style: {
+                      display: 'block',
+                      height: '60px',
+                      width: '60px',
+                      background: 'rgb(88,183,189)',
                       fontSize: '20px',
-                      lineHeight: '40px',
-                      color: 'rgb(88,183,189)'
+                      lineHeight: '60px',
+                      color: 'white'
                     },
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
                       className: "fas fa-paper-plane"
                     })
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                  className: "float-right mr-3",
+                  className: "float-left",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
                     href: "#",
                     style: {
                       fontSize: '20px',
-                      lineHeight: '40px'
-                    },
-                    className: "text-gray-400",
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
-                      className: "far fa-image"
-                    })
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                  className: "float-right mr-3",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
-                    href: "#",
-                    style: {
-                      fontSize: '20px',
-                      lineHeight: '40px'
+                      lineHeight: '60px',
+                      padding: '0 10px'
                     },
                     className: "text-gray-400",
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
@@ -2668,20 +2665,23 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
                     })
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-                  className: "float-left",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
                     type: "text",
                     name: "message",
                     id: "message",
                     className: "w-full border-none",
+                    autoComplete: "off",
                     placeholder: "Type your message ...",
                     ref: function ref(e) {
                       return _this3.message = e;
                     },
                     style: {
-                      width: messengerWidth + 'px'
+                      width: messengerWidth + 'px',
+                      margin: '10px 0'
                     }
                   })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "clearfix"
                 })]
               })
             })]
@@ -3461,6 +3461,7 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
         });
       } else {
         var containerHeight = innerHeight - 123;
+        console.log(this.state.requestInfo.images);
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
             className: "w-full bg-white",
@@ -3516,13 +3517,13 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                 id: "reqeustImages",
-                children: this.state.requestInfo.images.map(function (key, requestInfo) {
+                children: this.state.requestInfo.images.map(function (requestInfo, key) {
                   /*#__PURE__*/
                   (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                       className: "float-left",
                       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                        src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/task-image/' + requestInfo + '/jpg',
+                        src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/task-image/' + requestInfo.image + '/jpg',
                         alt: ""
                       })
                     }, key), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {

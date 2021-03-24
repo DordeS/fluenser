@@ -9,6 +9,7 @@ use App\Models\Brands;
 use App\Models\User;
 use App\Models\InfluencerInfo;
 use App\Models\BrandInfo;
+use App\Models\Profile;
 
 class HomeController extends Controller
 {
@@ -33,9 +34,14 @@ class HomeController extends Controller
         $account = new User();
         $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
 
+        $profile = new Profile();
+        $portfolios = $profile->getPortfolios(Auth::user()->id);
         // echo $accountInfo;
 
+        // echo $portfolios;
+
         return view('home', [
+            'portfolios' => $portfolios,
             'accountType' => $accountInfo[0]->accountType,
             'accountInfo' => $accountInfo[0],
             'page' => $page,

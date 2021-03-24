@@ -98,8 +98,6 @@ class RegisterController extends Controller
                 $influencerInfo = new InfluencerInfo;
                 $influencerInfo->influencer_id = $influencer->id;
                 $influencerInfo->save();
-
-                $profile = new Profile;
             }
             else {
                 $brand = new Brands;
@@ -110,6 +108,21 @@ class RegisterController extends Controller
                 $brandInfo->brand_id = $brand->id;
                 $brandInfo->save();
             }
+            $profile = new Profile;
+            $profile->user_id = $user->id;
+            $profile->introduction = "Hi";
+            $profile->top_img = "default_top";
+            $profile->round_img = "default_round";
+            $profile->instagram = "";
+            $profile->youtube = '';
+            $profile->tiktok = '';
+            $profile->save();
+
+            $portfolio = new Portfolio;
+            $portfolio->profile_id = $profile->id;
+            $portfolio->slide_img = 'default_slide';
+            $portfolio->save();
+
             return $user;
         }
     }

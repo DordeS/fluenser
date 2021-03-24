@@ -145,7 +145,7 @@
         }
     </style>
 </head>
-<body onresize="resize()">
+<body>
 
     <div>
         <nav class="shadow-xl">      
@@ -154,7 +154,7 @@
           @else
             <div class="w-full fixed bottom-0 z-50">
               <div class="bg-white w-full md:max-w-7xl mx-auto object-center" id="mobile-menu">
-                  <div class="px-1 py-1 grid grid-cols-5 sm:px-3 w-full border-t-xl" style="border-top: 1px solid lightgrey; border-radius:15px 15px 0 0;">
+                  <div class="px-1 py-1 grid grid-cols-5 sm:px-3 w-full border-t-xl" style="border-top: 2px solid lightgrey;">
                   <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                   <a href="{{ route('home') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
                       <i class="fas fa-home"></i>
@@ -183,21 +183,10 @@
         @yield('content')
     </div>
     <script>
-      function resize() {
-        if({{ $page }} == 1) {
-          var width = $("#avatar_back_img").css('width').slice(0, -2);
-          console.log(width);
-          $("#avatar_back_img").css('height', width/2 + 'px');
-        }
-        var searchContainerHeight = window.innerHeight - 140;
-        $("#influencers").css('height', searchContainerHeight + 'px');
-        var collaborateContainerHeight = window.innerHeight - 200;
-        $("#collaborate").css('height', collaborateContainerHeight + 'px');
-      }
         $(document).ready(function() {
-          resize();
           var page = {{ $page }};
           var element = $("#mobile-menu a").eq(page - 1);
+          console.log("loaded");
           console.log(element);
           element.addClass('menu_selected');
           $("#lg_tabMenu a").eq(page-1).addClass('active');
