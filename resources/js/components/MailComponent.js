@@ -5,6 +5,7 @@ import { RequestComponent } from './mailcomponents/RequestComponent';
 import { RequestDetailComponent } from './mailcomponents/RequestDetailComponent';
 import { ChatComponent } from './mailcomponents/ChatComponent';
 import API from './api';
+import $ from 'jquery';
 
 export default class Mail extends Component {
   constructor() {
@@ -53,27 +54,29 @@ export default class Mail extends Component {
     }).catch(err => {console.log(err)});
   }
 
+  selectTab(tabName) {
+    // console.log(tabName);
+    $("#messageTab a.active").removeClass('active');
+    $("#messageTab #"+ tabName).addClass('active');
+  }
+
   render() {
     if (this.state.showItem == 'mail') {
       return (
-        <div className="w-full mx-auto">
-          <div className="w-1/2 grid grid-cols-2 gap-y-1 mx-auto mt-5" id="tabMenu">
-            <div className="col-span-1 text-center text-md md:text-lg" style={{color: 'rgb(92,180,184)'}}>
-              <Link to="/inbox" className="active">Inbox</Link>
-            </div>
-            <div className="col-span-1 text-center text-md md:text-lg" style={{color: 'rgb(92,180,184)' }}>
-              <Link to="/request">Requests</Link>
-            </div>
-          </div>
+        <div className="w-full md:max-w-7xl mx-auto px-2 h-8" style={{borderBottom: '1px solid lightgray'}} id="messageTab">
+          <Link to="/inbox" className="px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8 mx-4 active" id="inbox">INBOX</Link>
+          <Link to="/request" className="px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8 mx-4" id="requests">REQUESTS</Link>
   
           <Route path="/inbox">
             <InboxComponent 
               inboxClickEvent = {(inboxID) => this.handleInboxClick(inboxID)}
+              selectTab = {(tabName) => this.selectTab(tabName)}
             />
           </Route>
           <Route path="/request">
             <RequestComponent
               requestClickEvent = {(requestID) => this.handleRequestClick(requestID)}
+              selectTab = {(tabName) => this.selectTab(tabName)}
             />
           </Route>
         </div>

@@ -80,6 +80,8 @@ export class RequestComponent extends Component {
         }
       }
     });
+
+    this.props.selectTab('requests');
   }
   
   render() {
@@ -94,7 +96,7 @@ export class RequestComponent extends Component {
         return (
           <div>
            <div id="requestSearch">
-              <div className="py-2 w-11/12 mx-auto mt-4 relative">
+              <div className="py-2 w-11/12 mx-auto mt-3 relative">
                 <input type="text" name="requestSearch" id="requestSearch" style={{ height:'45px',  }} className="w-full px-6 py-1 rounded-full bg-gray-100 border-none" ref={(e) => this.requestSearch = e} placeholder="Search here"/>
                 <button className="absolute right-4 text-gray-500" style={{height:'45px'}} onClick={this.onSearch}>
                   <i className="fas fa-search"></i>

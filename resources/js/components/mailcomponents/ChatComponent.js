@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import API from '../api';
 import constant from '../const';
-import $, { error, event } from 'jquery';
+import $ from 'jquery';
 
 export class ChatComponent extends Component {
   constructor() {
@@ -131,7 +131,7 @@ export class ChatComponent extends Component {
           </div>
         )
       } else {
-        var containerHeight = innerHeight - 175;
+        var containerHeight = innerHeight - 225;
         console.log($('main').css('width'));
         var messengerWidth = $('main').css('width').slice(0, -2) - 110;
         return (

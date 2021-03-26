@@ -6,7 +6,7 @@
       <p class="italic text-lg md:text-xl text-white font-bold leading-8" style="font-family: 'Josefin Sans', sans-serif;">{{ __('HOME') }}</p>
     </div>
     <div class="w-full md:max-w-7xl mx-auto px-2 h-8" style="border-bottom: 1px solid lightgray">
-        <span class="px-1 pt-2 pb-1 font-bold text-md md:text-lg leading-8" style="border-bottom: 2px solid #4db3c1">{{ __('NEWS FEED') }}</span>
+        <span class="mx-4 px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8" style="border-bottom: 2px solid #4db3c1">{{ __('NEWS FEED') }}</span>
     </div>
     <div class="w-full md:max-w-7xl mx-auto">
         <a href="#">

@@ -1,15 +1,15 @@
 @extends('layouts.app')
 @section('content')
 <header class="bg-white">
-  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-    <p class="text-center text-3xl" style="font-family: 'Josefin Sans', sans-serif;">Collaborate</p>
+  <div class="w-full md:max-w-7xl mx-auto py-1 px-3 sm:px-6 lg:px-8 bg-gray-800 h-10">
+    <p class="italic text-lg md:text-xl text-white font-bold leading-8" style="font-family: 'Josefin Sans', sans-serif;">{{ __('COLLABORATE') }}</p>
   </div>
 </header>
 
   <main class="w-full md:max-w-7xl mx-auto">
     <div class="w-full md:max-w-7xl mx-auto sm:px-6 lg:px-8" id="collaborate" style="overflow: auto">
       <!-- Replace with your content -->
-        <div class="px-4 sm:px-0 bg-white w-11/12 mx-auto my-3 md:max-w-lg">
+        <div class="px-4 sm:px-0 bg-white w-11/12 mx-auto my-3 md:max-w-lg pb-20">
           <img src={{ asset('img/avatar-image/'.$influencerInfo->avatar.'.jpg') }} alt="$influencerInfo->avatar" class="w-4/5 mx-auto rounded-lg">
           <p class="text-center text-black text-lg md:text-xl font-bold">
             {{ $influencerInfo->name }}
@@ -103,7 +103,7 @@
               </div>
               <input type="text" name="brand_id" id="brand_id" value="{{ $accountInfo->id }}" hidden>
               <input type="text" name="influencer_id" id="influencer_id" value="{{ $influencerInfo->id }}" hidden>
-              <textarea name="images" id="images" cols="30" rows="10"></textarea>
+              <textarea name="images" id="images" cols="30" rows="10" hidden></textarea>
               <button id="sendRequest" type="submit" class="w-full py-2 text-white rounded-md text-sm md:text-md font-bold" style="background: #2bc5b5">Send</button>
             </form>
           </div>

@@ -40,6 +40,9 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/css/all.css') }}">
     <style>
+        .col-md-8 {
+            padding: 0 !important;
+        }
         a:hover {
             text-decoration: none;
             cursor: pointer;
@@ -67,10 +70,15 @@
             color: black;
             border-bottom: solid 4px rgb(83, 181, 193);
         }
-        #mail-component #tabMenu a.active {
-            padding-bottom: 8px;
-            font-weight: bold;
-            border-bottom: solid 3px rgb(92,180,184);
+        #mail-component #messageTab a.active,
+        #searchTab a.active {
+            border-bottom: solid 2px #4db3c1;
+        }
+        #searchTab a.active {
+            color: #4db3c1;
+        }
+        a:focus {
+            color: black !important;
         }
         #lg_tabMenu a.active {
             color: black;
@@ -119,7 +127,7 @@
         .modal-lg{
         max-width: 1000px !important;
         }
-        #searchCategory input:checked {
+        input[type=checkbox]:checked {
             background-image: url({{ asset('img/check.png') }});
         }
         #searchCategory label {
@@ -212,9 +220,9 @@
                 }
               };
             });
-            $("#tabMenu a").click(function() {
+            $("#searchTab a").click(function() {
                 console.log($(this).attr('href'));
-                $("#tabMenu a.active").removeClass('active');
+                $("#searchTab a.active").removeClass('active');
                 $(this).addClass('active');
             });
             $("#gallery .delete").click(function() {

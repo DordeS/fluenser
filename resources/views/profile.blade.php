@@ -6,14 +6,18 @@
       <div class="bg-white">
         <div class="w-full">
           <div class="relative overflow-hidden">
+            @if($page == 5)
+            <a href={{ route('dashboard') }}>
+            @else
             <a href={{ route('search') }}>
+            @endif
               <div class="absolute top-4 left-2 rounded-full h-8 w-8 bg-white text-center" style="box-shadow: 0 0 15px #999">
                 <p class="leading-8 text-gray-400 text-lg">
                   <i class="fas fa-arrow-left"></i>
                 </p>
               </div>
             </a>
-            <a href={{ route('search') }}>
+            <a href='#'>
               <div class="absolute top-4 right-2 rounded-full h-8 w-8 bg-white text-center" style="box-shadow: 0 0 15px #999">
                 <p class="leading-8 text-gray-400 text-lg">
                   <i class="fas fa-heart"></i>
@@ -51,12 +55,14 @@
                   <p class="text-sm md:text-md text-gray-700 mt-1"><i style="color: #119dab" class="fas fa-map-marker-alt"></i> {{ $influencerInfo->country.' '.$influencerInfo->state }}</p>
                 </div>
                 <div class="float-right w-3/12 pr-2 pt-3">
+                  @if(count($categories) > 0)
                   <div class="mb-2 px-1 py-1 rounded-lg w-full" style="background:#f0effe">
                     <p class="text-sm text-center" style="color: #6f60fa">{{ $categories[0]->category_name }}</p>
                   </div>
                   <div class="mb-2 px-1 py-1 rounded-lg w-full" style="background: #fcefed">
                     <p class="text-sm text-center" style="color: #ea5e51">{{ $categories[1]->category_name }}</p>
                   </div>
+                  @endif
                 </div>
                 <div id="social_links" class="w-3/5 float-right">
                   <div class="w-10 h-10 rounded-full float-right mx-1 bg-white text-center" style="box-shadow: 0 0  8px 0 #999">
@@ -120,6 +126,7 @@
                 </ul> --}}
                 <!-- The slideshow -->
                 <div class="carousel-inner">
+                  @if (count($portfolios) > 0)
                   <div class="carousel-item active">
                     <div id="count" class="bg-gray-900 bg-opacity-70 absolute bottom-5 right-5 px-4 py-2 rounded-lg z-30">
                       <p class="text-center text-white">
@@ -139,7 +146,11 @@
                     <img src={{ asset('img/profile-image/'.$portfolios[$i]->slide_img).'.jpg' }} alt={{ $portfolios[$i]->slide_img }} class="w-full rounded-xl">
                   </div>
                   @endfor
-
+                  @else
+                  <div class="text-center w-full">
+                    <p class="text-sm md:text-md">Please complete you profile</p>
+                  </div>
+                  @endif
                 </div>
               </div>
               <div>
@@ -165,6 +176,7 @@
                 </ul>
                 <!-- The slideshow -->
                 <div class="carousel-inner">
+                  @if(count($partnerships) > 0)
                   <div class="carousel-item active">
                     <img src={{ asset('img/partnership-image/'.$partnerships[0]->partnership_img).'.jpg' }} alt={{ $partnerships[0]->partnership_img }} class="w-full rounded-xl">
                   </div>
@@ -174,6 +186,11 @@
                     <img src={{ asset('img/partnership-image/'.$partnerships[$i]->partnership_img).'.jpg' }} alt={{ $partnerships[$i]->partnership_img }} class="w-full rounded-xl">
                   </div>
                   @endfor
+                  @else
+                  <div class="text-center w-full">
+                    <p class="text-sm md:text-md">Please complete you profile</p>
+                  </div>
+                  @endif
 
                 </div>
               </div>

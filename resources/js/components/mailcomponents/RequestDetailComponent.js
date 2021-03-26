@@ -160,7 +160,7 @@ export class RequestDetailComponent extends Component {
         </div>
       )
     } else {
-      var containerHeight = innerHeight - 175;
+      var containerHeight = innerHeight - 225;
       console.log($('main').css('width'));
       var messengerWidth = $('main').css('width').slice(0, -2) - 110;
       console.log(this.state.requestInfo.images);

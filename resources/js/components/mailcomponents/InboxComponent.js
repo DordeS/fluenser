@@ -72,6 +72,8 @@ export class InboxComponent extends Component {
         showInboxes:inboxes,
       });
     });
+
+    this.props.selectTab('inbox');
   }
 
   onInboxClick(inboxID) {
@@ -90,7 +92,7 @@ export class InboxComponent extends Component {
         return (
           <div>
             <div id="inboxSearch">
-              <div className="py-2 w-11/12 mx-auto mt-4 relative">
+              <div className="py-2 w-11/12 mx-auto mt-1 relative">
                 <input type="text" name="inboxSearch" id="inboxSearch" style={{ height:'45px',  }} className="w-full px-6 py-1 rounded-full bg-gray-100 border-none" ref={(e) => this.inboxSearch = e} placeholder="Search here"/>
                 <button className="absolute right-4 text-gray-500" style={{height:'45px'}} onClick={this.onSearch}>
                   <i className="fas fa-search"></i>

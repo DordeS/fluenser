@@ -11,6 +11,7 @@ use App\Models\Brands;
 use App\Models\BrandInfo;
 use App\Models\Profile;
 use App\Models\Portfolio;
+use App\Models\Partnership;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -87,6 +88,8 @@ class RegisterController extends Controller
         $user->email = $data['email'];
         $user->password = Hash::make($data['password']);
         $user->api_token = hash('sha256', $token);
+        $user->username = $data['name'];
+        $user->loggedIn = true;
         $user->save();
 
         if($user->id != NULL) {
@@ -110,7 +113,7 @@ class RegisterController extends Controller
             }
             $profile = new Profile;
             $profile->user_id = $user->id;
-            $profile->introduction = "Hi";
+            $profile->introduction = "Hi, please complete your profile!";
             $profile->top_img = "default_top";
             $profile->round_img = "default_round";
             $profile->instagram = "";
@@ -120,11 +123,6 @@ class RegisterController extends Controller
             $profile->tiktok = '';
             $profile->tiktok_follows = '';
             $profile->save();
-
-            $portfolio = new Portfolio;
-            $portfolio->profile_id = $profile->id;
-            $portfolio->slide_img = 'default_slide';
-            $portfolio->save();
 
             return $user;
         }

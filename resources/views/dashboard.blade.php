@@ -1,7 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-
+<header class="bg-white">
+    <div class="w-full md:max-w-7xl mx-auto py-1 px-3 sm:px-6 lg:px-8 bg-gray-800 h-10">
+      <p class="italic text-lg md:text-xl text-white font-bold leading-8" style="font-family: 'Josefin Sans', sans-serif;">{{ __('DASHBOARD') }}</p>
+    </div>
+  </header>
+  
     <main class="w-full md:max-w-7xl mx-auto">
         <!-- Replace with your content -->
         <div class="w-11/12 sm:px-0 bg-white mx-auto mt-4">
@@ -32,7 +37,7 @@
                                 </a>
                             </div>
                             <div class="col-span-1">
-                                <a href="#" class="block w-full py-7 md:py-9 text-center text-gray-500" style="border-radius: 0 10px; box-shadow:0 0 10px #999;">
+                                <a href={{ route('editProfile', ['username' => $accountInfo->username]) }} class="block w-full py-7 md:py-9 text-center text-gray-500" style="border-radius: 0 10px; box-shadow:0 0 10px #999;">
                                     <img src="{{ asset('img/user-edit.png') }}" alt="" class="w-8 mx-auto">
                                     <p class="text-sm md:text-md mt-1">Edit  profile</p>
                                 </a>

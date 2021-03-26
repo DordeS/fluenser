@@ -2039,14 +2039,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Mail)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/esm/react-router.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/esm/react-router.js");
 /* harmony import */ var _mailcomponents_InboxComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./mailcomponents/InboxComponent */ "./resources/js/components/mailcomponents/InboxComponent.js");
 /* harmony import */ var _mailcomponents_RequestComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./mailcomponents/RequestComponent */ "./resources/js/components/mailcomponents/RequestComponent.js");
 /* harmony import */ var _mailcomponents_RequestDetailComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./mailcomponents/RequestDetailComponent */ "./resources/js/components/mailcomponents/RequestDetailComponent.js");
 /* harmony import */ var _mailcomponents_ChatComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./mailcomponents/ChatComponent */ "./resources/js/components/mailcomponents/ChatComponent.js");
 /* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./api */ "./resources/js/components/api.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2068,6 +2070,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -2130,7 +2133,7 @@ var Mail = /*#__PURE__*/function (_Component) {
       var headers = {
         'Accept': 'application/json'
       };
-      var api_token = $("meta[name=api-token]").attr('content');
+      var api_token = jquery__WEBPACK_IMPORTED_MODULE_6___default()("meta[name=api-token]").attr('content');
       _api__WEBPACK_IMPORTED_MODULE_5__.default.get('checkInbox/' + user1_id + '/' + user2_id + '?api_token=' + api_token, {
         headers: headers
       }).then(function (res) {
@@ -2147,62 +2150,66 @@ var Mail = /*#__PURE__*/function (_Component) {
       });
     }
   }, {
+    key: "selectTab",
+    value: function selectTab(tabName) {
+      // console.log(tabName);
+      jquery__WEBPACK_IMPORTED_MODULE_6___default()("#messageTab a.active").removeClass('active');
+      jquery__WEBPACK_IMPORTED_MODULE_6___default()("#messageTab #" + tabName).addClass('active');
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this3 = this;
 
       if (this.state.showItem == 'mail') {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-          className: "w-full mx-auto",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-            className: "w-1/2 grid grid-cols-2 gap-y-1 mx-auto mt-5",
-            id: "tabMenu",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-              className: "col-span-1 text-center text-md md:text-lg",
-              style: {
-                color: 'rgb(92,180,184)'
-              },
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Link, {
-                to: "/inbox",
-                className: "active",
-                children: "Inbox"
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-              className: "col-span-1 text-center text-md md:text-lg",
-              style: {
-                color: 'rgb(92,180,184)'
-              },
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Link, {
-                to: "/request",
-                children: "Requests"
-              })
-            })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_8__.Route, {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          className: "w-full md:max-w-7xl mx-auto px-2 h-8",
+          style: {
+            borderBottom: '1px solid lightgray'
+          },
+          id: "messageTab",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_8__.Link, {
+            to: "/inbox",
+            className: "px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8 mx-4 active",
+            id: "inbox",
+            children: "INBOX"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_8__.Link, {
+            to: "/request",
+            className: "px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8 mx-4",
+            id: "requests",
+            children: "REQUESTS"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_9__.Route, {
             path: "/inbox",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_mailcomponents_InboxComponent__WEBPACK_IMPORTED_MODULE_1__.InboxComponent, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_mailcomponents_InboxComponent__WEBPACK_IMPORTED_MODULE_1__.InboxComponent, {
               inboxClickEvent: function inboxClickEvent(inboxID) {
                 return _this3.handleInboxClick(inboxID);
+              },
+              selectTab: function selectTab(tabName) {
+                return _this3.selectTab(tabName);
               }
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_8__.Route, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_9__.Route, {
             path: "/request",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_mailcomponents_RequestComponent__WEBPACK_IMPORTED_MODULE_2__.RequestComponent, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_mailcomponents_RequestComponent__WEBPACK_IMPORTED_MODULE_2__.RequestComponent, {
               requestClickEvent: function requestClickEvent(requestID) {
                 return _this3.handleRequestClick(requestID);
+              },
+              selectTab: function selectTab(tabName) {
+                return _this3.selectTab(tabName);
               }
             })
           })]
         });
       } else {
         if (this.state.showItem == 'chat') {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_mailcomponents_ChatComponent__WEBPACK_IMPORTED_MODULE_4__.ChatComponent, {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_mailcomponents_ChatComponent__WEBPACK_IMPORTED_MODULE_4__.ChatComponent, {
             inboxID: this.state.inboxID,
             back: function back() {
               return _this3.back();
             }
           });
         } else {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_mailcomponents_RequestDetailComponent__WEBPACK_IMPORTED_MODULE_3__.RequestDetailComponent, {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_mailcomponents_RequestDetailComponent__WEBPACK_IMPORTED_MODULE_3__.RequestDetailComponent, {
             requestID: this.state.requestID,
             back: function back() {
               return _this3.back();
@@ -2478,7 +2485,7 @@ var ChatComponent = /*#__PURE__*/function (_Component) {
             })]
           });
         } else {
-          var containerHeight = innerHeight - 175;
+          var containerHeight = innerHeight - 225;
           console.log(jquery__WEBPACK_IMPORTED_MODULE_3___default()('main').css('width'));
           var messengerWidth = jquery__WEBPACK_IMPORTED_MODULE_3___default()('main').css('width').slice(0, -2) - 110;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
@@ -2830,6 +2837,7 @@ var InboxComponent = /*#__PURE__*/function (_Component) {
           showInboxes: inboxes
         });
       });
+      this.props.selectTab('inbox');
     }
   }, {
     key: "onInboxClick",
@@ -2856,7 +2864,7 @@ var InboxComponent = /*#__PURE__*/function (_Component) {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
               id: "inboxSearch",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                className: "py-2 w-11/12 mx-auto mt-4 relative",
+                className: "py-2 w-11/12 mx-auto mt-1 relative",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
                   type: "text",
                   name: "inboxSearch",
@@ -3157,6 +3165,7 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
           }
         }
       });
+      this.props.selectTab('requests');
     }
   }, {
     key: "render",
@@ -3178,7 +3187,7 @@ var RequestComponent = /*#__PURE__*/function (_Component) {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
               id: "requestSearch",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-                className: "py-2 w-11/12 mx-auto mt-4 relative",
+                className: "py-2 w-11/12 mx-auto mt-3 relative",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
                   type: "text",
                   name: "requestSearch",
@@ -3595,7 +3604,7 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
           })
         });
       } else {
-        var containerHeight = innerHeight - 175;
+        var containerHeight = innerHeight - 225;
         console.log(jquery__WEBPACK_IMPORTED_MODULE_3___default()('main').css('width'));
         var messengerWidth = jquery__WEBPACK_IMPORTED_MODULE_3___default()('main').css('width').slice(0, -2) - 110;
         console.log(this.state.requestInfo.images);
