@@ -41,5 +41,5 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/transaction',[App\Http\Controllers\PaymentController::class, 'makePayment'])->name('make-payment');
     Route::get('/{username}',[App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
     Route::get('editProfile/{username}',[App\Http\Controllers\ProfileController::class, 'editProfile'])->name('editProfile');
-    Route::get('updateProfile/{user_id}',[App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('updateProfile');
+    Route::post('updateProfile/{user_id}',[App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('updateProfile');
 });

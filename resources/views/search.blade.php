@@ -103,12 +103,16 @@
               </div>
               <div class="mt-2 w-full">
                 <div class="text-xs md:text-sm flex justify-center">
+                  @if (count($influencer->category) > 0)
                   <div class="w-1/3 text-center py-1 rounded mx-1" style="background: #f0f0fd;color:#8c82df;">
                     <p>{{ $influencer->category[0]->category_name }}</p>
                   </div>
                   <div class="w-1/3 text-center py-1 rounded mx-1" style="background: #fcefed;color:#dc8179">
                     <p>{{ $influencer->category[1]->category_name }}</p>
                   </div>
+                  @else
+                  <div style="height: 24px;"></div>
+                  @endif
                 </div>
               </div>
               <div class="mt-3 w-10/12 mx-auto" style="border-top: 1px solid lightgray">

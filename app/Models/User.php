@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'stripe_id',
     ];
 
     /**
@@ -77,6 +78,43 @@ class User extends Authenticatable
             return true;
         } else {
             return false;
+        }
+    }
+
+    public function updateCategory($user_id, $categories) {
+        $influencer = DB::table('influencers')
+        ->where('user_id', $user_id)
+        ->get();
+        if(count($influencer) > 0) {
+            $influencer_id = $influencer[0]->id;
+            $cats = DB::table('category_influencer')
+                    ->where('influencer_id', '=', $influencer_id)
+                    ->delete();
+            foreach ($categories as $category) {
+                DB::table('category_influencer')
+                        ->insert([
+                            'influencer_id' => $influencer_id,
+                            'category_id' => $category
+                        ]);
+            }
+            return true;
+        } else {
+            $brand = DB::table('brands')
+                    ->where('user_id', $user_id)
+                    ->get();
+            $brand_id = $brand[0]->id;
+            $cats = DB::table('category_brand')
+                    ->where('brand_id', '=', $brand_id)
+                    ->delete();
+            foreach ($categories as $category) {
+                DB::table('category_brand')
+                        ->insert([
+                            'brand_id' => $brand_id,
+                            'category_id' => $category
+                        ]);
+            }
+            return true;
+
         }
     }
 }

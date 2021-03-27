@@ -52,13 +52,22 @@ export class RequestDetailComponent extends Component {
     const this1 = this
     var channel = pusher.subscribe('fluenser-channel');
     channel.bind('fluenser-event', (data) => {
-      console.log('qwer');
-      console.log(data);
-      if(data.trigger == 'requestChat' && data.requestChat.request_id == this.state.requestInfo.id) {
-        const requestChats = this.state.requestChats;
-        requestChats.push(data.requestChat);
-        this.setState({requestChats});
-      }
+      if(data.trigger == 'requestChat'){
+        if(data.requestChat.request_id == this.state.requestInfo.id) {
+          const requestChats = this.state.requestChats;
+          requestChats.push(data.requestChat);
+          this.setState({requestChats});
+        }
+        if(data.request_id == this.state.requestInfo) {
+          if(data.data == 'accepted') {
+            var requestInfo = this.state.requestInfo;
+            requestInfo.accepted = 1;
+            this.setState({requestInfo});
+          } else {
+            this.props.back();
+          }
+        }
+      } 
     });
   }
 
@@ -126,6 +135,7 @@ export class RequestDetailComponent extends Component {
         requestInfo.accepted = 1;
         this.setState({requestInfo});
     });
+    this.confirmToggle('hide');
   }
 
   onDecline() {
@@ -142,7 +152,6 @@ export class RequestDetailComponent extends Component {
   }
 
   popUpToggle(a) {
-    console.log(a);
     if(a == 'show') {
       $("div#modal").css('display', 'block');
       $("div#modal input#price").val(this.state.requestInfo.amount);
@@ -150,6 +159,27 @@ export class RequestDetailComponent extends Component {
     }
     if(a == 'hide')
     $("div#modal").css('display', 'none');
+  }
+
+  confirmToggle(a) {
+    switch (a) {
+      case 'hide':
+        $("div#confirmModal").hide();
+        break;
+
+      case 'accept':
+        $('div.acceptConfirm').show();
+        break;
+      case 'decline':
+        $('div.declineConfirm').show();
+        break;
+      case 'deposit':
+        $('div.depositConfirm').show();
+        break;
+    
+      default:
+        break;
+    }
   }
 
   render() {
@@ -205,10 +235,61 @@ export class RequestDetailComponent extends Component {
                     Update
                   </button>
                 </div>
-
-
               </div>
           </div>
+
+
+          <div id="confirmModal" className="acceptConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
+              <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
+                <div className="rounded-t-xl h-10" style={{ background:'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))' }}>
+                  <p className="text-md md:text-lg text-center text-white font-bold leading-10">Accept Request</p>
+                  <a className="block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center" onClick={() => this.confirmToggle('hide')} style={{ boxShadow:'0 0 8px #353535' }}>
+                    <span className="leading-6"><i className="fas fa-times"></i></span>
+                  </a>
+                </div>
+                <div className="w-10/12 mx-auto">
+                  <p className="text-center text-md md:text-lg text-gray-500 mt-4">Are you sure to accept this request?</p>
+                </div>
+                <div className="w-11/12 mx-auto mt-3" id="confirmBtn">
+                  <button className="block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={this.onAccept}>Accept</button>
+                </div>
+              </div>
+          </div>
+
+          <div id="confirmModal" className="declineConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
+              <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
+                <div className="rounded-t-xl h-10" style={{ background:'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))' }}>
+                  <p className="text-md md:text-lg text-center text-white font-bold leading-10">Decline Request</p>
+                  <a className="block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center" onClick={() => this.confirmToggle('hide')} style={{ boxShadow:'0 0 8px #353535' }}>
+                    <span className="leading-6"><i className="fas fa-times"></i></span>
+                  </a>
+                </div>
+                <div className="w-10/12 mx-auto">
+                  <p className="text-center text-md md:text-lg text-gray-500 mt-4">Are you sure to decline this request?</p>
+                </div>
+                <div className="w-11/12 mx-auto mt-3" id="confirmBtn">
+                  <button className="block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={this.onDecline}>Decline</button>
+                </div>
+              </div>
+          </div>
+
+          <div id="confirmModal" className="depositConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
+              <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
+                <div className="rounded-t-xl h-10" style={{ background:'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))' }}>
+                  <p className="text-md md:text-lg text-center text-white font-bold leading-10">Create Deposit</p>
+                  <a className="block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center" onClick={() => this.confirmToggle('hide')} style={{ boxShadow:'0 0 8px #353535' }}>
+                    <span className="leading-6"><i className="fas fa-times"></i></span>
+                  </a>
+                </div>
+                <div className="w-10/12 mx-auto">
+                  <p className="text-center text-md md:text-lg text-gray-500 mt-4">Are you sure to create deposit for this request?</p>
+                </div>
+                <div className="w-11/12 mx-auto mt-3" id="confirmBtn">
+                  <button className="block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={this.createDeposit}>Create Deposit</button>
+                </div>
+              </div>
+          </div>
+
           <div className="w-full bg-white" style={{height:'70px', paddingTop:'10px'}}>
             <div style={{float:'left', marginLeft:'15px'}}>
               <a className="text-center text-gray-500" onClick={()=> this.props.back()} style={{lineHeight:'50px'}}>
@@ -323,16 +404,22 @@ export class RequestDetailComponent extends Component {
                       ?
                       <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-gray-500" disabled>Accepted</button>
                       :
-                      <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-green-600" onClick={this.onAccept}>Accept</button>
+                      <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-green-600" onClick={() => this.confirmToggle('accept')}>Accept</button>
                     }
                   </div>
                   <div className="col-span-1">
-                    <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-red-600" onClick={this.onDecline}>Decline</button>
+                    <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-red-600" onClick={() => this.confirmToggle('decline')}>Decline</button>
                   </div>
                 </div>
                 :
                 <div className="w-full">
-                  <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={() => this.popUpToggle('show')}>Update offer</button>
+                  {
+                    (this.state.requestInfo.accepted)
+                    ?
+                    <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={() => this.confirmToggle('deposit')}>Create Deposit</button>
+                    :
+                    <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={() => this.popUpToggle('show')}>Update offer</button>
+                  }
                 </div>
               }
             </div>

@@ -16,6 +16,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Stripe\Stripe;
 
 class RegisterController extends Controller
 {
@@ -82,6 +83,19 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        \Stripe\Stripe::setApiKey(env("STRIPE_SECRET"));
+
+        $stripeAccount = \Stripe\Account::create([
+            'type' => 'custom',
+            'email' => $data['email'],
+            'capabilities' => [
+                'card_payments' => ['requested' => true],
+                'transfers' => ['requested' => true],
+            ],
+        ]);
+
+        echo "OK";
+        echo $stripeAccount->id;
         $token = Str::random(60);
         $user = new User;
         $user->name = $data['name'];
@@ -90,6 +104,7 @@ class RegisterController extends Controller
         $user->api_token = hash('sha256', $token);
         $user->username = $data['name'];
         $user->loggedIn = true;
+        $user->stripe_id = $stripeAccount->id;
         $user->save();
 
         if($user->id != NULL) {
@@ -123,6 +138,8 @@ class RegisterController extends Controller
             $profile->tiktok = '';
             $profile->tiktok_follows = '';
             $profile->save();
+
+
 
             return $user;
         }

@@ -218,10 +218,22 @@ class MessageController extends Controller
         $request->accepted = 1;
         $request->save();
 
+        $pusher = new Pusher\Pusher('da7cd3b12e18c9e2e461', '566ee6622fcab95b7709', '1168466', array('cluster' => 'eu'));
+
+        $pusher->trigger('fluenser-channel', 'fluenser-event', [
+            'trigger' => 'acceptRequest',
+            'data' => 'accepted',
+            'request_id' => $request_id
+        ]);
+
         return response()->json([
             'status' => 200,
         ]);
 
+
+        return response()->json([
+            'status' => 200,
+        ]);
     }
 
     public function declineRequest($request_id) {

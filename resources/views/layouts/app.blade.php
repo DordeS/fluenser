@@ -71,7 +71,8 @@
             border-bottom: solid 4px rgb(83, 181, 193);
         }
         #mail-component #messageTab a.active,
-        #searchTab a.active {
+        #searchTab a.active,
+        #collTab a.active {
             border-bottom: solid 2px #4db3c1;
         }
         #searchTab a.active {

@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
                         ->nullable()
                         ->default(null);
             $table->bool('loggedIn');
+            $table->string('stripe_id');
             $table->rememberToken();
             $table->timestamps();
         });

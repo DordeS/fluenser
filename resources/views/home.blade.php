@@ -9,7 +9,7 @@
         <span class="mx-4 px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8" style="border-bottom: 2px solid #4db3c1">{{ __('NEWS FEED') }}</span>
     </div>
     <div class="w-full md:max-w-7xl mx-auto">
-        <a href="#">
+        <a href="{{ $account_link }}">
             <div class="w-11/12 mx-auto rounded-xl px-2 py-2 mt-3" style="box-shadow: 0 0 10px 0 #999">
                 <div class="float-left h-12 w-12 px-1 py-1 rounded-full my-2" style="background: #feeaef">
                     <img src="{{ asset('img/caution.png') }}" alt="caution" class="w-full">

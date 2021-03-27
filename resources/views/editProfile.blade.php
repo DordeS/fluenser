@@ -8,7 +8,7 @@
 <main>
   <input type="file" name="image" id="hidden-input" hidden>
   <div class="w-full md:max-w-7xl mx-auto mb-12">
-  <form action={{route('updateProfile', ['user_id' => $influencerInfo->id])}}>
+  <form method="post" action={{route('updateProfile', ['user_id' => $influencerInfo->id])}}>
     {{ csrf_field() }}
     <!-- Replace with your content -->
       <div class="bg-white">
@@ -39,7 +39,7 @@
             <input type="text" name="name" id="name" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('name') is-invalid @enderror" value="{{ $influencerInfo->name }}">
 
             <label for="username" class="text-gray-500 text-sm md:text-md">Username</label>
-            <input type="text" name="username" id="username" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('username') is-invalid @enderror" value="{{ '@'.$influencerInfo->username }}">
+            <input type="text" name="username" id="username" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('username') is-invalid @enderror" value="{{ $influencerInfo->username }}">
 
             <label for="location" class="text-gray-500 text-sm md:text-md">Location</label>
             <input type="text" name="location" id="location" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('location') is-invalid @enderror" value="{{ $influencerInfo->state.','.$influencerInfo->country }}">
@@ -89,10 +89,10 @@
             
             <label for="categories" class="text-gray-500 text-sm md:text-md">Choose 2 categories that describe your content the best</label>
             <div class="bg-gray-100 block w-full border-none rounded text-gray-700 font-semibold shadow-inner px-2 py-1 relative pt-3 mb-3">
-              <input type="text" id="categories" class="block w-11/12 mx-auto rounded-full text-gray-700 text-sm md:text-md" style="border: 1px solid lightgray" placeholder="Categories">
+              <input type="text" id="categories" class="block w-11/12 mx-auto rounded-full text-gray-700 text-sm md:text-md" style="border: 1px solid lightgray" placeholder="Categories" readonly>
               <div class="w-11/12 mx-auto py-2 px-3 my-3 h-24 overflow-auto rounded-xl" style="box-shadow: 0 0 8px 0 #999">
                 @foreach ($categories as $category)
-                  <input type="checkbox" class="rounded border-gray-400 bg-gray-100" name="category" id="category" value="{{ $category->category_name }}"><label for="category" class="text-gray-700 text-xs md:text-sm">&nbsp;&nbsp;{{ $category->category_name }}</label><br/>
+                  <input type="checkbox" class="rounded border-gray-400 bg-gray-100" name="category[]" id="category" value="{{ $category->id }}"><label for="category" class="text-gray-700 text-xs md:text-sm">&nbsp;&nbsp;{{ $category->category_name }}</label><br/>
                 @endforeach
               </div>
             </div>
@@ -145,7 +145,7 @@
           </div>
         </div>
         <div class="w-full">
-          <button type="submit" class="relative text-white font-semibold block mx-auto px-20 py-2 rounded -top-16" style="background: #0ac2c8">Update</button>
+          <button onclick="submitForm()" type="button" class="relative text-white font-semibold block mx-auto px-20 py-2 rounded -top-16" style="background: #0ac2c8">Update</button>
         </div>
       </div>
     </form>
@@ -283,8 +283,6 @@
             divElement.append(imgElement);
             divElement.append(linkElement);
             $("#portfolio-gallery").append(divElement);
-            var value = $("textarea#input-portfolio").val();
-            $("textarea#input-portfolio").val(value + base64data);
             break;
           case 'partnership':
             var divElement = $('<div id="gallery-item" class="float-left mr-3 my-2 relative"></div>');
@@ -293,8 +291,6 @@
             divElement.append(imgElement);
             divElement.append(linkElement);
             $("#partnership-gallery").append(divElement);
-            var value = $("textarea#input-partnership").val();
-            $("textarea#input-partnership").val(value + base64data);
             break;
           default:
             break;
@@ -303,5 +299,26 @@
       }
       });
     });
+
+    function submitForm() {
+      var images = $("div#portfolio-gallery img");
+      console.log(images);
+      var imageData = [];
+      for (let i = 0; i < images.length; i++) {
+        const image = images[i];
+        imageData.push(image.src);
+      }
+      $("textarea#input-portfolio").val(JSON.stringify(imageData));
+
+      images = $("div#partnership-gallery img");
+      imageData = [];
+      for (let i = 0; i < images.length; i++) {
+        const image = images[i];
+        imageData.push(image.src);
+      }
+      $("textarea#input-partnership").val(JSON.stringify(imageData));
+
+      $("form").submit();
+    }
 </script>
 @endsection

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\InfluencerInfo;
 use App\Models\BrandInfo;
 use App\Models\Profile;
+use Stripe\Stripe;
 
 class HomeController extends Controller
 {
@@ -36,15 +37,21 @@ class HomeController extends Controller
 
         $profile = new Profile();
         $portfolios = $profile->getPortfolios(Auth::user()->id);
-        // echo $accountInfo;
 
-        // echo $portfolios;
+        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        $account_links = \Stripe\AccountLink::create([
+            'account' => Auth::user()->stripe_id,
+            'refresh_url' => route('home'),
+            'return_url' => route('home'),
+            'type' => 'account_onboarding'
+        ]);
 
         return view('home', [
             'portfolios' => $portfolios,
             'accountType' => $accountInfo[0]->accountType,
             'accountInfo' => $accountInfo[0],
             'page' => $page,
+            'account_link' => $account_links->url,
         ]);
     }
 

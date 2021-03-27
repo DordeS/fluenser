@@ -3464,16 +3464,28 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
       var this1 = this;
       var channel = pusher.subscribe('fluenser-channel');
       channel.bind('fluenser-event', function (data) {
-        console.log('qwer');
-        console.log(data);
+        if (data.trigger == 'requestChat') {
+          if (data.requestChat.request_id == _this2.state.requestInfo.id) {
+            var requestChats = _this2.state.requestChats;
+            requestChats.push(data.requestChat);
 
-        if (data.trigger == 'requestChat' && data.requestChat.request_id == _this2.state.requestInfo.id) {
-          var requestChats = _this2.state.requestChats;
-          requestChats.push(data.requestChat);
+            _this2.setState({
+              requestChats: requestChats
+            });
+          }
 
-          _this2.setState({
-            requestChats: requestChats
-          });
+          if (data.request_id == _this2.state.requestInfo) {
+            if (data.data == 'accepted') {
+              var requestInfo = _this2.state.requestInfo;
+              requestInfo.accepted = 1;
+
+              _this2.setState({
+                requestInfo: requestInfo
+              });
+            } else {
+              _this2.props.back();
+            }
+          }
         }
       });
     }
@@ -3560,6 +3572,7 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
           requestInfo: requestInfo
         });
       });
+      this.confirmToggle('hide');
     }
   }, {
     key: "onDecline",
@@ -3579,8 +3592,6 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
   }, {
     key: "popUpToggle",
     value: function popUpToggle(a) {
-      console.log(a);
-
       if (a == 'show') {
         jquery__WEBPACK_IMPORTED_MODULE_3___default()("div#modal").css('display', 'block');
         jquery__WEBPACK_IMPORTED_MODULE_3___default()("div#modal input#price").val(this.state.requestInfo.amount);
@@ -3588,6 +3599,30 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
       }
 
       if (a == 'hide') jquery__WEBPACK_IMPORTED_MODULE_3___default()("div#modal").css('display', 'none');
+    }
+  }, {
+    key: "confirmToggle",
+    value: function confirmToggle(a) {
+      switch (a) {
+        case 'hide':
+          jquery__WEBPACK_IMPORTED_MODULE_3___default()("div#confirmModal").hide();
+          break;
+
+        case 'accept':
+          jquery__WEBPACK_IMPORTED_MODULE_3___default()('div.acceptConfirm').show();
+          break;
+
+        case 'decline':
+          jquery__WEBPACK_IMPORTED_MODULE_3___default()('div.declineConfirm').show();
+          break;
+
+        case 'deposit':
+          jquery__WEBPACK_IMPORTED_MODULE_3___default()('div.depositConfirm').show();
+          break;
+
+        default:
+          break;
+      }
     }
   }, {
     key: "render",
@@ -3715,6 +3750,165 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
                   },
                   onClick: this.updateOffer,
                   children: "Update"
+                })
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            id: "confirmModal",
+            className: "acceptConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "w-11/12 h-48 bg-white absolute rounded-xl",
+              style: {
+                top: '50%',
+                marginTop: '-6rem',
+                left: '50%',
+                marginLeft: '-45.83333%'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                className: "rounded-t-xl h-10",
+                style: {
+                  background: 'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))'
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-md md:text-lg text-center text-white font-bold leading-10",
+                  children: "Accept Request"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                  className: "block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center",
+                  onClick: function onClick() {
+                    return _this6.confirmToggle('hide');
+                  },
+                  style: {
+                    boxShadow: '0 0 8px #353535'
+                  },
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                    className: "leading-6",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                      className: "fas fa-times"
+                    })
+                  })
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "w-10/12 mx-auto",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-center text-md md:text-lg text-gray-500 mt-4",
+                  children: "Are you sure to accept this request?"
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "w-11/12 mx-auto mt-3",
+                id: "confirmBtn",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                  className: "block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md",
+                  style: {
+                    background: 'rgb(88,183,189)'
+                  },
+                  onClick: this.onAccept,
+                  children: "Accept"
+                })
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            id: "confirmModal",
+            className: "declineConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "w-11/12 h-48 bg-white absolute rounded-xl",
+              style: {
+                top: '50%',
+                marginTop: '-6rem',
+                left: '50%',
+                marginLeft: '-45.83333%'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                className: "rounded-t-xl h-10",
+                style: {
+                  background: 'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))'
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-md md:text-lg text-center text-white font-bold leading-10",
+                  children: "Decline Request"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                  className: "block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center",
+                  onClick: function onClick() {
+                    return _this6.confirmToggle('hide');
+                  },
+                  style: {
+                    boxShadow: '0 0 8px #353535'
+                  },
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                    className: "leading-6",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                      className: "fas fa-times"
+                    })
+                  })
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "w-10/12 mx-auto",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-center text-md md:text-lg text-gray-500 mt-4",
+                  children: "Are you sure to decline this request?"
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "w-11/12 mx-auto mt-3",
+                id: "confirmBtn",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                  className: "block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md",
+                  style: {
+                    background: 'rgb(88,183,189)'
+                  },
+                  onClick: this.onDecline,
+                  children: "Decline"
+                })
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+            id: "confirmModal",
+            className: "depositConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "w-11/12 h-48 bg-white absolute rounded-xl",
+              style: {
+                top: '50%',
+                marginTop: '-6rem',
+                left: '50%',
+                marginLeft: '-45.83333%'
+              },
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                className: "rounded-t-xl h-10",
+                style: {
+                  background: 'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))'
+                },
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-md md:text-lg text-center text-white font-bold leading-10",
+                  children: "Create Deposit"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("a", {
+                  className: "block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center",
+                  onClick: function onClick() {
+                    return _this6.confirmToggle('hide');
+                  },
+                  style: {
+                    boxShadow: '0 0 8px #353535'
+                  },
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                    className: "leading-6",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                      className: "fas fa-times"
+                    })
+                  })
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "w-10/12 mx-auto",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                  className: "text-center text-md md:text-lg text-gray-500 mt-4",
+                  children: "Are you sure to create deposit for this request?"
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                className: "w-11/12 mx-auto mt-3",
+                id: "confirmBtn",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                  className: "block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md",
+                  style: {
+                    background: 'rgb(88,183,189)'
+                  },
+                  onClick: this.createDeposit,
+                  children: "Create Deposit"
                 })
               })]
             })
@@ -3891,20 +4085,33 @@ var RequestDetailComponent = /*#__PURE__*/function (_Component) {
                     children: "Accepted"
                   }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
                     className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-green-600",
-                    onClick: this.onAccept,
+                    onClick: function onClick() {
+                      return _this6.confirmToggle('accept');
+                    },
                     children: "Accept"
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                   className: "col-span-1",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
                     className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-red-600",
-                    onClick: this.onDecline,
+                    onClick: function onClick() {
+                      return _this6.confirmToggle('decline');
+                    },
                     children: "Decline"
                   })
                 })]
               }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                 className: "w-full",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                children: this.state.requestInfo.accepted ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                  className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md",
+                  style: {
+                    background: 'rgb(88,183,189)'
+                  },
+                  onClick: function onClick() {
+                    return _this6.confirmToggle('deposit');
+                  },
+                  children: "Create Deposit"
+                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
                   className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md",
                   style: {
                     background: 'rgb(88,183,189)'
