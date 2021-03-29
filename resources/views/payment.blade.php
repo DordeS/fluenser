@@ -23,7 +23,7 @@
                         </div>
                         @endif
 
-                        <form role="form" action="{{ route('make-payment') }}" method="post" class="stripe-payment"
+                        <form role="form" method="post" class="stripe-payment"
                             data-cc-on-file="false" data-stripe-publishable-key="{{ env('STRIPE_KEY') }}"
                             id="stripe-payment">
                             @csrf

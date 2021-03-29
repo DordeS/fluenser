@@ -40,5 +40,8 @@ Route::middleware('auth:api')->group(function() {
     Route::get('/saveRequestChat/{request_id}/{send_id}/{receive_id}/{message}', [App\Http\Controllers\MessageController::class, 'saveRequestChat']);
     
     Route::get('/acceptRequest/{request_id}', [App\Http\Controllers\MessageController::class, 'acceptRequest']);
+
     Route::get('/declineRequest/{request_id}', [App\Http\Controllers\MessageController::class, 'declineRequest']);
+
+    Route::get('createDeposit/{paymentMethod}/{request_id}', [App\Http\Controllers\PaymentController::class, 'createDeposit'])->name('createDeposit');
 });
