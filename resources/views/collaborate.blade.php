@@ -10,7 +10,7 @@
     <div class="w-full md:max-w-7xl mx-auto sm:px-6 lg:px-8" id="collaborate" style="overflow: auto">
       <!-- Replace with your content -->
         <div class="px-4 sm:px-0 bg-white w-11/12 mx-auto my-3 md:max-w-lg pb-20">
-          <img src={{ asset('img/avatar-image/'.$influencerInfo->avatar.'.jpg') }} alt="$influencerInfo->avatar" class="w-4/5 mx-auto rounded-lg">
+          <img src={{ asset('img/profile-image/'.$influencerInfo->avatar.'.jpg') }} alt="$influencerInfo->avatar" class="w-4/5 mx-auto rounded-lg">
           <p class="text-center text-black text-lg md:text-xl font-bold">
             {{ $influencerInfo->name }}
           </p>
@@ -20,8 +20,18 @@
           <div class="w-full mt-10">
             <form action={{ route('saveRequest') }} method="post" id="requestForm">
               {{ csrf_field() }}
-              <input type="text" name="title" id="title" class="w-full rounded-lg bg-gray-200 border-none my-2" placeholder="Project Title">
-              <textarea name="detail" id="detail" class="w-full rounded-lg bg-gray-200 border-none my-2" placeholder="Describe your project" rows='5'></textarea>
+              <input type="text" name="title" id="title" class="w-full rounded-lg bg-gray-200 border-none my-2 @error('title') is-invalid @enderror" placeholder="Project Title" value="{{ old('title') }}">
+                @error('title')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+              <textarea name="detail" id="detail" class="w-full rounded-lg bg-gray-200 border-none my-2 @error('detail') is-invalid @enderror" placeholder="Describe your project" rows='5'>{{ old('detail') }}</textarea>
+                @error('detail')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
               <div class="attach w-full rounded-lg my-2">
                 {{-- file upload --}}
                 <div class="w-full min-h-lg sm:py-8">
@@ -88,7 +98,7 @@
                         $
                       </span>
                     </div>
-                    <input type="text" name="price" id="price" class="block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00" style="height: 38px">
+                    <input type="text" name="price" id="price" class="block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md @error('price') is-invalid @enderror" placeholder="0.00" style="height: 38px" value="{{ old('price') }}">
                     <div class="absolute inset-y-0 right-0 flex items-center">
                       <label for="currency" class="sr-only">Currency</label>
                       <select id="currency" name="currency" class="h-full py-0 pl-2 pr-7 border-transparent text-black sm:text-sm rounded-md bg-gray-300" style="height: 34px; margin-right:2px;">
@@ -101,6 +111,11 @@
                   </div>
                 </div>
               </div>
+              @error('price')
+                  <span class="invalid-feedback" role="alert">
+                      <strong>{{ $message }}</strong>
+                  </span>
+              @enderror
               <input type="text" name="brand_id" id="brand_id" value="{{ $accountInfo->id }}" hidden>
               <input type="text" name="influencer_id" id="influencer_id" value="{{ $influencerInfo->id }}" hidden>
               <textarea name="images" id="images" cols="30" rows="10" hidden></textarea>

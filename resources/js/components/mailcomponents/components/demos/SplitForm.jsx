@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useStripe,
   useElements,
@@ -9,6 +9,8 @@ import {
 
 import useResponsiveFontSize from "../../useResponsiveFontSize";
 import API from '../../../api';
+import constant from '../../../const';
+
 
 const useOptions = () => {
   const fontSize = useResponsiveFontSize();
@@ -36,11 +38,13 @@ const useOptions = () => {
 };
 
 const SplitForm = (props) => {
+  const [isWaiting, setIsWaiting] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
   const options = useOptions();
 
   const handleSubmit = async event => {
+    setIsWaiting(true);
     event.preventDefault();
 
     if (!stripe || !elements) {
@@ -68,6 +72,7 @@ const SplitForm = (props) => {
       }
       ).then((res) => {
         if(res.status == 200) {
+          setIsWaiting(false);
           props.afterDeposit();
         }
       });
@@ -130,9 +135,15 @@ const SplitForm = (props) => {
           }}
         />
       </label>
-      <button type="submit" disabled={!stripe}>
-        Pay
-      </button>
+        {
+          isWaiting
+          ?
+          <div className="w-1/3 mx-auto">
+            <img src={ constant.baseURL + 'img/loading.gif' } alt="loading" className="w-full"/>
+          </div>
+          :
+          <button type="submit" disabled={!stripe}>Pay</button>
+        }
     </form>
   );
 };

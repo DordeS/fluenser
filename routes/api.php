@@ -44,4 +44,6 @@ Route::middleware('auth:api')->group(function() {
     Route::get('/declineRequest/{request_id}', [App\Http\Controllers\MessageController::class, 'declineRequest']);
 
     Route::get('createDeposit/{paymentMethod}/{request_id}', [App\Http\Controllers\PaymentController::class, 'createDeposit'])->name('createDeposit');
+
+    Route::get('releaseDeposit/{request_id}', [App\Http\Controllers\PaymentController::class, 'releaseDeposit'])->name('releaseDeposit');
 });

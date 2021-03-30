@@ -78,7 +78,7 @@
             <div class="w-1/2 md:w-4/12 float-left rounded-lg pb-8" style="box-shadow: 0 0 3px 3px #eee">
               <div class="w-11/12 mx-auto relative">
                 <div class="w-8/12 mx-auto rounded-full px-1 py-1 mt-3" style="background: linear-gradient(to right, #06ebbe, #1277d3)" >
-                  <img class="rounded-full w-full" src="{{ asset('img/avatar-image/').'/'.$influencer->avatar.'.jpg' }}" alt="$influencer->avatar" style="border:solid 2px white">
+                  <img class="rounded-full w-full" src="{{ asset('img/profile-image/').'/'.$influencer->avatar.'.jpg' }}" alt="$influencer->avatar" style="border:solid 2px white">
                 </div>
               </div>
               <div class="mt-2">
@@ -119,15 +119,60 @@
                 <div class="text-lg md:text-xl text-center flex justify-between pt-1">
                   <div class="w-1/3 text-center">
                     <p><i class="fab fa-instagram" style="background:-webkit-linear-gradient(#792ec5, #c62e71, #da8a40);-webkit-background-clip: text;-webkit-text-fill-color: transparent;"></i></p>
-                    <p class="text-xs md:text-sm mt-1 text-gray-700 tracking-tighter">1k-10k</p>
+                    <p class="text-xs md:text-sm mt-1 text-gray-700 tracking-tighter">
+                      @switch($influencer->instagram_follows)
+                          @case(11)
+                              1k-10k
+                              @break
+                          @case(60)
+                              10k-50k
+                              @break
+                          @case(600)
+                              100k-500k
+                              @break
+                          @default
+                              unknown
+                              @break 
+                      @endswitch
+                    </p>
                   </div>
                   <div class="w-1/3 text-center" style="border-right: 1px solid lightgray; border-left:1px solid lightgray">
                     <p><i class="fab fa-youtube text-red-400"></i></p>
-                    <p class="text-xs md:text-sm mt-1 text-gray-700 tracking-tighter">10k-50k</p>
+                    <p class="text-xs md:text-sm mt-1 text-gray-700 tracking-tighter">
+                      @switch($influencer->youtube_follows)
+                          @case(11)
+                              1k-10k
+                              @break
+                          @case(60)
+                              10k-50k
+                              @break
+                          @case(600)
+                              100k-500k
+                              @break
+                          @default
+                              unknown
+                              @break 
+                      @endswitch
+                    </p>
                   </div>
                   <div class="w-1/3 text-center">
                     <p><i class="fab fa-tiktok text-gray-700"></i></p>
-                    <p class="text-xs md:text-sm mt-1 text-gray-700 tracking-tighter">100k-500k</p>
+                    <p class="text-xs md:text-sm mt-1 text-gray-700 tracking-tighter">
+                      @switch($influencer->tiktok_follows)
+                          @case(11)
+                              1k-10k
+                              @break
+                          @case(60)
+                              10k-50k
+                              @break
+                          @case(600)
+                              100k-500k
+                              @break
+                          @default
+                              unknown
+                              @break 
+                      @endswitch                      
+                    </p>
                   </div>
                 </div>
               </div>

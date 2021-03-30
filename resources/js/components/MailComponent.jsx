@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Route, Link, Redirect, useHistory } from 'react-router-dom';
 import InboxComponent from './mailcomponents/InboxComponent';
-import { RequestComponent } from './mailcomponents/RequestComponent';
-import { RequestDetailComponent } from './mailcomponents/RequestDetailComponent';
-import { ChatComponent } from './mailcomponents/ChatComponent';
+import RequestComponent from './mailcomponents/RequestComponent';
+import RequestDetailComponent from './mailcomponents/RequestDetailComponent';
+import ChatComponent from './mailcomponents/ChatComponent';
 import API from './api';
 import $ from 'jquery';
 
@@ -12,6 +12,8 @@ const Mail = (props) => {
   const [showItem, setShowItem] = useState('mail');
   const [inboxID, setInboxID] = useState(0);
   const [requestID, setrequestID] = useState(0);
+
+  const history = useHistory();
 
   const handleChatClick = (user1_id, user2_id) => {
     console.log(user1_id, user2_id);
@@ -35,8 +37,14 @@ const Mail = (props) => {
 
   const afterDeposit = () => {
     console.log('redirect');
-    const history = useHistory();
+    setShowItem('mail');
     history.push('/inbox');
+  }
+
+  const handleReview = (request_id) => {
+    console.log('review');
+    history.push('/leaveReview/' + request_id);
+    window.location.reload();
   }
 
   if (showItem == 'mail') {
@@ -64,14 +72,21 @@ const Mail = (props) => {
 
         <Route path="/inbox" exact>
           <InboxComponent 
-            inboxClickEvent = {(inboxID) => {setInboxID(inboxID); setShowItem('chat')}}
+            inboxClickEvent = {(inboxID) => {
+              setInboxID(inboxID);
+              setShowItem('chat');
+            }}
             selectTab = {(tabName) => selectTab(tabName)}
           />
         </Route>
 
         <Route path="/request" exact>
           <RequestComponent
-            requestClickEvent = {(requestID) => {setrequestID(requestID); setShowItem('requestDetail')}}
+            onRequestClick = {(requestID) => {
+              console.log('ooooo');
+              setrequestID(requestID);
+              setShowItem('requestDetail');
+            }}
             selectTab = {(tabName) => selectTab(tabName)}
           />
         </Route>
@@ -80,23 +95,21 @@ const Mail = (props) => {
   } else {
     if (showItem == 'chat') {
       return (
-        <Route path="/inbox/chat" exact>
-          <ChatComponent 
-            inboxID = {inboxID}
-            back = {setShowItem('mail')}
-          />
-        </Route>
+        <ChatComponent 
+          inboxID = {inboxID}
+          back = {() => setShowItem('mail')}
+          leaveReview = {(request_id) => handleReview(request_id)}
+        />
       )
     } else {
+      console.log(showItem);
       return (
-        <Route path="request/detail">
-          <RequestDetailComponent 
-            requestID = {requestID}
-            back = {setShowItem('mail')}
-            onChatClick = {(user1_id, user2_id) => handleChatClick(user1_id, user2_id)}
-            afterDeposit = {() => afterDeposit()}
-          />
-        </Route>
+        <RequestDetailComponent 
+          requestID = {requestID}
+          back = {() => setShowItem('mail')}
+          onChatClick = {(user1_id, user2_id) => handleChatClick(user1_id, user2_id)}
+          afterDeposit = {() => afterDeposit()}
+        />
       )
     }
   }

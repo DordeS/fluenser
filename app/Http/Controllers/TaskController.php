@@ -55,6 +55,7 @@ class TaskController extends Controller
         $location = (isset($input['country'])) ? $input['country'] : 'Any';
         $name = (isset($input['name'])) ? $input['name'] : '';
         $keyword = (isset($input['keyword'])) ? $input['keyword'] : '';
+        $perpage = (isset($input['perpage'])) ? $input['perpage'] : 10;
 
         $account = new User();
         $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
@@ -68,7 +69,7 @@ class TaskController extends Controller
         // search influencers
 
         $influencers = new Influencers();
-        $foundInfluencers = $influencers->findInfluencers($category, $location, $name, $keyword);
+        $foundInfluencers = $influencers->findInfluencers($category, $location, $name, $keyword, $perpage);
 
         return view('search', [
             'selectedCategory' => $category,

@@ -21,6 +21,8 @@ class CreateBrandInfoTabel extends Migration
             $table->integer('posts')->default(0);
             $table->string('avatar')->default('johndoeavatar');
             $table->string('back_img')->default('johndoeback');
+            $table->integer('rating');
+            $table->integer('reviews');
             $table->timestamps();
         });
     }

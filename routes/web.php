@@ -52,4 +52,8 @@ Route::middleware(['auth'])->group(function() {
     Route::get('editProfile/{username}',[App\Http\Controllers\ProfileController::class, 'editProfile'])->name('editProfile');
     
     Route::post('updateProfile/{user_id}',[App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('updateProfile');
+
+    Route::get('leaveReview/{request_id}', [App\Http\Controllers\CollaborateController::class, 'leaveReview'])->name('leaveReview');
+
+    Route::post('submitReview/{request_id}', [App\Http\Controllers\CollaborateController::class, 'submitReview'])->name('submitReview');
 });

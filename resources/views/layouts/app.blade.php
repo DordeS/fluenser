@@ -152,6 +152,9 @@
         a.payMethod.active div.payMethod p {
             color: white;
         }
+        #star-rating a:hover {
+            color: rgba(251, 191, 36);
+        }
     </style>
 </head>
 <body>
@@ -192,6 +195,12 @@
         @yield('content')
     </div>
     <script>
+        var qualityCount = 0;
+        var comCount = 0;
+        var experCount = 0;
+        var professCount = 0;
+        var againCount = 0;
+
         $(document).ready(function() {
           var page = {{ $page }};
           var element = $("#mobile-menu a").eq(page - 1);
@@ -221,6 +230,7 @@
                 }
               };
             });
+            
             $("#searchTab a").click(function() {
                 console.log($(this).attr('href'));
                 $("#searchTab a.active").removeClass('active');
@@ -233,7 +243,43 @@
             $("a.payMethod").click(function() {
                 $("a.payMethod.active").removeClass('active');
                 $(this).addClass('active');
-            })
+            });
+
+            $("#star-rating a").click(function() {
+
+                if($(this).attr('class').search('text-gray-400')) {
+                    $(this).removeClass('text-gray-400').addClass('text-yellow-400');
+                }
+
+                var count = $(this).attr('class').split('star-')[1][0];
+                switch ($(this).parent().attr('id')) {
+                    case 'Quality':
+                        qualityCount = count;
+                        break;
+                    case 'Communication':
+                        comCount = count;
+                        break;
+                    case 'Expertise':
+                        experCount = count;
+                        break;
+                    case 'Professionalism':
+                        professCount = count;
+                        break;
+                    case 'Would':
+                        againCount = count;
+                        break;
+                    default:
+                        break;
+                }
+                
+                $(this).prevAll().removeClass('text-gray-400').addClass('text-yellow-400');
+                $(this).nextAll().removeClass('text-yellow-400').addClass('text-gray-400');
+
+                console.log(qualityCount, comCount, experCount, professCount, againCount);
+
+                var rating = (parseInt(qualityCount) + parseInt(comCount) + parseInt(experCount) + parseInt(professCount) + parseInt(againCount)) / 5;
+                $('input#rating').val(rating);
+            });
 
         });
     </script>

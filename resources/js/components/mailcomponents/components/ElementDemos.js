@@ -48,6 +48,7 @@ const ElementDemos = ( props ) => {
           onChange={event => {
             history.push(event.target.value);
           }}
+          hidden
         >
           {demos.map(({ path, label }) => (
             <option key={path} value={'/request' + path}>

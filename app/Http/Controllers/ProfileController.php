@@ -28,16 +28,17 @@ class ProfileController extends Controller
 
         $accountInfo = $user->getAccountInfoByUserID(Auth::user()->id);
 
-        $reviews = Review::where('influencer_id', $influencerInfo[0]->id)->get();
+        $review = new Review();
+        $reviews = $review->getReviewsByUserID($user_id);
 
         $profile = Profile::where('user_id', $user_id)->get();
 
         $portfolios = Portfolio::where('profile_id', $profile[0]->id)->get();
 
         $category = new Category();
-        $categories = $category->getCategories($influencerInfo[0]->id);
+        $categories = $category->getCategories($influencerInfo[0]->influencer_id);
 
-        $partnerships = Partnership::where('influencer_id', $influencerInfo[0]->id)->get();
+        $partnerships = Partnership::where('influencer_id', $influencerInfo[0]->influencer_id)->get();
 
         return view('profile', [
             'page' => 4,
@@ -59,14 +60,12 @@ class ProfileController extends Controller
         
         $accountInfo = $user->getAccountInfoByUserID(Auth::user()->id);
 
-        $reviews = Review::where('influencer_id', $influencerInfo[0]->influencer_id)->get();
-
         $profile = Profile::where('user_id', $user_id)->get();
 
         $portfolios = Portfolio::where('profile_id', $profile[0]->id)->get();
 
         $category = new Category();
-        $categories = $category->getCategories($influencerInfo[0]->id);
+        $categories = $category->getCategories($influencerInfo[0]->influencer_id);
         if(count($categories) == 0) $categories = Category::all();
 
         $partnerships = Partnership::where('influencer_id', $influencerInfo[0]->influencer_id)->get();
@@ -77,7 +76,6 @@ class ProfileController extends Controller
             'influencerInfo' => $influencerInfo[0],
             'profile' => $profile[0],
             'portfolios' => $portfolios,
-            'reviews' => $reviews,
             'categories' => $categories,
             'partnerships' => $partnerships,
         ]);
@@ -195,11 +193,12 @@ class ProfileController extends Controller
                 $filename = uniqid();
                 $file = $folderPath . $filename . '.jpg';
                 file_put_contents($file, $image_base64);
-                    $portfolio = new Portfolio;
-                $portfolio->influencer_id = $influencer_id;
-                $portfolio->partnership_img = $filename;
+
+                $portfolio = new Portfolio;
+                $portfolio->profile_id = $profile_id;
+                $portfolio->slide_img = $filename;
                 $portfolio->save();
-            }
+        }
         }
 
         // update partnerships
@@ -225,7 +224,7 @@ class ProfileController extends Controller
                     $file = $folderPath . $filename . '.jpg';
                     file_put_contents($file, $image_base64);
                     $partnership = new Partnership;
-                    $partnership->profile_id = $profile_id;
+                    $partnership->influencer_id = $influencer_id;
                     $partnership->partnership_img = $filename;
                     $partnership->save();
                 }

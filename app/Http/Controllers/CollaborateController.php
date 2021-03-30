@@ -10,6 +10,7 @@ use App\Models\InfluencerInfo;
 use App\Models\Requests;
 use App\Models\RequestInfo;
 use App\Models\RequestImg;
+use App\Models\Review;
 use Illuminate\Support\Facades\Validator;
 
 class CollaborateController extends Controller
@@ -106,7 +107,62 @@ class CollaborateController extends Controller
             'trigger' => 'request',
         ]);
 
-
         return redirect('request');
+    }
+
+    public function leaveReview($request_id){
+        $request = Requests::find($request_id);
+        
+        $requestInfo = RequestInfo::where('request_id', '=', $request_id)->get();
+
+        $user_id = (Auth::user()->id == $request->send_id) ? $request->receive_id : $request->send_id;
+        $user = new User();
+        $accountInfo = $user->getAccountInfoByUserID($user_id);
+
+        return view('review', [
+            'page' => 0,
+            "accountInfo" => $accountInfo[0],
+            'requestInfo' => $requestInfo[0],
+        ]);
+    }
+
+    public function submitReview(Request $request, $request_id) {
+        $input = $request->all();
+
+        $request = Requests::find($request_id);
+        $user_id = (Auth::user()->id == $request->send_id) ? $request->receive_id : $request->send_id;
+
+        $review = new Review;
+        $review->user_id = $user_id;
+        $review->request_id = $request_id;
+        $review->review = $input['comment'];
+        $review->star = $input['rating'];
+        $review->save();
+
+        $requestInfo = RequestInfo::where('request_id', '=', $request_id)->get();
+        $requestInfo[0]->status = 4;
+        $requestInfo[0]->save();
+
+        $user = new User();
+        $accountInfo = $user->getAccountInfoByUserID($user_id);
+        $reviews = Review::where('user_id', '=', $user_id)->get();
+        $totalRating = 0;
+        foreach ($reviews as $review) {
+            $totalRating += $review->star;
+        }
+        $totalRating = $totalRating/count($reviews);
+
+        if($accountInfo->accountType == 'brand') {
+            $brandInfo = BrandInfo::where('brand_id', '=', $accountInfo->brand_id)->get();
+            $brandInfo[0]->rating = $totalRating;
+            $brandInfo[0]->reviews = count($reviews);
+        }
+        if($accountInfo->accountType == 'influencer') {
+            $influencerInfo = InfluencerInfo::where('influencer_id', '=', $accountInfo->influencer_id)->get();
+            $influencerInfo[0]->rating = $totalRating;
+            $influencerInfo[0]->reviews = count($reviews);
+        }
+
+        return redirect()->route('home');
     }
 }

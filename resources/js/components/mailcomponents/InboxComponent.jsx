@@ -4,18 +4,18 @@ import constant from '../const';
 import $, { error, map } from 'jquery';
 
 const InboxComponent = (props) => {
-  const [inboxes, setInboxes] = useState([]);
+
   const [showInboxes, setShowInboxes] = useState([]);
   const [isWaiting, setIsWaiting] = useState(true);
-  const [inboxSearch, setInboxSearch] = useState("Search here ...");
+  const [inboxSearch, setInboxSearch] = useState("");
+  const [inboxes, setInboxes] = useState([]);
 
   const onSearch = (e) => {
-    e.preventDefault();
-    var keyword = inboxSearch.value;
+    var keyword = inboxSearch;
     console.log(keyword);
-    var inboxes = inboxes;
+    var tempInboxes = inboxes;
     var newInboxes = [];
-    inboxes.map((inbox, i) => {
+    tempInboxes.map((inbox, i) => {
       console.log(inbox.accountInfo[0].name.toUpperCase().search(keyword.toUpperCase()));
       if(inbox.accountInfo[0].name.toUpperCase().search(keyword.toUpperCase()) != -1) {
         newInboxes.push(inbox);
@@ -64,11 +64,10 @@ const InboxComponent = (props) => {
     });
     var channel = pusher.subscribe('fluenser-channel');
     channel.bind('fluenser-event', function(data) {
-      const inboxes = inboxes;
-      inboxes.push(data.data);
-      console.log(inboxes);
-      setInboxes(inboxes);
-      setShowInboxes(inboxes);
+      const inboxe = inboxes;
+      inboxe.push(data.data);
+      setInboxes(inboxe);
+      setShowInboxes(inboxe);
     });
 
     props.selectTab('inbox');
@@ -86,7 +85,7 @@ const InboxComponent = (props) => {
         <div>
           <div id="inboxSearch">
             <div className="py-2 w-11/12 mx-auto mt-1 relative">
-              <input type="text" value={inboxSearch} id="inboxSearch" style={{ height:'45px',  }} className="w-full px-6 py-1 rounded-full bg-gray-100 border-none" onChange={handleOnChange}/>
+              <input type="text" value={inboxSearch} id="inboxSearch" style={{ height:'45px',  }} className="w-full px-6 py-1 rounded-full bg-gray-100 border-none" onChange={handleOnChange} placeholder="Search here..."/>
               <button className="absolute right-4 text-gray-500" style={{height:'45px'}} onClick={onSearch}>
                 <i className="fas fa-search"></i>
               </button>
@@ -105,7 +104,7 @@ const InboxComponent = (props) => {
         <div>
           <div id="inboxSearch">
             <div className="py-2 w-11/12 mx-auto mt-4 relative">
-            <input type="text" value={inboxSearch} id="inboxSearch" style={{ height:'45px',  }} className="w-full px-6 py-1 rounded-full bg-gray-100 border-none" onChange={handleOnChange}/>
+            <input type="text" value={inboxSearch} id="inboxSearch" style={{ height:'45px',  }} className="w-full px-6 py-1 rounded-full bg-gray-100 border-none" onChange={handleOnChange} placeholder="Search here..."/>
               <button className="absolute right-4 text-gray-500" style={{height:'45px'}} onClick={onSearch}>
                 <i className="fas fa-search"></i>
               </button>

@@ -42,7 +42,7 @@
                   <p class="text-xs md:text-sm text-gray-700 mt-1">{{ '@'.$influencerInfo->username }}</p>
                   <div class="text-xs md:text-sm">
                     <span style="line-height:26px;">
-                      @for ($i = 0; $i < 5; $i++)
+                      @for ($i = 0; $i < 5 ; $i++)
                         @if ($influencerInfo->rating > $i)
                           <i class="fas fa-star text-yellow-400"></i>
                         @else
@@ -66,13 +66,13 @@
                 </div>
                 <div id="social_links" class="w-3/5 float-right">
                   <div class="w-10 h-10 rounded-full float-right mx-1 bg-white text-center" style="box-shadow: 0 0  8px 0 #999">
-                    <a href="#" class="text-center leading-10"><i class="fab fa-tiktok"></i></a>
+                    <a href="{{ $profile->tiktok }}" class="text-center leading-10"><i class="fab fa-tiktok"></i></a>
                   </div>
                   <div class="w-10 h-10 rounded-full float-right mx-1 bg-white text-center" style="box-shadow: 0 0  8px 0 #999">
-                    <a href="#" class="text-center leading-10 text-red-700"><i class="fab fa-youtube"></i></a>
+                    <a href="{{ $profile->youtube }}" class="text-center leading-10 text-red-700"><i class="fab fa-youtube"></i></a>
                   </div>
                   <div class="w-10 h-10 rounded-full float-right mx-1 bg-white text-center" style="box-shadow: 0 0  8px 0 #999">
-                    <a href="#" class="text-center leading-10"><i class="fab fa-instagram" style="background:-webkit-linear-gradient(#792ec5, #c62e71, #da8a40);-webkit-background-clip: text;-webkit-text-fill-color: transparent;"></i></a>
+                    <a href="{{ $profile->instagram }}" class="text-center leading-10"><i class="fab fa-instagram" style="background:-webkit-linear-gradient(#792ec5, #c62e71, #da8a40);-webkit-background-clip: text;-webkit-text-fill-color: transparent;"></i></a>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -98,8 +98,96 @@
                 {{ $profile->introduction }}
               </p>
             </div>
-          </div>
-          <div id="reviews" class="tabcontent w-11/12 mx-auto">
+            <div id="portfolio" class="w-full mx-auto">
+              <div class="portfolio_slides relative">
+                <div id="demo" class="carousel slide rounded-xl relative z-10" data-ride="carousel">
+                  {{-- <!-- Indicators -->
+                  <ul class="carousel-indicators">
+                    <li data-target="#demo" data-slide-to="0" class="active"></li>
+                    @for ($i = 1; $i < count($portfolios); $i++)
+                      <li data-target="#demo" data-slide-to={{ $i + 1 }}></li>
+                    @endfor
+                  </ul> --}}
+                  <!-- The slideshow -->
+                  <div class="carousel-inner">
+                    @if (count($portfolios) > 0)
+                    <div class="carousel-item active">
+                      <div id="count" class="bg-gray-900 bg-opacity-70 absolute bottom-5 right-5 px-4 py-2 rounded-lg z-30">
+                        <p class="text-center text-white">
+                          {{ '1/'.count($portfolios) }}
+                        </p>
+                      </div>
+                      <img src={{ asset('img/profile-image/'.$portfolios[0]->slide_img).'.jpg' }} alt={{ $portfolios[0]->slide_img }} class="w-full rounded-xl">
+                    </div>
+                    
+                    @for ($i = 1; $i < count($portfolios); $i++)
+                    <div class="carousel-item">
+                      <div id="count" class="bg-gray-900 bg-opacity-70 absolute bottom-5 right-5 px-4 py-2 rounded-lg z-30">
+                        <p class="text-center text-white">
+                          {{ ($i + 1).'/'.count($portfolios) }}
+                        </p>
+                      </div>
+                      <img src={{ asset('img/profile-image/'.$portfolios[$i]->slide_img).'.jpg' }} alt={{ $portfolios[$i]->slide_img }} class="w-full rounded-xl">
+                    </div>
+                    @endfor
+                    @else
+                    <div class="text-center w-full">
+                      <p class="text-sm md:text-md">Please complete you profile</p>
+                    </div>
+                    @endif
+                  </div>
+                </div>
+                <div>
+                  <div class="w-11/12 bg-gray-300 h-20 rounded-xl absolute" style="left: 50%; margin-left: -46%; bottom:-1rem; z-index:2"></div>
+                  <div class="w-10/12 bg-gray-200 h-20 rounded-xl absolute" style="left: 50%;margin-left: -42%; bottom:-2rem; z-index:1"></div>
+                </div>
+              </div>
+            </div>
+
+
+
+              <div id="partnership" class="w-full mx-auto rounded pb-14" style="box-shadow: 0 0 3px 3px #eee;">
+                <p class="text-center text-gray-500 py-5 text-lg md:text-xl font-bold">
+                  Influencer Partnerships
+                </p>
+                <div id="partnership_slide">
+                  <div class="w-11/12 mx-auto">
+                    <div id="partnerships" class="carousel slide rounded-xl relative z-10" data-ride="carousel">
+                      <!-- Indicators -->
+                      <ul class="carousel-indicators">
+                        <li data-target="#partnerships" data-slide-to="0" class="active"></li>
+                        @for ($i = 1; $i < count($partnerships); $i++)
+                          <li data-target="#partnerships" data-slide-to={{ $i + 1 }}></li>
+                        @endfor
+                      </ul>
+                      <!-- The slideshow -->
+                      <div class="carousel-inner">
+                        @if(count($partnerships) > 0)
+                        <div class="carousel-item active">
+                          <img src={{ asset('img/partnership-image/'.$partnerships[0]->partnership_img).'.jpg' }} alt={{ $partnerships[0]->partnership_img }} class="w-full rounded-xl">
+                        </div>
+                        
+                        @for ($i = 1; $i < count($partnerships); $i++)
+                        <div class="carousel-item">
+                          <img src={{ asset('img/partnership-image/'.$partnerships[$i]->partnership_img).'.jpg' }} alt={{ $partnerships[$i]->partnership_img }} class="w-full rounded-xl">
+                        </div>
+                        @endfor
+                        @else
+                        <div class="text-center w-full">
+                          <p class="text-sm md:text-md">Please complete you profile</p>
+                        </div>
+                        @endif
+      
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              
+            </div>
+          <div id="reviews" class="tabcontent w-11/12 mx-auto pb-10">
             <div id="reviews" class="w-11/12 mx-auto my-8">
               @if (count($reviews) == 0)
                 <p class="text-center text-md md:text-lg">
@@ -107,93 +195,30 @@
                 </p>
               @else
                 @foreach ($reviews as $review)
-                    <p class="text-center text-md md:text-lg">
-                      {{ $review }}
+                  <div class="title my-2">
+                    <p class="text-lg md:text-xl font-bold">
+                      {{ $review->title }}
                     </p>
+                  </div>
+                  <div class="rating my-2">
+                    <span class="px-2 py-1 bg-yellow-400 rounded-md text-white text-xs md:text-sm">{{ number_format($review->star, 1) }}</span>
+                    @for ($i = 0; $i < 5; $i++)
+                      @if ($review->star > $i)
+                        <i class="fas fa-star text-yellow-400"></i>
+                      @else
+                        <i class="fas fa-star text-gray-400"></i>
+                      @endif
+                    @endfor
+                  </div>
+                  <div class="review my-2">
+                    <p class="text-sm md:text-md">{{ $review->review }}</p>
+                  </div>
+                  <div class="com my-2">
+                    <p class="text-xs md:text-sm text-gray-500">by {{ $review->name }} - {{ $review->interval }} ago</p>
+                  </div>
+                  <hr class="mt-3">
                 @endforeach
               @endif
-            </div>
-          </div>
-          <div id="portfolio" class="w-11/12 mx-auto">
-            <div class="portfolio_slides relative">
-              <div id="demo" class="carousel slide rounded-xl relative z-10" data-ride="carousel">
-                {{-- <!-- Indicators -->
-                <ul class="carousel-indicators">
-                  <li data-target="#demo" data-slide-to="0" class="active"></li>
-                  @for ($i = 1; $i < count($portfolios); $i++)
-                    <li data-target="#demo" data-slide-to={{ $i + 1 }}></li>
-                  @endfor
-                </ul> --}}
-                <!-- The slideshow -->
-                <div class="carousel-inner">
-                  @if (count($portfolios) > 0)
-                  <div class="carousel-item active">
-                    <div id="count" class="bg-gray-900 bg-opacity-70 absolute bottom-5 right-5 px-4 py-2 rounded-lg z-30">
-                      <p class="text-center text-white">
-                        {{ '1/'.count($portfolios) }}
-                      </p>
-                    </div>
-                    <img src={{ asset('img/profile-image/'.$portfolios[0]->slide_img).'.jpg' }} alt={{ $portfolios[0]->slide_img }} class="w-full rounded-xl">
-                  </div>
-                  
-                  @for ($i = 1; $i < count($portfolios); $i++)
-                  <div class="carousel-item">
-                    <div id="count" class="bg-gray-900 bg-opacity-70 absolute bottom-5 right-5 px-4 py-2 rounded-lg z-30">
-                      <p class="text-center text-white">
-                        {{ ($i + 1).'/'.count($portfolios) }}
-                      </p>
-                    </div>
-                    <img src={{ asset('img/profile-image/'.$portfolios[$i]->slide_img).'.jpg' }} alt={{ $portfolios[$i]->slide_img }} class="w-full rounded-xl">
-                  </div>
-                  @endfor
-                  @else
-                  <div class="text-center w-full">
-                    <p class="text-sm md:text-md">Please complete you profile</p>
-                  </div>
-                  @endif
-                </div>
-              </div>
-              <div>
-                <div class="w-11/12 bg-gray-300 h-20 rounded-xl absolute" style="left: 50%; margin-left: -46%; bottom:-1rem; z-index:2"></div>
-                <div class="w-10/12 bg-gray-200 h-20 rounded-xl absolute" style="left: 50%;margin-left: -42%; bottom:-2rem; z-index:1"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="partnership" class="w-11/12 mx-auto rounded pb-14" style="box-shadow: 0 0 3px 3px #eee;">
-          <p class="text-center text-gray-500 py-5 text-lg md:text-xl font-bold">
-            Influencer Partnerships
-          </p>
-          <div id="partnership_slide">
-            <div class="w-11/12 mx-auto">
-              <div id="partnerships" class="carousel slide rounded-xl relative z-10" data-ride="carousel">
-                <!-- Indicators -->
-                <ul class="carousel-indicators">
-                  <li data-target="#partnerships" data-slide-to="0" class="active"></li>
-                  @for ($i = 1; $i < count($partnerships); $i++)
-                    <li data-target="#partnerships" data-slide-to={{ $i + 1 }}></li>
-                  @endfor
-                </ul>
-                <!-- The slideshow -->
-                <div class="carousel-inner">
-                  @if(count($partnerships) > 0)
-                  <div class="carousel-item active">
-                    <img src={{ asset('img/partnership-image/'.$partnerships[0]->partnership_img).'.jpg' }} alt={{ $partnerships[0]->partnership_img }} class="w-full rounded-xl">
-                  </div>
-                  
-                  @for ($i = 1; $i < count($partnerships); $i++)
-                  <div class="carousel-item">
-                    <img src={{ asset('img/partnership-image/'.$partnerships[$i]->partnership_img).'.jpg' }} alt={{ $partnerships[$i]->partnership_img }} class="w-full rounded-xl">
-                  </div>
-                  @endfor
-                  @else
-                  <div class="text-center w-full">
-                    <p class="text-sm md:text-md">Please complete you profile</p>
-                  </div>
-                  @endif
-
-                </div>
-              </div>
             </div>
           </div>
         </div>

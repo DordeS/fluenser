@@ -86,7 +86,7 @@ class RegisterController extends Controller
         \Stripe\Stripe::setApiKey(env("STRIPE_SECRET"));
 
         $stripeAccount = \Stripe\Account::create([
-            'type' => 'custom',
+            'type' => 'express',
             'email' => $data['email'],
             'capabilities' => [
                 'card_payments' => ['requested' => true],
@@ -139,7 +139,7 @@ class RegisterController extends Controller
             $profile->tiktok_follows = '';
             $profile->save();
 
-
+            echo $user;
 
             return $user;
         }

@@ -16,9 +16,10 @@ class Influencers extends Model
         'user_id',
     ];
 
-    public function findInfluencers($category, $location, $name, $keyword) {
+    public function findInfluencers($category, $location, $name, $keyword, $perpage) {
         $influencers = DB::table('users')
-                ->join('influencers', 'influencers.user_id', '=', 'users.id')
+                ->join('profile', 'profile.user_id', '=', 'users.id')
+                ->join('influencers', 'influencers.user_id', '=', 'profile.user_id')
                 ->join('influencers_info', 'influencers.id', '=', 'influencers_info.influencer_id');
         
         if($name != '')
@@ -34,6 +35,9 @@ class Influencers extends Model
             'users.id',
             'users.name',
             'users.username',
+            'profile.instagram_follows',
+            'profile.youtube_follows',
+            'profile.tiktok_follows',
             'influencers_info.influencer_id',
             'influencers_info.country',
             'influencers_info.state',

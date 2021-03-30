@@ -19,7 +19,14 @@ class InboxInfo extends Model
     ];
 
     public function getChatInfo($inboxID) {
-    
+        $inbox = DB::table("inboxes")
+                ->where('id', '=', $inboxID)
+                ->get();
+        $request_id = $inbox[0]->request_Id;
+        $requestInfo = DB::table('request_info')
+                ->where('request_id', '=', $request_id)
+                ->get();
+        
         $chatInfo = DB::table('inbox_info')
                 ->where('inbox_id', '=', $inboxID)
                 ->orderBy('created_at')
@@ -36,6 +43,7 @@ class InboxInfo extends Model
                 
         $sendInfo[0]->chatInfo = $chatInfo;
         $sendInfo[0]->userID = Auth::user()->id;
+        $sendInfo[0]->requestInfo = $requestInfo[0];
         
         return $sendInfo[0];
     }
