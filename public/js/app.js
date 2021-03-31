@@ -3177,13 +3177,26 @@ var ChatComponent = function ChatComponent(props) {
     }).then(function (res) {
       if (res.status == 200) {
         console.log(res.status);
-        var request = requestInfo;
-        request.status = 3;
-        setRequestInfo(request);
+        confirmToggle('hide');
       }
     })["catch"](function (err) {
       console.log(err);
     });
+  };
+
+  var confirmToggle = function confirmToggle(a) {
+    switch (a) {
+      case 'hide':
+        jquery__WEBPACK_IMPORTED_MODULE_3___default()("div#confirmModal").hide();
+        break;
+
+      case 'release':
+        jquery__WEBPACK_IMPORTED_MODULE_3___default()('div.releaseConfirm').show();
+        break;
+
+      default:
+        break;
+    }
   };
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
@@ -3244,6 +3257,15 @@ var ChatComponent = function ChatComponent(props) {
           }
         }
       }
+
+      if (data.trigger == 'request_status') {
+        if (data.request_id = requestInfo.id) {
+          var requestInfos = requestInfo;
+          requestInfos.status = data.status;
+          setRequestInfo(requestInfos);
+          setUpdate(!update);
+        }
+      }
     });
     var element = document.getElementById('chatcontainer');
 
@@ -3254,7 +3276,7 @@ var ChatComponent = function ChatComponent(props) {
     return function () {
       isMount = true;
     };
-  }, [userID, contactID, update]);
+  }, [userID, contactID, requestInfo.status, update]);
 
   if (isWaiting) {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
@@ -3300,7 +3322,7 @@ var ChatComponent = function ChatComponent(props) {
               marginLeft: '28px'
             },
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-              src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + contactInfo.avatar + '.jpg',
+              src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/profile-image/' + contactInfo.avatar + '.jpg',
               alt: contactInfo.avatar,
               className: "rounded-full"
             })
@@ -3332,7 +3354,57 @@ var ChatComponent = function ChatComponent(props) {
       if (currency != undefined) currency = currency.toUpperCase();
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
         className: "w-full text-center",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          id: "confirmModal",
+          className: "releaseConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+            className: "w-11/12 h-48 bg-white absolute rounded-xl",
+            style: {
+              top: '50%',
+              marginTop: '-6rem',
+              left: '50%',
+              marginLeft: '-45.83333%'
+            },
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+              className: "w-8/12 mx-auto h-26 mt-4",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                className: "text-center text-lg md:text-xl font-bold",
+                children: "Are you sure?"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+                className: "text-center text-md md:text-lg text-gray-700 mt-3 mb-5",
+                children: "Do you really want to release?"
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+              className: "w-full h-16",
+              id: "confirmBtn",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                className: "w-full grid grid-cols-2 h-full",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "col-span-1 h-full",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                    className: "w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white",
+                    onClick: function onClick() {
+                      return confirmToggle('hide');
+                    },
+                    children: "Cancel"
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                  className: "col-span-1",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+                    className: "w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg",
+                    style: {
+                      background: 'rgb(88,183,189)'
+                    },
+                    onClick: function onClick() {
+                      return releaseDeposit();
+                    },
+                    children: "Yes"
+                  })
+                })]
+              })
+            })]
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
           className: "w-full flex justify-between",
           style: {
             height: '70px'
@@ -3363,7 +3435,7 @@ var ChatComponent = function ChatComponent(props) {
                 marginLeft: '28px'
               },
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + contactInfo.avatar + '.jpg',
+                src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/profile-image/' + contactInfo.avatar + '.jpg',
                 alt: contactInfo.avatar,
                 className: "rounded-full"
               })
@@ -3472,7 +3544,7 @@ var ChatComponent = function ChatComponent(props) {
               boxShadow: '0 0 8px 0 #999'
             },
             onClick: function onClick() {
-              return releaseDeposit();
+              return confirmToggle('release');
             },
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
               style: {
@@ -3852,7 +3924,7 @@ var InboxComponent = function InboxComponent(props) {
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                       className: "w-full",
                       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                        src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + inbox.accountInfo[0].avatar + '.jpg',
+                        src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/profile-image/' + inbox.accountInfo[0].avatar + '.jpg',
                         alt: inbox.accountInfo[0].avatar,
                         className: "rounded-full",
                         style: {
@@ -4100,7 +4172,7 @@ var RequestComponent = function RequestComponent(props) {
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                 className: "pt-5",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-                  src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg',
+                  src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/profile-image/' + request.accountInfo[0].avatar + '.jpg',
                   alt: request.accountInfo[0].avatar,
                   className: "rounded-full",
                   style: {
@@ -4302,6 +4374,8 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
         setRequestChats(requestChats);
         setAccountInfo(accountInfo);
         setContactInfo(contactInfo);
+        setPrice(requestInfo.amount);
+        setCurrency(requestInfo.unit);
         setIsWaiting(false);
       }
     })["catch"](function (error) {
@@ -4315,22 +4389,22 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
     var channel = pusher.subscribe('fluenser-channel');
     channel.bind('fluenser-event', function (data) {
       if (data.trigger == 'requestChat') {
+        console.log(data);
+
         if (data.requestChat.request_id == requestInfo.id) {
           var requestChat = requestChats;
           requestChat.push(data.requestChat);
           setRequestChats(requestChat);
           setUpdate(!update);
         }
+      }
 
-        if (data.request_id == requestInfo) {
-          if (data.data == 'accepted') {
-            var requestInfos = requestInfo;
-            requestInfos.accepted = 1;
-            setRequestInfo(requestInfos);
-            setUpdate(!update);
-          } else {
-            props.back();
-          }
+      if (data.trigger == 'acceptRequest') {
+        if (data.data == 'accepted' && data.request_id == requestInfo.id) {
+          var _requestInfos = requestInfo;
+          _requestInfos.accepted = 1;
+          setRequestInfo(_requestInfos);
+          setUpdate(!update);
         }
       }
 
@@ -4379,7 +4453,8 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
       _api__WEBPACK_IMPORTED_MODULE_1__.default.get('saveRequestChat/' + requestInfo.id + '/' + accountInfo.id + '/' + contactInfo.id + '/' + message + '?api_token=' + api_token, {
         headers: headers
       }).then(function (response) {
-        console.log(response);
+        setMessage('');
+        setUpdate(!update);
       });
     }
   };
@@ -4401,10 +4476,11 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
 
         if (response.data.status == 200) {
           popUpToggle('hide');
-          var requestinfos = requestInfo;
-          requestinfos.amount = price;
-          requestinfos.unit = unit;
+          var requestInfos = requestInfo;
+          requestInfos.amount = price;
+          requestInfos.unit = unit;
           setRequestInfo(requestInfos);
+          setUpdate(!update);
         }
       });
     }
@@ -4422,6 +4498,7 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
       var requestInfos = requestInfo;
       requestInfos.accepted = 1;
       setRequestInfo(requestInfos);
+      setUpdate(!update);
     });
     confirmToggle('hide');
   };
@@ -4525,7 +4602,7 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
               marginLeft: '-45.83333%'
             },
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-              className: "rounded-t-xl h-10",
+              className: "rounded-t-xl h-10 pt-1",
               style: {
                 background: 'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))'
               },
@@ -4611,7 +4688,7 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
           id: "confirmModal",
           className: "acceptConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-            className: "w-11/12 h-48 bg-white absolute rounded-xl",
+            className: "w-11/12 h-48 bg-white absolute rounded-xl pt-4",
             style: {
               top: '50%',
               marginTop: '-6rem',
@@ -4619,44 +4696,39 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
               marginLeft: '-45.83333%'
             },
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-              className: "rounded-t-xl h-10",
-              style: {
-                background: 'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))'
-              },
+              className: "w-8/12 mx-auto h-26 mt-4",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                className: "text-md md:text-lg text-center text-white font-bold leading-10",
-                children: "Accept Request"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("a", {
-                className: "block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center",
-                onClick: function onClick() {
-                  return confirmToggle('hide');
-                },
-                style: {
-                  boxShadow: '0 0 8px #353535'
-                },
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
-                  className: "leading-6",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("i", {
-                    className: "fas fa-times"
-                  })
-                })
+                className: "text-center text-lg md:text-xl font-bold",
+                children: "Are you sure?"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+                className: "text-center text-md md:text-lg text-gray-700 mt-3 mb-5",
+                children: "Do you really want to accept this request?"
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              className: "w-10/12 mx-auto",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                className: "text-center text-md md:text-lg text-gray-500 mt-4",
-                children: "Are you sure to accept this request?"
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              className: "w-11/12 mx-auto mt-3",
+              className: "w-full h-16",
               id: "confirmBtn",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                className: "block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md",
-                style: {
-                  background: 'rgb(88,183,189)'
-                },
-                onClick: onAccept,
-                children: "Accept"
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                className: "w-full grid grid-cols-2 h-full",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                  className: "col-span-1 h-full",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+                    className: "w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white",
+                    onClick: function onClick() {
+                      return confirmToggle('hide');
+                    },
+                    children: "Cancel"
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                  className: "col-span-1",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+                    className: "w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg",
+                    style: {
+                      background: 'rgb(88,183,189)'
+                    },
+                    onClick: onAccept,
+                    children: "Yes"
+                  })
+                })]
               })
             })]
           })
@@ -4672,44 +4744,36 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
               marginLeft: '-45.83333%'
             },
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-              className: "rounded-t-xl h-10",
-              style: {
-                background: 'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))'
-              },
+              className: "w-8/12 mx-auto h-26 mt-4",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                className: "text-md md:text-lg text-center text-white font-bold leading-10",
-                children: "Decline Request"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("a", {
-                className: "block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center",
-                onClick: function onClick() {
-                  return confirmToggle('hide');
-                },
-                style: {
-                  boxShadow: '0 0 8px #353535'
-                },
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
-                  className: "leading-6",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("i", {
-                    className: "fas fa-times"
-                  })
-                })
+                className: "text-center text-lg md:text-xl font-bold",
+                children: "Are you sure?"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+                className: "text-center text-md md:text-lg text-gray-700 mt-3 mb-5",
+                children: "Do you really want to decline this request?"
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              className: "w-10/12 mx-auto",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                className: "text-center text-md md:text-lg text-gray-500 mt-4",
-                children: "Are you sure to decline this request?"
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              className: "w-11/12 mx-auto mt-3",
+              className: "w-full h-16",
               id: "confirmBtn",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                className: "block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md",
-                style: {
-                  background: 'rgb(88,183,189)'
-                },
-                onClick: onDecline,
-                children: "Decline"
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                className: "w-full grid grid-cols-2 h-full",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                  className: "col-span-1 h-full",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+                    className: "w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white",
+                    onClick: function onClick() {
+                      return confirmToggle('hide');
+                    },
+                    children: "Cancel"
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                  className: "col-span-1",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+                    className: "w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg bg-red-500",
+                    onClick: onDecline,
+                    children: "Yes"
+                  })
+                })]
               })
             })]
           })
@@ -4725,44 +4789,39 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
               marginLeft: '-45.83333%'
             },
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-              className: "rounded-t-xl h-10",
-              style: {
-                background: 'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))'
-              },
+              className: "w-8/12 mx-auto h-26 mt-4",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                className: "text-md md:text-lg text-center text-white font-bold leading-10",
-                children: "Create Deposit"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("a", {
-                className: "block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center",
-                onClick: function onClick() {
-                  return confirmToggle('hide');
-                },
-                style: {
-                  boxShadow: '0 0 8px #353535'
-                },
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("span", {
-                  className: "leading-6",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("i", {
-                    className: "fas fa-times"
-                  })
-                })
+                className: "text-center text-lg md:text-xl font-bold",
+                children: "Are you sure?"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+                className: "text-center text-md md:text-lg text-gray-700 mt-3 mb-5",
+                children: "Do you really want to create deposit for this request?"
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              className: "w-10/12 mx-auto",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                className: "text-center text-md md:text-lg text-gray-500 mt-4",
-                children: "Are you sure to create deposit for this request?"
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              className: "w-11/12 mx-auto mt-3",
+              className: "w-full h-16",
               id: "confirmBtn",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                className: "block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md",
-                style: {
-                  background: 'rgb(88,183,189)'
-                },
-                onClick: createDeposit,
-                children: "Create Deposit"
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                className: "w-full grid grid-cols-2 h-full",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                  className: "col-span-1 h-full",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+                    className: "w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white",
+                    onClick: function onClick() {
+                      return confirmToggle('hide');
+                    },
+                    children: "Cancel"
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                  className: "col-span-1",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+                    className: "w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg",
+                    style: {
+                      background: 'rgb(88,183,189)'
+                    },
+                    onClick: createDeposit,
+                    children: "Yes"
+                  })
+                })]
               })
             })]
           })
@@ -4792,7 +4851,7 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
             className: "float-left ml-4",
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("img", {
-              src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/avatar-image/' + contactInfo.avatar + '.jpg',
+              src: _const__WEBPACK_IMPORTED_MODULE_2__.default.baseURL + 'img/profile-image/' + contactInfo.avatar + '.jpg',
               alt: contactInfo.avatar,
               className: "rounded-full",
               style: {

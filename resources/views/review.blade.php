@@ -13,7 +13,7 @@
     </p>
     <div class="w-10/12 mx-auto h-14 my-3">
       <div class="w-14 float-left">
-        <img class="rounded-full" src={{ asset('/img/avatar-image/'.$accountInfo->avatar.'.jpg') }} alt={{ $accountInfo->avatar }}>
+        <img class="rounded-full" src={{ asset('/img/profile-image/'.$accountInfo->avatar.'.jpg') }} alt={{ $accountInfo->avatar }}>
       </div>
       <div class="py-2 ml-16">
         <p class="text-md md:text-lg font-bold leading-5">

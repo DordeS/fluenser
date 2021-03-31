@@ -37,7 +37,9 @@ Route::middleware(['auth'])->group(function() {
 
     Route::get('/inbox',[App\Http\Controllers\MessageController::class, 'index'])->name('inbox');
 
-    Route::get('/task',[App\Http\Controllers\TaskController::class, 'index'])->name('task');
+    Route::get('/collaborations',[App\Http\Controllers\TaskController::class, 'index'])->name('task');
+
+    Route::get('/collaborations/{request_id}',[App\Http\Controllers\TaskController::class, 'taskDetailShow'])->name('taskDetail');
 
     Route::get('/search',[App\Http\Controllers\TaskController::class, 'search'])->name('search');
 

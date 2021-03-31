@@ -11,6 +11,7 @@ use App\Models\Requests;
 use App\Models\RequestInfo;
 use App\Models\RequestImg;
 use App\Models\Review;
+use App\Models\BrandInfo;
 use Illuminate\Support\Facades\Validator;
 
 class CollaborateController extends Controller
@@ -39,6 +40,7 @@ class CollaborateController extends Controller
             'title' => 'required|max:255',
             'detail' => 'required',
             'price' => 'required',
+            'image' => 'required',
         ];
 
         $message = [
@@ -46,7 +48,8 @@ class CollaborateController extends Controller
             'title.max' => 'Your title is too long',
             'detail.regex' => 'You can enter only letters and numbers!',
             'detail.required' => 'You have to enter the project details',
-            'price.required' => 'You have to enter the budget!'
+            'price.required' => 'You have to enter the budget.',
+            'image.required' => 'You have to upload images for your brand.',
         ];
 
         $validator = Validator::make($input, $rule, $message);
@@ -152,13 +155,13 @@ class CollaborateController extends Controller
         }
         $totalRating = $totalRating/count($reviews);
 
-        if($accountInfo->accountType == 'brand') {
-            $brandInfo = BrandInfo::where('brand_id', '=', $accountInfo->brand_id)->get();
+        if($accountInfo[0]->accountType == 'brand') {
+            $brandInfo = BrandInfo::where('brand_id', '=', $accountInfo[0]->brand_id)->get();
             $brandInfo[0]->rating = $totalRating;
             $brandInfo[0]->reviews = count($reviews);
         }
-        if($accountInfo->accountType == 'influencer') {
-            $influencerInfo = InfluencerInfo::where('influencer_id', '=', $accountInfo->influencer_id)->get();
+        if($accountInfo[0]->accountType == 'influencer') {
+            $influencerInfo = InfluencerInfo::where('influencer_id', '=', $accountInfo[0]->influencer_id)->get();
             $influencerInfo[0]->rating = $totalRating;
             $influencerInfo[0]->reviews = count($reviews);
         }

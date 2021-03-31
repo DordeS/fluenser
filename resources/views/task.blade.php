@@ -11,14 +11,44 @@
 </div>
 <main>
   <div class="max-w-md mx-auto sm:px-6 lg:px-8">
-    <div class="tabContent" id="accepted" >
-      accepted
+    <div class="tabContent w-11/12 mx-auto" id="accepted" >
+      @foreach ($acceptedTasks as $task)
+          <div class="relative w-full mt-3 rounded px-3 py-3" style="box-shadow: 0 0 8px 0 #999">
+            <p class="text-md md:text-lg font-bold">{{ $task->title }}</p>
+            <p class="text-xs md:text-sm text-gray-500">
+              <span>{{ $task->name }}</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+              <span>{{ $task->amount . ' ' . strtoupper($task->unit) }}</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+              <span>{{ $task->interval. ' ago' }}</span>
+            </p>
+            <div class="absolute right-3" style="top: 50%; transform:translateY(-50%)">
+              <a style="color: #53b5c1" href={{ route('taskDetail', ['request_id' => $task->id ]) }}><i class="fas fa-chevron-right"></i></a>
+            </div>
+          </div>
+      @endforeach
     </div>
-    <div class="tabContent" id="completed">
-      completed
+    <div class="tabContent w-11/12 mx-auto" id="completed">
+      @foreach ($completedTasks as $task)
+          <div class="w-full mt-3 rounded px-3 py-3" style="box-shadow: 0 0 8px 0 #999">
+            <p class="text-md md:text-lg font-bold">{{ $task->title }}</p>
+            <p class="text-xs md:text-sm text-gray-500">
+              <span>{{ $task->name }}</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+              <span>{{ $task->amount . ' ' . strtoupper($task->unit) }}</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+              <span>{{ $task->interval. ' ago' }}</span>
+            </p>
+          </div>
+      @endforeach
     </div>
-    <div class="tabContent" id="disputed">
-      disputed
+    <div class="tabContent w-11/12 mx-auto" id="disputed">
+      @foreach ($disputedTasks as $task)
+          <div class="w-full mt-3 rounded px-3 py-3" style="box-shadow: 0 0 8px 0 #999">
+            <p class="text-md md:text-lg font-bold">{{ $task->title }}</p>
+            <p class="text-xs md:text-sm text-gray-500">
+              <span>{{ $task->name }}</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+              <span>{{ $task->amount . ' ' . strtoupper($task->unit) }}</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+              <span>{{ $task->interval. ' ago' }}</span>
+            </p>
+          </div>
+      @endforeach
     </div>
   </div>
 </main>

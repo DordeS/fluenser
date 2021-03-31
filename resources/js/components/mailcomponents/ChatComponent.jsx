@@ -50,12 +50,24 @@ const ChatComponent = (props) => {
     ).then((res) => {
       if(res.status == 200) {
         console.log(res.status);
-        var request = requestInfo;
-        request.status = 3;
-        setRequestInfo(request);
+        confirmToggle('hide');
       }
     }).catch(err=>{console.log(err);});
   }
+
+  const confirmToggle = (a) => {
+    switch (a) {
+      case 'hide':
+        $("div#confirmModal").hide();
+        break;
+      case 'release':
+        $('div.releaseConfirm').show();
+        break;
+      default:
+        break;
+    }
+  }
+
 
   useEffect(() => {
     let isMount = false;
@@ -119,6 +131,15 @@ const ChatComponent = (props) => {
             }
         }
       }
+
+      if(data.trigger == 'request_status'){
+        if(data.request_id = requestInfo.id) {
+          var requestInfos = requestInfo;
+          requestInfos.status = data.status;
+          setRequestInfo(requestInfos);
+          setUpdate(!update);
+        }
+      }
     });
     var element = document.getElementById('chatcontainer');
     if(element != null) {
@@ -127,7 +148,7 @@ const ChatComponent = (props) => {
     return () => {
       isMount = true
     };
-  }, [userID, contactID, update] );
+  }, [userID, contactID, requestInfo.status, update] );
 
     if(isWaiting) {
       return (
@@ -146,7 +167,7 @@ const ChatComponent = (props) => {
                 </a>
               </div>
               <div className="float-left" style={{width:'50px', height:'50px', margin:'10px 0', marginLeft:'28px'}}>
-                <img src={constant.baseURL + 'img/avatar-image/' + contactInfo.avatar + '.jpg'} alt={contactInfo.avatar} className="rounded-full"/>
+                <img src={constant.baseURL + 'img/profile-image/' + contactInfo.avatar + '.jpg'} alt={contactInfo.avatar} className="rounded-full"/>
               </div>
               <div className="float-left" style={{marginLeft:'12px'}}>
                 <p className="text-center text-md md:text-xl pt-2 text-gray-700 font-bold" style={{lineHeight:'50px'}}>
@@ -170,13 +191,33 @@ const ChatComponent = (props) => {
           currency = currency.toUpperCase();
         return (
           <div className="w-full text-center">
+
+            <div id="confirmModal" className="releaseConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
+              <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
+                <div className="w-8/12 mx-auto h-26 mt-4">
+                  <p className="text-center text-lg md:text-xl font-bold">Are you sure?</p>
+                  <p className="text-center text-md md:text-lg text-gray-700 mt-3 mb-5">Do you really want to release?</p>
+                </div>
+                <div className="w-full h-16" id="confirmBtn">
+                  <div className="w-full grid grid-cols-2 h-full">
+                    <div className="col-span-1 h-full">
+                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white" onClick={() => confirmToggle('hide')}>Cancel</button>
+                    </div>
+                    <div className="col-span-1">
+                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg" style={{ background:'rgb(88,183,189)' }} onClick={() => releaseDeposit()}>Yes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="w-full flex justify-between" style={{height:'70px'}}>
               <div style={{float:'left', marginLeft:'15px'}} className="flex-shrink-0">
                 <a className="text-center float-left text-gray-500" onClick={()=> props.back()} style={{lineHeight:'70px'}}>
                   <i className="fas fa-chevron-left"></i>
                 </a>
                 <div className="float-left flex-shrink-0" style={{width:'50px', height:'50px', margin:'10px 0', marginLeft:'28px'}}>
-                  <img src={constant.baseURL + 'img/avatar-image/' + contactInfo.avatar + '.jpg'} alt={contactInfo.avatar} className="rounded-full"/>
+                  <img src={constant.baseURL + 'img/profile-image/' + contactInfo.avatar + '.jpg'} alt={contactInfo.avatar} className="rounded-full"/>
                 </div>
                 <div className="float-left flex overflow-hidden" style={{marginLeft:'12px'}}>
                   <p className="text-center text-md md:text-xl pt-2 text-gray-700 font-bold" style={{lineHeight:'50px'}}>
@@ -219,7 +260,7 @@ const ChatComponent = (props) => {
                         <p style={{lineHeight:'35px'}} className="px-3 text-sm text-gray-500">Completed</p>
                         </button>
                         :
-                        <button className="flex-shrink-0 float-right bg-white rounded-xl" style={{marginRight:'15px', height:'35px', marginTop:'10px', boxShadow:'0 0 8px 0 #999'}} onClick={() => releaseDeposit()}>
+                        <button className="flex-shrink-0 float-right bg-white rounded-xl" style={{marginRight:'15px', height:'35px', marginTop:'10px', boxShadow:'0 0 8px 0 #999'}} onClick={() => confirmToggle('release')}>
                         <p style={{lineHeight:'35px'}} className="px-3 text-sm text-gray-500">Release <span className="font-bold">{ requestInfo.amount + currency }</span></p>
                         </button>
                 }

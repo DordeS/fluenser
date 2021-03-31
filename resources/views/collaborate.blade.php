@@ -32,6 +32,11 @@
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
+                @error('image')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
               <div class="attach w-full rounded-lg my-2">
                 {{-- file upload --}}
                 <div class="w-full min-h-lg sm:py-8">
@@ -59,7 +64,6 @@
                     </article>
                   </main>
                 </div>
-            
                 <div class="w-full mx-auto my-5">
                   <p class="text-center text-gray-500 text-sm md:text-md mb-5">
                     How will you compensate the influencers?

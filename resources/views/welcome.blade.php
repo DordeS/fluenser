@@ -316,7 +316,7 @@
                                         <div id="back_img" class="pb-10">
                                             <img src="{{ asset('img/back-image/').'/'.$influencer->back_img.".jpg" }}" alt="{{ $influencer->back_img }}" class="mx-auto">
                                         </div>
-                                        <img src="{{ asset('img/avatar-image/').'/'.$influencer->avatar.".jpg" }}" alt="{{ $influencer->avatar }}" class="rounded-full mx-auto" id="avatar_img">
+                                        <img src="{{ asset('img/profile-image/').'/'.$influencer->avatar.".jpg" }}" alt="{{ $influencer->avatar }}" class="rounded-full mx-auto" id="avatar_img">
                                     </div>
                                     <div class="text-center row-span-3">
                                         <dt class="text-lg leading-6 font-medium text-gray-900 px-15">

@@ -24,15 +24,35 @@ class TaskController extends Controller
         $requests = new Requests();
         $user_id = Auth::user()->id;
         if($user->checkIfInfluencer($user_id)) {
-            $tasks = $requests->getInfluencerTasksByID($user_id);
+            $acceptedTasks = $requests->getInfluencerTasksByID($user_id, 'accepted');
+            $completedTasks = $requests->getInfluencerTasksByID($user_id, 'completed');
+            $disputedTasks = $requests->getInfluencerTasksByID($user_id, 'disputed');
         } else {
-            $tasks = $requests->getBrandTasksByID($user_id);
+            $acceptedTasks = $requests->getBrandTasksByID($user_id, 'accepted');
+            $completedTasks = $requests->getBrandTasksByID($user_id, 'completed');
+            $disputedTasks = $requests->getBrandTasksByID($user_id, 'disputed');
         }
         $account = new User();
         $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
         return view('task', [
             'page' => 3,
-            'tasks' => $tasks,
+            'acceptedTasks' => $acceptedTasks,
+            'completedTasks' => $completedTasks,
+            'disputedTasks' => $disputedTasks,
+            'accountInfo' => $accountInfo[0],
+        ]);
+    }
+
+    public function taskDetailShow($request_id) {
+        $requests = new Requests();
+        $request = $requests->getRequestInfoByID($request_id);
+
+        $user = new User();
+        $accountInfo = $user->getAccountInfoByUserID($request->user_id);
+
+        return view('taskDetail', [
+            'page' => 3,
+            'requests' => $request,
             'accountInfo' => $accountInfo[0],
         ]);
     }

@@ -39,6 +39,8 @@ const RequestDetailComponent = (props) => {
         setRequestChats(requestChats);
         setAccountInfo(accountInfo);
         setContactInfo(contactInfo);
+        setPrice(requestInfo.amount);
+        setCurrency(requestInfo.unit);
         setIsWaiting(false);
       }
     }).catch(error => {
@@ -55,23 +57,24 @@ const RequestDetailComponent = (props) => {
     var channel = pusher.subscribe('fluenser-channel');
     channel.bind('fluenser-event', (data) => {
       if(data.trigger == 'requestChat'){
+        console.log(data);
         if(data.requestChat.request_id == requestInfo.id) {
           const requestChat = requestChats;
           requestChat.push(data.requestChat);
           setRequestChats(requestChat);
           setUpdate(!update);
         }
-        if(data.request_id == requestInfo) {
-          if(data.data == 'accepted') {
-            var requestInfos = requestInfo;
-            requestInfos.accepted = 1;
-            setRequestInfo(requestInfos);
-            setUpdate(!update);
-          } else {
-            props.back();
-          }
+      }
+
+      if(data.trigger == 'acceptRequest') {
+        if(data.data == 'accepted' && data.request_id == requestInfo.id) {
+          const requestInfos = requestInfo;
+          requestInfos.accepted = 1;
+          setRequestInfo(requestInfos);
+          setUpdate(!update);
         }
       }
+
       if(data.trigger == 'request_status') {
         var requestInfos = requestInfo;
         requestInfos.status = data.status;
@@ -117,7 +120,8 @@ const RequestDetailComponent = (props) => {
       API.get('saveRequestChat/' + requestInfo.id + '/' + accountInfo.id + '/' + contactInfo.id + '/' + message + '?api_token=' + api_token, {
         headers: headers
       }).then((response) => {
-        console.log(response);
+        setMessage('');
+        setUpdate(!update);
       });
     }
   }
@@ -137,10 +141,11 @@ const RequestDetailComponent = (props) => {
         console.log(response.data);
         if(response.data.status == 200) {
           popUpToggle('hide');
-          var requestinfos = requestInfo;
-          requestinfos.amount = price;
-          requestinfos.unit = unit;
+          var requestInfos = requestInfo;
+          requestInfos.amount = price;
+          requestInfos.unit = unit;
           setRequestInfo(requestInfos);
+          setUpdate(!update);
         }
       });
     }
@@ -159,6 +164,7 @@ const RequestDetailComponent = (props) => {
         var requestInfos = requestInfo;
         requestInfos.accepted = 1;
         setRequestInfo(requestInfos);
+        setUpdate(!update);
     });
     confirmToggle('hide');
   }
@@ -244,7 +250,7 @@ const RequestDetailComponent = (props) => {
         <div>
           <div id="modal" className="h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
               <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
-                <div className="rounded-t-xl h-10" style={{ background:'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))' }}>
+                <div className="rounded-t-xl h-10 pt-1" style={{ background:'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))' }}>
                   <p className="text-md md:text-lg text-center text-white font-bold leading-10">Update Offer</p>
                   <a className="block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center" onClick={() => popUpToggle('hide')} style={{ boxShadow:'0 0 8px #353535' }}>
                     <span className="leading-6"><i className="fas fa-times"></i></span>
@@ -277,52 +283,58 @@ const RequestDetailComponent = (props) => {
 
 
           <div id="confirmModal" className="acceptConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
-              <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
-                <div className="rounded-t-xl h-10" style={{ background:'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))' }}>
-                  <p className="text-md md:text-lg text-center text-white font-bold leading-10">Accept Request</p>
-                  <a className="block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center" onClick={() => confirmToggle('hide')} style={{ boxShadow:'0 0 8px #353535' }}>
-                    <span className="leading-6"><i className="fas fa-times"></i></span>
-                  </a>
+              <div className="w-11/12 h-48 bg-white absolute rounded-xl pt-4" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
+                <div className="w-8/12 mx-auto h-26 mt-4">
+                  <p className="text-center text-lg md:text-xl font-bold">Are you sure?</p>
+                  <p className="text-center text-md md:text-lg text-gray-700 mt-3 mb-5">Do you really want to accept this request?</p>
                 </div>
-                <div className="w-10/12 mx-auto">
-                  <p className="text-center text-md md:text-lg text-gray-500 mt-4">Are you sure to accept this request?</p>
-                </div>
-                <div className="w-11/12 mx-auto mt-3" id="confirmBtn">
-                  <button className="block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={onAccept}>Accept</button>
+                <div className="w-full h-16" id="confirmBtn">
+                  <div className="w-full grid grid-cols-2 h-full">
+                    <div className="col-span-1 h-full">
+                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white" onClick={() => confirmToggle('hide')}>Cancel</button>
+                    </div>
+                    <div className="col-span-1">
+                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg" style={{ background:'rgb(88,183,189)' }} onClick={onAccept}>Yes</button>
+                    </div>
+                  </div>
                 </div>
               </div>
           </div>
 
           <div id="confirmModal" className="declineConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
               <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
-                <div className="rounded-t-xl h-10" style={{ background:'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))' }}>
-                  <p className="text-md md:text-lg text-center text-white font-bold leading-10">Decline Request</p>
-                  <a className="block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center" onClick={() => confirmToggle('hide')} style={{ boxShadow:'0 0 8px #353535' }}>
-                    <span className="leading-6"><i className="fas fa-times"></i></span>
-                  </a>
+                <div className="w-8/12 mx-auto h-26 mt-4">
+                  <p className="text-center text-lg md:text-xl font-bold">Are you sure?</p>
+                  <p className="text-center text-md md:text-lg text-gray-700 mt-3 mb-5">Do you really want to decline this request?</p>
                 </div>
-                <div className="w-10/12 mx-auto">
-                  <p className="text-center text-md md:text-lg text-gray-500 mt-4">Are you sure to decline this request?</p>
-                </div>
-                <div className="w-11/12 mx-auto mt-3" id="confirmBtn">
-                  <button className="block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={onDecline}>Decline</button>
+                <div className="w-full h-16" id="confirmBtn">
+                  <div className="w-full grid grid-cols-2 h-full">
+                    <div className="col-span-1 h-full">
+                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white" onClick={() => confirmToggle('hide')}>Cancel</button>
+                    </div>
+                    <div className="col-span-1">
+                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg bg-red-500" onClick={onDecline}>Yes</button>
+                    </div>
+                  </div>
                 </div>
               </div>
           </div>
 
           <div id="confirmModal" className="depositConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
               <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
-                <div className="rounded-t-xl h-10" style={{ background:'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))' }}>
-                  <p className="text-md md:text-lg text-center text-white font-bold leading-10">Create Deposit</p>
-                  <a className="block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center" onClick={() => confirmToggle('hide')} style={{ boxShadow:'0 0 8px #353535' }}>
-                    <span className="leading-6"><i className="fas fa-times"></i></span>
-                  </a>
+              <div className="w-8/12 mx-auto h-26 mt-4">
+                  <p className="text-center text-lg md:text-xl font-bold">Are you sure?</p>
+                  <p className="text-center text-md md:text-lg text-gray-700 mt-3 mb-5">Do you really want to create deposit for this request?</p>
                 </div>
-                <div className="w-10/12 mx-auto">
-                  <p className="text-center text-md md:text-lg text-gray-500 mt-4">Are you sure to create deposit for this request?</p>
-                </div>
-                <div className="w-11/12 mx-auto mt-3" id="confirmBtn">
-                  <button className="block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={createDeposit}>Create Deposit</button>
+                <div className="w-full h-16" id="confirmBtn">
+                  <div className="w-full grid grid-cols-2 h-full">
+                    <div className="col-span-1 h-full">
+                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white" onClick={() => confirmToggle('hide')}>Cancel</button>
+                    </div>
+                    <div className="col-span-1">
+                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg" style={{ background:'rgb(88,183,189)' }} onClick={createDeposit}>Yes</button>
+                    </div>
+                  </div>
                 </div>
               </div>
           </div>
@@ -334,7 +346,7 @@ const RequestDetailComponent = (props) => {
               </a>
             </div>
             <div className="float-left ml-4">
-              <img src={constant.baseURL + 'img/avatar-image/' + contactInfo.avatar + '.jpg'} alt={contactInfo.avatar} className="rounded-full" style={{ width:'50px', height:'50px' }}/>
+              <img src={constant.baseURL + 'img/profile-image/' + contactInfo.avatar + '.jpg'} alt={contactInfo.avatar} className="rounded-full" style={{ width:'50px', height:'50px' }}/>
             </div>
             <p className="float-left text-lg md:text-xl text-center text-gray-500 font-bold ml-4">{contactInfo.name} <br/>
             <span className="text-sm md:text-md font-normal">

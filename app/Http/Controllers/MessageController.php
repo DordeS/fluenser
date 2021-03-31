@@ -229,11 +229,6 @@ class MessageController extends Controller
         return response()->json([
             'status' => 200,
         ]);
-
-
-        return response()->json([
-            'status' => 200,
-        ]);
     }
 
     public function declineRequest($request_id) {

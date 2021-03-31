@@ -13,7 +13,7 @@
             <div class="w-full">
                 <div class="w-full mx-auto relative py-3 rounded-xl" style="background: #f4fdfd; box-shadow: 0 0 3px #999">
                     <div class="w-4/12 inline-block align-middle">
-                        <img class="rounded-full w-11/12 float-right" src="{{ asset('img/avatar-image/').'/'.$accountInfo->avatar.'.jpg' }}" alt="$accountInfo->avatar" style="border:solid 3px white;box-shadow: 0 2px 1px 1px lightgrey">
+                        <img class="rounded-full w-11/12 float-right" src="{{ asset('img/profile-image/').'/'.$accountInfo->avatar.'.jpg' }}" alt="$accountInfo->avatar" style="border:solid 3px white;box-shadow: 0 2px 1px 1px lightgrey">
                         <div class="clearfix"></div>
                     </div>
                     <div class="inline-block w-7/12 pl-1 text-center align-middle">

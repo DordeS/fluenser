@@ -33,7 +33,7 @@
 						<p class="text-md md:text-lg font-bold pl-3">There are many variations of passages</p>
 						<div class="mt-2 w-11/12 mx-auto">
 							<div class="float-left w-14 h-14">
-								<img class="w-full rounded-full" src="{{ asset('img/avatar-image/'.$accountInfo->avatar.'.jpg') }}" alt={{ $accountInfo->avatar }}>
+								<img class="w-full rounded-full" src="{{ asset('img/profile-image/'.$accountInfo->avatar.'.jpg') }}" alt={{ $accountInfo->avatar }}>
 							</div>
 							<div class="float-left h-14 py-1 pl-3">
 								<p class="text-sm:md:text-md leading-6 font-bold">{{ $accountInfo->name }}</p>

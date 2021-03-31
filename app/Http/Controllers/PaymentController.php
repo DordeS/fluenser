@@ -56,6 +56,7 @@ class PaymentController extends Controller
 
         $pusher->trigger('fluenser-channel', 'fluenser-event', [
             'trigger' => 'request_status',
+            'request_id' => $request_id,
             'status' => 2,
         ]);
 
@@ -71,8 +72,6 @@ class PaymentController extends Controller
         $request = Requests::find($request_id);
         $user_id = $request->receive_id;
         $user = User::find($user_id);
-
-        echo $user->id;
 
         \Stripe\Stripe::setApiKey(env("STRIPE_SECRET"));
         $paymentIntent = \Stripe\Transfer::create([
@@ -90,6 +89,7 @@ class PaymentController extends Controller
 
         $pusher->trigger('fluenser-channel', 'fluenser-event', [
             'trigger' => 'request_status',
+            'request_id' => $request_id,
             'status' => 3,
         ]);
 

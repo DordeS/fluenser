@@ -113,7 +113,7 @@ const RequestComponent =(props) => {
                 return(
                   <div key={i} className="w-11/12 mx-auto">
                     <div className='pt-5'>
-                      <img src={ constant.baseURL + 'img/avatar-image/' + request.accountInfo[0].avatar + '.jpg' } alt={ request.accountInfo[0].avatar } className="rounded-full" style={{width:'55px', height:'55px', float:'left'}}/>
+                      <img src={ constant.baseURL + 'img/profile-image/' + request.accountInfo[0].avatar + '.jpg' } alt={ request.accountInfo[0].avatar } className="rounded-full" style={{width:'55px', height:'55px', float:'left'}}/>
                       <div style={{marginLeft:'70px'}}>
                         <p className="text-sm md:text-md font-bold">
                           { request.accountInfo[0].name }

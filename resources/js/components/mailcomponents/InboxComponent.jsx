@@ -125,7 +125,7 @@ const InboxComponent = (props) => {
                       <a href="#" onClick={() => onInboxClick(inbox.id)}>
                         <div className="w-full">
                           <div className="w-full">
-                            <img src={ constant.baseURL + 'img/avatar-image/' + inbox.accountInfo[0].avatar + '.jpg' } alt={ inbox.accountInfo[0].avatar} className="rounded-full" style={{ width:'55px', height:'55px', float:'left' }}/>
+                            <img src={ constant.baseURL + 'img/profile-image/' + inbox.accountInfo[0].avatar + '.jpg' } alt={ inbox.accountInfo[0].avatar} className="rounded-full" style={{ width:'55px', height:'55px', float:'left' }}/>
                             <div style={{marginLeft:'75px', paddingTop:'3px'}}>
                               <span className="text-md md:text-lg font-medium text-gray-700">
                                 { inbox.accountInfo[0].name }
