@@ -12,6 +12,8 @@ use App\Models\BrandInfo;
 use App\Models\Profile;
 use App\Models\Portfolio;
 use App\Models\Partnership;
+use App\Models\Wallet;
+use App\Models\WalletUser;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -139,8 +141,17 @@ class RegisterController extends Controller
             $profile->tiktok_follows = '';
             $profile->save();
 
-            echo $user;
+            $wallet = new Wallet;
+            $wallet->usd_balance = 0;
+            $wallet->gbp_balance = 0;
+            $wallet->eur_balance = 0;
+            $wallet->save();
 
+            $walletUser = new WalletUser;
+            $walletUser->user_id = $user->id;
+            $walletUser->wallet_id = $wallet->id;
+            $walletUser->save();
+        
             return $user;
         }
     }

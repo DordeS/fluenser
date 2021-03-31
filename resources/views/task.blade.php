@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="w-full md:max-w-7xl mx-auto py-1 px-3 sm:px-6 lg:px-8 bg-gray-800 h-10">
+  <span><a href="{{ route('task') }}" class="text-white"><i class="fas fa-chevron-left"></i></a></span>
   <p class="italic text-lg md:text-xl text-white font-bold leading-8" style="font-family: 'Josefin Sans', sans-serif;">{{ __('COLLABORATIONS') }}</p>
 </div>
 <div class="w-full md:max-w-7xl mx-auto px-2 h-8" style="border-bottom: 1px solid lightgray" id="collTab">

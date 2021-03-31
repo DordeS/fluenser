@@ -45,6 +45,8 @@ Route::middleware(['auth'])->group(function() {
 
     Route::get('/findInfluencers',[App\Http\Controllers\TaskController::class, 'findInfluencers']);
 
+    Route::get('balance', [App\Http\Controllers\PaymentController::class, 'balance'])->name('balance');
+
     Route::get('/collaborate/{user_id}',[App\Http\Controllers\CollaborateController::class, 'index'])->name('collaborate');
 
     Route::post('/request/save',[App\Http\Controllers\CollaborateController::class, 'saveRequest'])->name('saveRequest');
@@ -58,4 +60,5 @@ Route::middleware(['auth'])->group(function() {
     Route::get('leaveReview/{request_id}', [App\Http\Controllers\CollaborateController::class, 'leaveReview'])->name('leaveReview');
 
     Route::post('submitReview/{request_id}', [App\Http\Controllers\CollaborateController::class, 'submitReview'])->name('submitReview');
+
 });

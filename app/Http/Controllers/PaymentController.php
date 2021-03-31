@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\RequestInfo;
 use App\Models\Requests;
@@ -9,6 +10,9 @@ use App\Models\User;
 use App\Models\Deposits;
 use App\Models\Inboxes;
 use App\Models\InboxInfo;
+use App\Models\WalletAction;
+use App\Models\WalletUser;
+use App\Models\Wallet;
 use Stripe\Stripe;
 use Pusher;
 use Session;
@@ -60,6 +64,34 @@ class PaymentController extends Controller
             'status' => 2,
         ]);
 
+        $walletUser = WalletUser::where('user_id', '=', Auth::user()->id)->get();
+        $wallet_id = $walletUser[0]->wallet_id;
+
+        $walletAction = new WalletAction;
+        $walletAction->wallet_id = $wallet_id;
+        $walletAction->amount = $requestInfo->amount;
+        $walletAction->action = 'create deposit';
+        $walletAction->currency = $requestInfo->unit;
+        $walletAction->aaa = '-';
+        $walletAction->save();
+
+        $wallet = Wallet::find($wallet_id);
+        switch ($requestInfo->unit) {
+            case 'usd':
+                $wallet->usd_balance -= $requestInfo->amount; 
+                break;
+            case 'gbp':
+                $wallet->gbp_balance -= $requestInfo->amount;
+                break;
+            case 'eur':
+                $wallet->eur_balance -= $requestInfo->amount;
+                break;
+            default:
+                break;
+        }
+        $wallet->save();
+
+
         return response()->json([
             'status' => 200,
         ]);
@@ -95,6 +127,21 @@ class PaymentController extends Controller
 
         return response()->json([
             'status' => 200,
+        ]);
+    }
+
+    public function balance() {
+        $walletUser = WalletUser::where('user_id', '=', Auth::user()->id)->get();
+        $wallet_id = $walletUser[0]->wallet_id;
+
+        $walletAction = WalletAction::where('wallet_id', '=', $wallet_id)->get();
+
+        $wallet = Wallet::find($wallet_id);
+        
+        return view('wallet', [
+            'page' => 5,
+            'wallet' => $wallet,
+            'walletActions' => $walletAction,
         ]);
     }
 }

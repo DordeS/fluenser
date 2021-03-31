@@ -53,7 +53,7 @@
                     <div class="row-span-1">
                         <div class="grid grid-cols-3 gap-x-2">
                             <div class="col-span-1">
-                                <a href="#" class="block w-full py-7 md:py-9 text-center text-gray-500" style="border-radius: 0 10px; box-shadow:0 0 10px #999;">
+                                <a href={{ route("balance") }} class="block w-full py-7 md:py-9 text-center text-gray-500" style="border-radius: 0 10px; box-shadow:0 0 10px #999;">
                                     <img src="{{ asset('img/balance.png') }}" alt="" class="w-8 mx-auto">
                                     <p class="text-sm md:text-md mt-1">Balance</p>
                                 </a>
