@@ -34,6 +34,7 @@ const InboxComponent = (props) => {
 
   useEffect(() =>
   {
+    $("nav").show();
     // send request
     const headers ={
       'Accept': 'application/json'

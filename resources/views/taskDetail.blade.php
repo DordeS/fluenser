@@ -5,7 +5,7 @@
   <div class="w-full md:max-w-7xl mx-auto py-1 px-3 sm:px-6 lg:px-8 bg-gray-800 h-10">
     <span><a href="{{ route('task') }}" class="text-white"><i class="fas fa-chevron-left"></i></a></span>
     <span class="italic text-lg md:text-xl text-white font-bold leading-8" style="font-family: 'Josefin Sans', sans-serif;">{{ __('COLLABORATIONS') }}</span>
-  </div>  
+  </div>
 </header>
   <main class="md:max-w-7xl mx-auto">
     <div class="w-full md:max-w-7xl mx-auto sm:px-6 lg:px-8 mt-3 mb-20">

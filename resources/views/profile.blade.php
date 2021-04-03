@@ -40,7 +40,8 @@
                 <div class="float-left w-9/12">
                   <p class="text-md md:text-lg font-bold">{{ $influencerInfo->name }}</p>
                   <p class="text-xs md:text-sm text-gray-700 mt-1">{{ '@'.$influencerInfo->username }}</p>
-                  <div class="text-xs md:text-sm">
+                  <div class="text-sm md:text-md">
+                    <span class="px-1 rounded text-white font-bold bg-yellow-400 rounded-lg mr-1 text-xs md:text-sm" style="padding: 3px; line-height:20px;">{{ number_format($influencerInfo->rating, 1) }}</span>
                     <span style="line-height:26px;">
                       @for ($i = 0; $i < 5 ; $i++)
                         @if ($influencerInfo->rating > $i)
@@ -50,7 +51,6 @@
                         @endif
                       @endfor
                     </span>
-                    <span class="px-2 rounded text-yellow-400 mr-1" style="padding: 3px; line-height:20px;">{{ number_format($influencerInfo->rating, 1) }}</span>
                   </div>
                   <p class="text-sm md:text-md text-gray-700 mt-1"><i style="color: #119dab" class="fas fa-map-marker-alt"></i> {{ $influencerInfo->country.' '.$influencerInfo->state }}</p>
                 </div>
@@ -81,7 +81,7 @@
             </div>
           </div>
         </div>
-        <div class="w-full mt-10 mb-16">
+        <div class="w-full mt-10 pb-16">
           <div class="w-11/12 mx-auto rounded-lg bg-gray-200">
             <div class="w-full grid grid-cols-2">
               <div class="col-span-1 px-1 py-1">
@@ -93,7 +93,7 @@
             </div>
           </div>
           <div id="profile" class="tabcontent w-11/12 mx-auto">
-            <div id="introduction" class="w-11/12 mx-auto my-8">
+            <div id="introduction" class="w-full my-5 py-3" style="box-shadow:0px 13px 20px -15px grey">
               <p class="text-center text-md md:text-lg">
                 {{ $profile->introduction }}
               </p>
@@ -112,22 +112,12 @@
                   <div class="carousel-inner">
                     @if (count($portfolios) > 0)
                     <div class="carousel-item active">
-                      <div id="count" class="bg-gray-900 bg-opacity-70 absolute bottom-5 right-5 px-4 py-2 rounded-lg z-30">
-                        <p class="text-center text-white">
-                          {{ '1/'.count($portfolios) }}
-                        </p>
-                      </div>
-                      <img src={{ asset('img/profile-image/'.$portfolios[0]->slide_img).'.jpg' }} alt={{ $portfolios[0]->slide_img }} class="w-full rounded-xl">
+                      <img src={{ asset('img/profile-image/'.$portfolios[0]->slide_img).'.jpg' }} alt={{ $portfolios[0]->slide_img }} class="w-10/12 rounded-xl">
                     </div>
                     
                     @for ($i = 1; $i < count($portfolios); $i++)
                     <div class="carousel-item">
-                      <div id="count" class="bg-gray-900 bg-opacity-70 absolute bottom-5 right-5 px-4 py-2 rounded-lg z-30">
-                        <p class="text-center text-white">
-                          {{ ($i + 1).'/'.count($portfolios) }}
-                        </p>
-                      </div>
-                      <img src={{ asset('img/profile-image/'.$portfolios[$i]->slide_img).'.jpg' }} alt={{ $portfolios[$i]->slide_img }} class="w-full rounded-xl">
+                      <img src={{ asset('img/profile-image/'.$portfolios[$i]->slide_img).'.jpg' }} alt={{ $portfolios[$i]->slide_img }} class="w-10/12 rounded-xl">
                     </div>
                     @endfor
                     @else
@@ -137,18 +127,12 @@
                     @endif
                   </div>
                 </div>
-                <div>
-                  <div class="w-11/12 bg-gray-300 h-20 rounded-xl absolute" style="left: 50%; margin-left: -46%; bottom:-1rem; z-index:2"></div>
-                  <div class="w-10/12 bg-gray-200 h-20 rounded-xl absolute" style="left: 50%;margin-left: -42%; bottom:-2rem; z-index:1"></div>
-                </div>
               </div>
             </div>
 
-
-
-              <div id="partnership" class="w-full mx-auto rounded pb-14" style="box-shadow: 0 0 3px 3px #eee;">
-                <p class="text-center text-gray-500 py-5 text-lg md:text-xl font-bold">
-                  Influencer Partnerships
+              <div id="partnership" class="w-full mx-auto rounded pb-3" style="box-shadow: 0 0 3px 4px #f0f0f0;">
+                <p class="text-center text-gray-500 py-2 mt-5 text-lg md:text-xl">
+                  INFLUNECER PARTNERSHIPS
                 </p>
                 <div id="partnership_slide">
                   <div class="w-11/12 mx-auto">
@@ -196,12 +180,12 @@
               @else
                 @foreach ($reviews as $review)
                   <div class="title my-2">
-                    <p class="text-lg md:text-xl font-bold">
+                    <p class="text-lg md:text-xl font-semibold">
                       {{ $review->title }}
                     </p>
                   </div>
                   <div class="rating my-2">
-                    <span class="px-2 py-1 bg-yellow-400 rounded-md text-white text-xs md:text-sm">{{ number_format($review->star, 1) }}</span>
+                    <span class="px-2 py-1 bg-yellow-400 rounded-md text-white text-xs md:text-sm font-bold">{{ number_format($review->star, 1) }}</span>
                     @for ($i = 0; $i < 5; $i++)
                       @if ($review->star > $i)
                         <i class="fas fa-star text-yellow-400"></i>

@@ -41,8 +41,19 @@
             <label for="username" class="text-gray-500 text-sm md:text-md">Username</label>
             <input type="text" name="username" id="username" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('username') is-invalid @enderror" value="{{ $influencerInfo->username }}">
 
-            <label for="location" class="text-gray-500 text-sm md:text-md">Location</label>
-            <input type="text" name="location" id="location" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('location') is-invalid @enderror" value="{{ $influencerInfo->state.','.$influencerInfo->country }}">
+            <label for="state" class="text-gray-500 text-sm md:text-md">City</label>
+            <input type="text" name="state" id="state" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('state') is-invalid @enderror" value="{{ $influencerInfo->state }}">
+
+            <label for="country" class="text-gray-500 text-sm md:text-md">Country</label>
+            <select name="country" id="country" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('state') is-invalid @enderror">
+              @foreach ($countries as $country)
+                @if ($country->name == $influencerInfo->country)
+                  <option value={{ $country->id }}>{{ $country->name }}</option selected>
+                @else
+                  <option value={{ $country->id }}>{{ $country->name }}</option>
+                @endif
+              @endforeach
+            </select>
 
             <label for="introduction" class="text-gray-500 text-sm md:text-md">Bio</label>
             <textarea type="text" style="resize: none;" name="introduction" id="introduction" class="bg-gray-100 block w-full border-none rounded h-28 text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('introduction') is-invalid @enderror">{{ $profile->introduction }}</textarea>
@@ -79,7 +90,7 @@
               <div id="partnership-gallery" class="mr-20">
                 @foreach ($partnerships as $partnership)
                   <div id="gallery-item" class="float-left mr-3 my-2 relative">
-                    <img src="{{ asset('img/profile-image/'.$partnership->partnership_img.'.jpg') }}" alt="{{ $partnership->partnership_img }}" class="rounded-sm" style="width: 65px; box-shadow:0 0 5px #333">
+                    <img src="{{ asset('img/partnership-image/'.$partnership->partnership_img.'.jpg') }}" alt="{{ $partnership->partnership_img }}" class="rounded-sm" style="width: 65px; box-shadow:0 0 5px #333">
                     <a class="block absolute w-5 h-5 text-center rounded-full bg-red-600 text-white text-xs -top-2 -right-2" onclick="{$(this).parent().remove();}"><span class="leading-5">X</span></a>
                   </div>
                 @endforeach
@@ -92,7 +103,17 @@
               <input type="text" id="categories" class="block w-11/12 mx-auto rounded-full text-gray-700 text-sm md:text-md" style="border: 1px solid lightgray" placeholder="Categories" readonly>
               <div class="w-11/12 mx-auto py-2 px-3 my-3 h-24 overflow-auto rounded-xl" style="box-shadow: 0 0 8px 0 #999">
                 @foreach ($categories as $category)
-                  <input type="checkbox" class="rounded border-gray-400 bg-gray-100" name="category[]" id="category" value="{{ $category->id }}"><label for="category" class="text-gray-700 text-xs md:text-sm">&nbsp;&nbsp;{{ $category->category_name }}</label><br/>
+                  <?php $a = 0; ?>
+                  @foreach ($selectedCategories as $item)
+                      @if ($category->category_name == $item->category_name)
+                      <?php $a ++; ?>
+                      @endif
+                  @endforeach
+                  @if ($a == 1)
+                    <input type="checkbox" class="rounded border-gray-400 bg-gray-100" name="category[]" id="category" value="{{ $category->id }}" checked><label for="category" class="text-gray-700 text-xs md:text-sm">&nbsp;&nbsp;{{ $category->category_name }}</label><br/>  
+                  @else
+                    <input type="checkbox" class="rounded border-gray-400 bg-gray-100" name="category[]" id="category" value="{{ $category->id }}"><label for="category" class="text-gray-700 text-xs md:text-sm">&nbsp;&nbsp;{{ $category->category_name }}</label><br/>  
+                  @endif
                 @endforeach
               </div>
             </div>

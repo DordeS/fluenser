@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-  baseURL: 'http://exocoboten.nl/public/api/'
+  baseURL: 'http://localhost:8000/api/'
 });

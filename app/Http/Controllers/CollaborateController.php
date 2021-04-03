@@ -74,6 +74,8 @@ class CollaborateController extends Controller
         $request_info->brand = 'unknown';
         $request_info->status = 1;
         $request_info->accepted = 0;
+        $request_info->sr_review = 0;
+        $request_info->rs_review = 0;
         $request_info->save();
 
         $folderPath = public_path('img/task-image/');
@@ -141,13 +143,18 @@ class CollaborateController extends Controller
         $review->review = $input['comment'];
         $review->star = $input['rating'];
         $review->save();
-
-        $requestInfo = RequestInfo::where('request_id', '=', $request_id)->get();
-        $requestInfo[0]->status = 4;
-        $requestInfo[0]->save();
-
+        
         $user = new User();
         $accountInfo = $user->getAccountInfoByUserID($user_id);
+
+        $requestInfo = RequestInfo::where('request_id', '=', $request_id)->get();
+        if($accountInfo[0]->accountType == 'brand') {
+            $requestInfo[0]->rs_review = 1;
+        } else {
+            $requestInfo[0]->sr_review = 1;
+        }
+        $requestInfo[0]->save();
+
         $reviews = Review::where('user_id', '=', $user_id)->get();
         $totalRating = 0;
         foreach ($reviews as $review) {

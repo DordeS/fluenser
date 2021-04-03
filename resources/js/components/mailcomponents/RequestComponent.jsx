@@ -30,6 +30,8 @@ const RequestComponent =(props) => {
   }
 
   useEffect(() => {
+    let isMount = false;
+    $('nav').show();
     // request
     const headers ={
       'Accept': 'application/json'
@@ -39,14 +41,16 @@ const RequestComponent =(props) => {
     API.get('request?api_token=' + api_token, {
       headers: headers
     }).then((response) => {
-      setIsWaiting(false);
-      if(response.status == 200) {
-        console.log('-------------');
-        console.log(response.data);
-        requests = response.data.data;
-        setRequests(requests);
-        setShowRequests(requests);
-        setUserID(response.data.user_id);
+      if(!isMount) {
+        setIsWaiting(false);
+        if(response.status == 200) {
+          console.log('-------------');
+          console.log(response.data);
+          requests = response.data.data;
+          setRequests(requests);
+          setShowRequests(requests);
+          setUserID(response.data.user_id);
+        }
       }
     }).catch(error => {
       console.log(error);
@@ -77,6 +81,10 @@ const RequestComponent =(props) => {
     });
 
     props.selectTab('requests');
+
+    return() => {
+      isMount = true;
+    }
   }, []);
   
   if(isWaiting) {

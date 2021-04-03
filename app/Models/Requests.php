@@ -28,9 +28,7 @@ class Requests extends Model
                 $tasks = $tasks->where('status', '=', 2)->get();
                 break;
             case 'completed':
-                $tasks = $tasks->where('status', '=', 3)
-                        ->orWhere('status', '=', 4)
-                        ->get();
+                $tasks = $tasks->where('status', '=', 3)->get();
                 break;
             case 'disputed':
                 $tasks = $tasks->where('status', '=', 5)->get();
@@ -38,6 +36,7 @@ class Requests extends Model
             default:
                 break;
         }
+
         $user = new User();
         foreach ($tasks as $task) {
             $users = $user->getAccountInfoByUserID($task->send_id);
@@ -49,6 +48,10 @@ class Requests extends Model
             if($interval->format('%m') > 0) $task->interval = $interval->format('%m month');
             if($interval->format('%m') == 0 && $interval->format('%h') > 0)
             $task->interval = $interval->format("%h hour");
+            if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') > 0)
+                $review->interval = $interval->format('%i minutes');
+            if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') == 0 && $interval->formate("%sa") > 0) 
+                $review->interval = $interval->format('%sa seconds');
         }
 
         return $tasks;

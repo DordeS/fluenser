@@ -37,12 +37,16 @@ class Review extends Model
             $created = date_create($review->created_at);
             $now = date_create(date('Y-m-d h:i:sa'));
             $interval = date_diff($created, $now);
-            if($interval->format('%m') > 0) $review->interval = $interval->format('%m month');
+            if($interval->format('%m') > 0) 
+                $review->interval = $interval->format('%m month');
             if($interval->format('%m') == 0 && $interval->format('%h') > 0)
-            $review->interval = $interval->format("%h hour");
+                $review->interval = $interval->format("%h hour");
+            if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') > 0)
+                $review->interval = $interval->format('%i minutes');
+            if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') == 0 && $interval->formate("%sa") > 0) 
+                $review->interval = $interval->format('%sa seconds');
         }
 
-        // echo $reviews;
         return $reviews;
     }
 }

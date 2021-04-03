@@ -155,6 +155,17 @@
         #star-rating a:hover {
             color: rgba(251, 191, 36);
         }
+        .carousel-indicators li{
+            width: 5px !important;
+            height: 5px !important;
+            opacity: 1 !important;
+            border-radius: 50%;
+            border: none;
+            margin-bottom: 10px;
+        }
+        .carousel-indicators li.active {
+            box-shadow: 0 0 5px 3px white;
+        }
     </style>
 </head>
 <body>
@@ -172,11 +183,13 @@
                       <i class="fas fa-home"></i>
                   </a>
           
-                  <a href="{{ route('inbox') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
-                      <i class="far fa-envelope"></i>
+                  <a href="{{ route('inbox') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center unread" id="inbox">
+                      <i class="far fa-envelope relative">
+                          <div class="absolute w-2 h-2 -top-1 -right-1 rounded-full bg-red-500" id="newInboxNotif"></div>
+                      </i>
                   </a>
           
-                  <a href="{{ route('task') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
+                  <a href="{{ route('task') }}" id="task" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
                       <i class="fas fa-paperclip"></i>
                   </a>
           
@@ -184,13 +197,49 @@
                       <i class="fas fa-search"></i>
                   </a>
           
-                  <a href="{{ route('dashboard') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
+                  <a data-toggle="modal" data-target="#profileModal" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
                       <i class="far fa-user"></i>
                   </a>
                   </div>
               </div>
             </div>
-          @endguest
+
+            <div class="modal fade" id="profileModal">
+                <div class="modal-dialog"  style="top: 50%; transform:translateY(-50%);">
+                  <div class="modal-content">
+              
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                      <h4 class="modal-title">Profile</h4>
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+              
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                      <ul class="w-11/12 mx-auto">
+                          <li class="my-4"><a href={{ route('profile', ['username' => Auth::user()->username]) }}><li class="fas fa-user inline-block w-7"></li>View Profile</a></li>
+                          <li class="my-4"><a href={{ route('editProfile', ['username' => Auth::user()->username]) }}><li class="fas fa-user-edit inline-block w-7"></li>Edit Profile</a></li>
+                          <li class="my-4"><a href={{ route('balance') }}><li class="fas fa-wallet inline-block w-7"></li>Wallet</a></li>
+                          <li class="my-4"><a href="#"><li class="fas fa-clipboard-list inline-block w-7"></li>Statements</a></li>
+                          <li class="my-4"><a href="#"><li class="fas fa-sync-alt inline-block w-7"></li>Referrals</a></li>
+                          <li class="my-4"><a href="#"><li class="fas fa-star inline-block w-7"></li>Reviews</a></li>
+                          <li class="my-4"><a href="#"><li class="fas fa-cog inline-block w-7"></li>Account Settings</a></li>
+                      </ul>
+                    </div>
+              
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <form action="{{ route('logout') }}" id="logout-form" method="post">
+                            {{ csrf_field() }}
+                            <button type="submit"><i class="inline-block w-7 fas fa-sign-out-alt"></i> Log Out</button>
+                        </form>
+                    </div>
+              
+                  </div>
+                </div>
+            </div>
+
+        @endguest
         </nav>
         @yield('content')
     </div>
@@ -235,6 +284,10 @@
                 console.log($(this).attr('href'));
                 $("#searchTab a.active").removeClass('active');
                 $(this).addClass('active');
+                var index = $(this).attr('id');
+                $("div.full-view").hide();
+                $("div.grid-view").hide();
+                $("div." + index).show();
             });
             $("#gallery .delete").click(function() {
                 console.log('ok');
@@ -282,6 +335,15 @@
             });
 
         });
+
+        function showProfileModal() {
+            if($("div#profileModal").css('display') == 'none')
+            {
+                $("div#profileModal").show();
+            } else {
+                $("div#profileModal").hide();
+            }
+        }
     </script>
 </body>
 </html>

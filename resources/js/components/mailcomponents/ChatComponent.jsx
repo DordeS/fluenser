@@ -70,6 +70,7 @@ const ChatComponent = (props) => {
 
 
   useEffect(() => {
+    $("nav").hide();
     let isMount = false;
     // request
     const headers ={
@@ -143,10 +144,11 @@ const ChatComponent = (props) => {
     });
     var element = document.getElementById('chatcontainer');
     if(element != null) {
+      console.log('+++++++++++');
       element.scrollIntoView(false);
     }
     return () => {
-      isMount = true
+      isMount = true;
     };
   }, [userID, contactID, requestInfo.status, update] );
 
@@ -181,7 +183,7 @@ const ChatComponent = (props) => {
           </div>
         )
       } else {
-        var containerHeight = innerHeight - 225;
+        var containerHeight = innerHeight - 170;
         console.log($('main').css('width'));
         var messengerWidth = $('main').css('width').slice(0, -2) - 110;
         var currency = requestInfo.unit;
@@ -320,7 +322,7 @@ const ChatComponent = (props) => {
                 <div className="h-40"></div>
               </div>
             </div>
-            <div className="w-full md:max-w-7xl fixed" style={{bottom:'55px'}}>
+            <div className="w-full md:max-w-7xl fixed bottom-0">
               <div className="w-full bg-white" style={{height:'60px', borderTop:'1px solid lightgray'}}>
                 <div className="float-right">
                   <a onClick={sendMessage} style={{display:'block',height:'60px', width:'60px', background:'rgb(88,183,189)', fontSize:'20px', lineHeight:'60px', color:'white'}}>

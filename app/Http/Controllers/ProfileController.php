@@ -13,6 +13,7 @@ use App\Models\Category;
 use App\Models\Partnership;
 use App\Models\Influencers;
 use App\Models\InfluencerInfo;
+use App\Models\Countries;
 
 class ProfileController extends Controller
 {
@@ -40,6 +41,8 @@ class ProfileController extends Controller
 
         $partnerships = Partnership::where('influencer_id', $influencerInfo[0]->influencer_id)->get();
 
+        // echo $reviews;
+
         return view('profile', [
             'page' => 4,
             'accountInfo' => $accountInfo[0],
@@ -65,8 +68,10 @@ class ProfileController extends Controller
         $portfolios = Portfolio::where('profile_id', $profile[0]->id)->get();
 
         $category = new Category();
-        $categories = $category->getCategories($influencerInfo[0]->influencer_id);
-        if(count($categories) == 0) $categories = Category::all();
+        $selectedCategories = $category->getCategories($influencerInfo[0]->influencer_id);
+        $categories = Category::all();
+
+        $countries = Countries::all();
 
         $partnerships = Partnership::where('influencer_id', $influencerInfo[0]->influencer_id)->get();
 
@@ -74,8 +79,10 @@ class ProfileController extends Controller
             'page' => 5,
             'accountInfo' => $accountInfo[0],
             'influencerInfo' => $influencerInfo[0],
+            'countries' => $countries,
             'profile' => $profile[0],
             'portfolios' => $portfolios,
+            'selectedCategories' => $selectedCategories,
             'categories' => $categories,
             'partnerships' => $partnerships,
         ]);
@@ -148,9 +155,12 @@ class ProfileController extends Controller
             $influencer_id = $influencer[0]->id;
             $influencerInfo = InfluencerInfo::where('influencer_id', '=', $influencer_id)->get();
             $influencerInfo = $influencerInfo[0];
-            if($input['location'] != '') {
-                $influencerInfo->country = explode(',', $input['location'])[1];
-                $influencerInfo->state = explode(',', $input['location'])[0];
+            if($input['state'] != '') {
+                $influencerInfo->country = $input['state'];
+            }
+            if($input['country'] != '') {
+                $country = Countries::find($input['country']);
+                $influencerInfo->country = $country->name;
             }
             if($input['round-image'] != '') {
                 $influencerInfo->avatar = $profile[0]->round_img;
@@ -176,8 +186,8 @@ class ProfileController extends Controller
         // //delete all portfolios
         $portfolios = Portfolio::where('profile_id', '=', $profile_id)->get();
         foreach ($portfolios as $portfolio) {
-            $file = $folderPath . $portfolio->slide_img . '.jpg';
-            unlink($file);
+            // $file = $folderPath . $portfolio->slide_img . '.jpg';
+            // unlink($file);
             $portfolio->delete();
         }
         // // save portfolios
@@ -186,36 +196,7 @@ class ProfileController extends Controller
             $influencer_id = $influencer[0]->id;
             $images = json_decode($input['portfolio-image']);
             foreach ($images as $image) {
-                $image_parts = explode(";base64,", $image);
-                $image_type_aux = explode("image/", $image_parts[0]);
-                $image_type = $image_type_aux[1];
-                $image_base64 = base64_decode($image_parts[1]);
-                $filename = uniqid();
-                $file = $folderPath . $filename . '.jpg';
-                file_put_contents($file, $image_base64);
-
-                $portfolio = new Portfolio;
-                $portfolio->profile_id = $profile_id;
-                $portfolio->slide_img = $filename;
-                $portfolio->save();
-        }
-        }
-
-        // update partnerships
-        $user = new User();
-        if($user->checkIfInfluencer($user_id)) {
-            $influencer = Influencers::where('user_id', '=', $user_id)->get();
-            $influencer_id = $influencer[0]->id;
-            $partnerships = Partnership::where('influencer_id', '=', $influencer_id);
-            $folderPath = public_path('img/partnership-image/');
-            foreach ($partnerships as $partnership) {
-                $file = $folderPath . $partnership->partnership_img . '.jpg';
-                unlink($file);
-                $partnership->delete();
-            }
-            if($input['partnership-image'] != '') {
-                $images = json_decode($input['partnership-image']);
-                foreach ($images as $image) {
+                if(substr($image, 0, 4) == 'data') {
                     $image_parts = explode(";base64,", $image);
                     $image_type_aux = explode("image/", $image_parts[0]);
                     $image_type = $image_type_aux[1];
@@ -223,10 +204,62 @@ class ProfileController extends Controller
                     $filename = uniqid();
                     $file = $folderPath . $filename . '.jpg';
                     file_put_contents($file, $image_base64);
-                    $partnership = new Partnership;
-                    $partnership->influencer_id = $influencer_id;
-                    $partnership->partnership_img = $filename;
-                    $partnership->save();
+    
+                    $portfolio = new Portfolio;
+                    $portfolio->profile_id = $profile_id;
+                    $portfolio->slide_img = $filename;
+                    $portfolio->save();
+                } else {
+                    $image = explode('profile-image/', $image);
+                    $image = explode('.jpg', $image[1]);
+                    $filename = $image[0];
+
+                    $portfolio = new Portfolio;
+                    $portfolio->profile_id = $profile_id;
+                    $portfolio->slide_img = $filename;
+                    $portfolio->save();
+                }
+            }
+        }
+
+        // update partnerships
+        $user = new User();
+        if($user->checkIfInfluencer($user_id)) {
+            $influencer = Influencers::where('user_id', '=', $user_id)->get();
+            $influencer_id = $influencer[0]->id;
+            $partnerships = Partnership::where('influencer_id', '=', $influencer_id)->get();
+            // $folderPath = public_path('img/partnership-image/');
+            foreach ($partnerships as $partnership) {
+                // $file = $folderPath . $partnership->partnership_img . '.jpg';
+                // unlink($file);
+                $partnership->delete();
+            }
+            if($input['partnership-image'] != '') {
+                $images = json_decode($input['partnership-image']);
+                foreach ($images as $image) {
+                    if(substr($image, 0, 4) == 'data') {
+                        $image_parts = explode(";base64,", $image);
+                        $image_type_aux = explode("image/", $image_parts[0]);
+                        $image_type = $image_type_aux[1];
+                        $image_base64 = base64_decode($image_parts[1]);
+                        $filename = uniqid();
+                        $file = $folderPath . $filename . '.jpg';
+                        file_put_contents($file, $image_base64);
+
+                        $partnership = new Partnership;
+                        $partnership->influencer_id = $influencer_id;
+                        $partnership->partnership_img = $filename;
+                        $partnership->save();
+                    } else {
+                        $image = explode('partnership-image/', $image);
+                        $image = explode('.jpg', $image[1]);
+                        $filename = $image[0];
+
+                        $partnership = new Partnership;
+                        $partnership->influencer_id = $influencer_id;
+                        $partnership->partnership_img = $filename;
+                        $partnership->save();    
+                    }
                 }
             }
         }

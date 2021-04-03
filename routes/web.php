@@ -51,8 +51,6 @@ Route::middleware(['auth'])->group(function() {
 
     Route::post('/request/save',[App\Http\Controllers\CollaborateController::class, 'saveRequest'])->name('saveRequest');
 
-    Route::get('/{username}',[App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
-
     Route::get('editProfile/{username}',[App\Http\Controllers\ProfileController::class, 'editProfile'])->name('editProfile');
     
     Route::post('updateProfile/{user_id}',[App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('updateProfile');
@@ -61,4 +59,5 @@ Route::middleware(['auth'])->group(function() {
 
     Route::post('submitReview/{request_id}', [App\Http\Controllers\CollaborateController::class, 'submitReview'])->name('submitReview');
 
+    Route::get('/{username}',[App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 });

@@ -20,6 +20,8 @@ const RequestDetailComponent = (props) => {
   const [update, setUpdate] = useState(false);
 
   useEffect(() => {
+    let isMount = false;
+    $("nav").hide();
     // request
     const headers ={
       'Accept': 'application/json'
@@ -56,31 +58,35 @@ const RequestDetailComponent = (props) => {
     });
     var channel = pusher.subscribe('fluenser-channel');
     channel.bind('fluenser-event', (data) => {
+      console.log('qwer');
+      console.log(data);
+
       if(data.trigger == 'requestChat'){
-        console.log(data);
-        if(data.requestChat.request_id == requestInfo.id) {
-          const requestChat = requestChats;
-          requestChat.push(data.requestChat);
-          setRequestChats(requestChat);
-          setUpdate(!update);
+        if(!isMount) {
+          if(data.requestChat.request_id == requestInfo.id) {
+            var tmpRequestChat = requestChats;
+            tmpRequestChat.push(data.requestChat);
+            setRequestChats(tmpRequestChat);
+            setUpdate(!update);
+          }
         }
       }
 
       if(data.trigger == 'acceptRequest') {
         if(data.data == 'accepted' && data.request_id == requestInfo.id) {
-          const requestInfos = requestInfo;
+          var requestInfos = requestInfo;
           requestInfos.accepted = 1;
           setRequestInfo(requestInfos);
           setUpdate(!update);
         }
       }
 
-      if(data.trigger == 'request_status') {
-        var requestInfos = requestInfo;
-        requestInfos.status = data.status;
-        setRequestInfo(requestInfos);
-        setUpdate(!update);
-      }
+      // if(data.trigger == 'request_status') {
+      //   var requestInfos = requestInfo;
+      //   requestInfos.status = data.status;
+      //   setRequestInfo(requestInfos);
+      //   setUpdate(!update);
+      // }
     });
     var element = document.getElementById('requestChatContainer');
     console.log(element);
@@ -88,10 +94,10 @@ const RequestDetailComponent = (props) => {
       console.log("+++++++");
       element.scrollIntoView(false);
     }
-  }, [requestInfo.id, requestInfo.accepted, requestInfo.status, update] );
-
-  useEffect(() => {
-  }, []);
+    return() => {
+      isMount = true;
+    }
+  }, [requestInfo.accepted, requestInfo.status, update] );
 
   const handlePriceChange = (e) => {
     setPrice(e.target.value);
@@ -120,6 +126,7 @@ const RequestDetailComponent = (props) => {
       API.get('saveRequestChat/' + requestInfo.id + '/' + accountInfo.id + '/' + contactInfo.id + '/' + message + '?api_token=' + api_token, {
         headers: headers
       }).then((response) => {
+        console.log(response);
         setMessage('');
         setUpdate(!update);
       });
@@ -163,6 +170,10 @@ const RequestDetailComponent = (props) => {
       console.log(response.data);
         var requestInfos = requestInfo;
         requestInfos.accepted = 1;
+        var newRequestChat = response.data.newRequestChat;
+        var tmpRequestChats = requestChats;
+        tmpRequestChats.push(newRequestChat);
+        setRequestChats(tmpRequestChats);
         setRequestInfo(requestInfos);
         setUpdate(!update);
     });
@@ -221,7 +232,7 @@ const RequestDetailComponent = (props) => {
       </div>
     )
   } else {
-    var containerHeight = innerHeight - 225;
+    var containerHeight = innerHeight - 170;
     console.log($('main').css('width'));
     var messengerWidth = $('main').css('width').slice(0, -2) - 110;
     console.log(requestInfo.images);
@@ -480,7 +491,7 @@ const RequestDetailComponent = (props) => {
               <div className="h-40"></div>
             </div>
           </div>
-          <div className="w-full md:max-w-7xl fixed" style={{bottom:'55px'}}>
+          <div className="w-full md:max-w-7xl fixed bottom-0">
             <div className="w-full bg-white" style={{height:'60px', borderTop:'1px solid lightgray'}}>
               <div className="float-right">
                 <a onClick={sendMessage} style={{display:'block',height:'60px', width:'60px', background:'rgb(88,183,189)', fontSize:'20px', lineHeight:'60px', color:'white', textAlign:'center'}}>

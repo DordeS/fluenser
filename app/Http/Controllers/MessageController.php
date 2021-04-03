@@ -226,8 +226,21 @@ class MessageController extends Controller
             'request_id' => $request_id
         ]);
 
+        $request = Requests::find($request_id);
+
+        $requestChat = new RequestChat;
+        $requestChat->request_id = $request_id;
+        $requestChat->send_id = $request->receive_id;
+        $requestChat->receive_id = $request->send_id;
+        $requestChat->content = 'Congratulations! The request has been accepted! The deposit can be made to start your work!';
+        $requestChat->upload = 'none';
+
+        $requestChat->save();
+
+
         return response()->json([
             'status' => 200,
+            'newRequestChat' => $requestChat,
         ]);
     }
 
