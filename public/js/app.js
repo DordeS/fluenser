@@ -2776,6 +2776,8 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 __webpack_require__(/*! ./components/App.js */ "./resources/js/components/App.js");
 
+__webpack_require__(/*! ./components/Task.js */ "./resources/js/components/Task.js");
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -2934,15 +2936,38 @@ var Mail = function Mail(props) {
   };
 
   var _afterDeposit = function afterDeposit() {
-    console.log('redirect');
-    setShowItem('mail');
-    history.push('/inbox');
+    history.push('/collaborations');
+    window.location.reload();
   };
 
   var handleReview = function handleReview(request_id) {
     console.log('review');
     history.push('/leaveReview/' + request_id);
     window.location.reload();
+  };
+
+  var handleRequestClick = function handleRequestClick(requestID) {
+    var headers = {
+      'Accept': 'application/json'
+    };
+    var api_token = jquery__WEBPACK_IMPORTED_MODULE_6___default()("meta[name=api-token]").attr('content');
+    _api__WEBPACK_IMPORTED_MODULE_5__.default.get('read/request/' + requestID + '?api_token=' + api_token, {
+      headers: headers
+    }).then(function (res) {
+      if (res.status == 200) {
+        console.log('ooooo');
+        setrequestID(requestID);
+        setShowItem('requestDetail');
+        var count = jquery__WEBPACK_IMPORTED_MODULE_6___default()("#newInboxNotif").text();
+        jquery__WEBPACK_IMPORTED_MODULE_6___default()("#newInboxNotif").text(parseInt(count) - 1);
+
+        if (count == 1) {
+          jquery__WEBPACK_IMPORTED_MODULE_6___default()("#newInboxNotif").hide();
+        }
+      }
+    })["catch"](function (err) {
+      console.log(err);
+    });
   };
 
   if (showItem == 'mail') {
@@ -2979,9 +3004,7 @@ var Mail = function Mail(props) {
         exact: true,
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_mailcomponents_RequestComponent__WEBPACK_IMPORTED_MODULE_2__.default, {
           onRequestClick: function onRequestClick(requestID) {
-            console.log('ooooo');
-            setrequestID(requestID);
-            setShowItem('requestDetail');
+            return handleRequestClick(requestID);
           },
           selectTab: function selectTab(tabName) {
             return _selectTab(tabName);
@@ -3019,6 +3042,30 @@ var Mail = function Mail(props) {
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Mail);
+
+/***/ }),
+
+/***/ "./resources/js/components/Task.js":
+/*!*****************************************!*\
+  !*** ./resources/js/components/Task.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var _MailComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MailComponent */ "./resources/js/components/MailComponent.jsx");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+
+react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_4__.BrowserRouter, {
+  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_MailComponent__WEBPACK_IMPORTED_MODULE_2__.default, {})
+}), document.getElementById("taskDetail"));
 
 /***/ }),
 
@@ -3866,7 +3913,7 @@ var InboxComponent = function InboxComponent(props) {
         })]
       });
     } else {
-      var containerHeight = innerHeight - 255;
+      var containerHeight = innerHeight - 230;
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
           id: "inboxSearch",
@@ -4044,6 +4091,11 @@ var RequestComponent = function RequestComponent(props) {
       requestSearch = _useState10[0],
       setRequestSearch = _useState10[1];
 
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+      _useState12 = _slicedToArray(_useState11, 2),
+      update = _useState12[0],
+      setUpdate = _useState12[1];
+
   var onSearch = function onSearch(e) {
     e.preventDefault();
     var keyword = requestSearch;
@@ -4086,6 +4138,7 @@ var RequestComponent = function RequestComponent(props) {
           setRequests(requests);
           setShowRequests(requests);
           setUserID(response.data.user_id);
+          setUpdate(update);
         }
       }
     })["catch"](function (error) {
@@ -4103,7 +4156,7 @@ var RequestComponent = function RequestComponent(props) {
       console.log('pusher_data');
 
       if (data.trigger == 'request') {
-        console.log(data.influencer_id);
+        console.log(data);
 
         if (data.influencer_id == user_id) {
           console.log(data.request);
@@ -4111,6 +4164,7 @@ var RequestComponent = function RequestComponent(props) {
           requests.unshift(data.request);
           console.log(requests);
           setRequests(requests);
+          setUpdate(update);
         }
       }
     });
@@ -4118,7 +4172,7 @@ var RequestComponent = function RequestComponent(props) {
     return function () {
       isMount = true;
     };
-  }, []);
+  }, [update]);
 
   if (isWaiting) {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
@@ -4130,7 +4184,7 @@ var RequestComponent = function RequestComponent(props) {
       })
     });
   } else {
-    var containerHeight = innerHeight - 255;
+    var containerHeight = innerHeight - 230;
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
         id: "requestSearch",
@@ -4164,7 +4218,7 @@ var RequestComponent = function RequestComponent(props) {
           children: "No request to show"
         })
       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-        className: "pt-2 mt-8 w-11/12 mx-auto rounded",
+        className: "pt-2 mt-3 w-11/12 mx-auto rounded",
         style: {
           boxShadow: '0 0 3px 3px #eee'
         },
@@ -4176,6 +4230,7 @@ var RequestComponent = function RequestComponent(props) {
           children: showRequests.map(function (request, i) {
             return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
               className: "w-11/12 mx-auto",
+              id: request.id,
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
                 className: "pt-5",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
@@ -4191,9 +4246,16 @@ var RequestComponent = function RequestComponent(props) {
                   style: {
                     marginLeft: '70px'
                   },
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-                    className: "text-sm md:text-md font-bold",
-                    children: request.accountInfo[0].name
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
+                    className: "text-md md:text-lg font-bold relative",
+                    children: [request.accountInfo[0].name, request.unread ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                      className: "block absolute -top-2 right-1 text-xs font-light h-2 w-2 rounded-full bg-red-500 text-white"
+                    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
+                      className: "block absolute -top-2 right-1 text-xs font-light h-2 w-2 rounded-full bg-red-500 text-white",
+                      style: {
+                        display: 'none'
+                      }
+                    })]
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                   style: {
@@ -4426,18 +4488,21 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
       // }
 
     });
-    var element = document.getElementById('requestChatContainer');
-    console.log(element);
 
-    if (element != null) {
-      console.log("+++++++");
-      element.scrollIntoView(false);
+    if (!isMount) {
+      var element = document.getElementById('requestChatContainer');
+      console.log(element);
+
+      if (element != null) {
+        console.log("+++++++");
+        element.scrollIntoView(false);
+      }
     }
 
     return function () {
       isMount = true;
     };
-  }, [requestInfo.accepted, requestInfo.status, update]);
+  }, [isWaiting, requestInfo.status, update]);
 
   var handlePriceChange = function handlePriceChange(e) {
     setPrice(e.target.value);
@@ -4501,39 +4566,6 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
     }
   };
 
-  var onAccept = function onAccept() {
-    var headers = {
-      'Accept': 'application/json'
-    };
-    var api_token = jquery__WEBPACK_IMPORTED_MODULE_3___default()("meta[name=api-token]").attr('content');
-    _api__WEBPACK_IMPORTED_MODULE_1__.default.get('acceptRequest/' + requestInfo.id + '?api_token=' + api_token, {
-      headers: headers
-    }).then(function (response) {
-      if (response.status == 200) console.log(response.data);
-      var requestInfos = requestInfo;
-      requestInfos.accepted = 1;
-      var newRequestChat = response.data.newRequestChat;
-      var tmpRequestChats = requestChats;
-      tmpRequestChats.push(newRequestChat);
-      setRequestChats(tmpRequestChats);
-      setRequestInfo(requestInfos);
-      setUpdate(!update);
-    });
-    confirmToggle('hide');
-  };
-
-  var onDecline = function onDecline() {
-    var headers = {
-      'Accept': 'application/json'
-    };
-    var api_token = jquery__WEBPACK_IMPORTED_MODULE_3___default()("meta[name=api-token]").attr('content');
-    _api__WEBPACK_IMPORTED_MODULE_1__.default.get('declineRequest/' + requestInfo.id + '?api_token=' + api_token, {
-      headers: headers
-    }).then(function (response) {
-      if (response.status == 200) props.back();
-    });
-  };
-
   var popUpToggle = function popUpToggle(a) {
     if (a == 'show') {
       jquery__WEBPACK_IMPORTED_MODULE_3___default()("div#modal").css('display', 'block');
@@ -4548,14 +4580,6 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
     switch (a) {
       case 'hide':
         jquery__WEBPACK_IMPORTED_MODULE_3___default()("div#confirmModal").hide();
-        break;
-
-      case 'accept':
-        jquery__WEBPACK_IMPORTED_MODULE_3___default()('div.acceptConfirm').show();
-        break;
-
-      case 'decline':
-        jquery__WEBPACK_IMPORTED_MODULE_3___default()('div.declineConfirm').show();
         break;
 
       case 'deposit':
@@ -4579,7 +4603,7 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
       })
     });
   } else {
-    var containerHeight = innerHeight - 170;
+    var containerHeight = innerHeight - 315;
     console.log(jquery__WEBPACK_IMPORTED_MODULE_3___default()('main').css('width'));
     var messengerWidth = jquery__WEBPACK_IMPORTED_MODULE_3___default()('main').css('width').slice(0, -2) - 110;
     console.log(requestInfo.images);
@@ -4692,107 +4716,14 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
                 })]
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              className: "w-11/12 mx-auto mt-3",
+              className: "w-11/12 mx-auto mt-4",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                className: "block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md",
+                className: "block mx-auto px-4 py-2 rounded-lg text-white text-sm md:text-md font-semibold",
                 style: {
                   background: 'rgb(88,183,189)'
                 },
                 onClick: updateOffer,
                 children: "Update"
-              })
-            })]
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-          id: "confirmModal",
-          className: "acceptConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-            className: "w-11/12 h-48 bg-white absolute rounded-xl pt-4",
-            style: {
-              top: '50%',
-              marginTop: '-6rem',
-              left: '50%',
-              marginLeft: '-45.83333%'
-            },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-              className: "w-8/12 mx-auto h-26 mt-4",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                className: "text-center text-lg md:text-xl font-bold",
-                children: "Are you sure?"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                className: "text-center text-md md:text-lg text-gray-700 mt-3 mb-5",
-                children: "Do you really want to accept this request?"
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              className: "w-full h-16",
-              id: "confirmBtn",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-                className: "w-full grid grid-cols-2 h-full",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                  className: "col-span-1 h-full",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                    className: "w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white",
-                    onClick: function onClick() {
-                      return confirmToggle('hide');
-                    },
-                    children: "Cancel"
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                  className: "col-span-1",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                    className: "w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg",
-                    style: {
-                      background: 'rgb(88,183,189)'
-                    },
-                    onClick: onAccept,
-                    children: "Yes"
-                  })
-                })]
-              })
-            })]
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-          id: "confirmModal",
-          className: "declineConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-            className: "w-11/12 h-48 bg-white absolute rounded-xl",
-            style: {
-              top: '50%',
-              marginTop: '-6rem',
-              left: '50%',
-              marginLeft: '-45.83333%'
-            },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-              className: "w-8/12 mx-auto h-26 mt-4",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                className: "text-center text-lg md:text-xl font-bold",
-                children: "Are you sure?"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                className: "text-center text-md md:text-lg text-gray-700 mt-3 mb-5",
-                children: "Do you really want to decline this request?"
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              className: "w-full h-16",
-              id: "confirmBtn",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-                className: "w-full grid grid-cols-2 h-full",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                  className: "col-span-1 h-full",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                    className: "w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white",
-                    onClick: function onClick() {
-                      return confirmToggle('hide');
-                    },
-                    children: "Cancel"
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                  className: "col-span-1",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                    className: "w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg bg-red-500",
-                    onClick: onDecline,
-                    children: "Yes"
-                  })
-                })]
               })
             })]
           })
@@ -4887,14 +4818,10 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
           className: "bg-gray-100 pt-2",
-          style: {
-            height: containerHeight + 'px',
-            overflow: 'auto'
-          },
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-            id: "requestChatContainer",
+            className: "relative",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-              id: "requestdetail",
+              id: "requestdetail absolute top-1",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
                 className: "text-center text-xs md:text-sm text-gray-400",
                 children: datetime
@@ -4933,137 +4860,117 @@ var RequestDetailComponent = function RequestDetailComponent(props) {
                   })]
                 })]
               })]
-            }), requestChats.length == 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              id: "chatContainer",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                className: "text-sm md:text-md text-center",
-                children: "Start your chat here."
-              })
-            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              id: "chatContainer",
-              children: requestChats.map(function (chat, i) {
-                var datetime = new Date(chat.created_at);
-
-                if (datetime.getHours() >= 12) {
-                  var time = datetime.getHours() - 12 + ":" + datetime.getMinutes() + " PM";
-                } else {
-                  var time = datetime.getHours() + ":" + datetime.getMinutes() + " AM";
-                }
-
-                var month = _const__WEBPACK_IMPORTED_MODULE_2__.default.month[datetime.getMonth()];
-                var day = datetime.getDate();
-                datetime = time + ', ' + month + ' ' + day;
-                var isUser = chat.send_id == accountInfo.id ? true : false;
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                  className: "w-full mx-auto rounded px-2 mt-5",
-                  children: isUser ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-                      className: "relative float-right",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                        style: {
-                          border: '1px solid #999',
-                          "float": 'right'
-                        },
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                          className: "text-sm px-4 py-2 text-gray-700",
-                          children: chat.content
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                        className: "clearfix"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                        className: "text-xs text-gray-500 mt-2 absolute left-0",
-                        children: datetime
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                        className: "clearfix"
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                      className: "clearfix"
-                    })]
-                  }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-                      className: "relative float-left",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                        className: "bg-white",
-                        style: {
-                          "float": 'left'
-                        },
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                          className: "text-sm px-4 py-2 text-gray-700",
-                          children: chat.content
-                        })
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                        className: "clearfix"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
-                        className: "text-xs text-gray-500 mt-2 absolute right-0",
-                        children: datetime
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                        className: "clearfix"
-                      })]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                      className: "clearfix"
-                    })]
-                  })
-                }, i);
-              })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              id: "buttons",
-              className: "mt-16",
-              children: accountInfo.accountType == 'influencer' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-                className: "w-full grid grid-cols-2 gap-x-4",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                  className: "col-span-1",
-                  children: requestInfo.accepted ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                    className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-gray-500",
-                    disabled: true,
-                    children: "Accepted"
-                  }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                    className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-green-600",
-                    onClick: function onClick() {
-                      return confirmToggle('accept');
-                    },
-                    children: "Accept"
+              id: "chatContainer",
+              style: {
+                height: containerHeight + 'px',
+                overflow: 'auto'
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                id: "requestChatContainer",
+                children: [requestChats.map(function (chat, i) {
+                  var datetime = new Date(chat.created_at);
+
+                  if (datetime.getHours() >= 12) {
+                    var time = datetime.getHours() - 12 + ":" + datetime.getMinutes() + " PM";
+                  } else {
+                    var time = datetime.getHours() + ":" + datetime.getMinutes() + " AM";
+                  }
+
+                  var month = _const__WEBPACK_IMPORTED_MODULE_2__.default.month[datetime.getMonth()];
+                  var day = datetime.getDate();
+                  datetime = time + ', ' + month + ' ' + day;
+                  var isUser = chat.send_id == accountInfo.id ? true : false;
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                    className: "w-full mx-auto rounded px-2 mt-5",
+                    children: isUser ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                        className: "relative float-right",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                          style: {
+                            border: '1px solid #999',
+                            "float": 'right'
+                          },
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+                            className: "text-sm px-4 py-2 text-gray-700",
+                            children: chat.content
+                          })
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                          className: "clearfix"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+                          className: "text-xs text-gray-500 mt-2 absolute left-0",
+                          children: datetime
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                          className: "clearfix"
+                        })]
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                        className: "clearfix"
+                      })]
+                    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                        className: "relative float-left",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                          className: "bg-white",
+                          style: {
+                            "float": 'left'
+                          },
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+                            className: "text-sm px-4 py-2 text-gray-700",
+                            children: chat.content
+                          })
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                          className: "clearfix"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+                          className: "text-xs text-gray-500 mt-2 absolute right-0",
+                          children: datetime
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                          className: "clearfix"
+                        })]
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                        className: "clearfix"
+                      })]
+                    })
+                  }, i);
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                  id: "buttons",
+                  className: "mt-16",
+                  children: accountInfo.accountType == 'influencer' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                    className: "w-full",
+                    children: requestInfo.status == 1 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                      className: "flex justify-evenly",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+                          className: "mx-auto px-3 py-2 rounded-sm text-white text-sm md:text-md font-semibold ",
+                          style: {
+                            background: 'rgb(88,183,189)'
+                          },
+                          onClick: function onClick() {
+                            return confirmToggle('deposit');
+                          },
+                          children: "Add Deposit"
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+                          className: "mx-auto px-3 py-2 rounded-sm text-white text-sm md:text-md font-semibold ",
+                          style: {
+                            background: 'rgb(88,183,189)'
+                          },
+                          onClick: function onClick() {
+                            return popUpToggle('show');
+                          },
+                          children: "Update offer"
+                        })
+                      })]
+                    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
+                      className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-gray-500",
+                      disabled: true,
+                      children: "Deposit Made"
+                    })
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                  className: "col-span-1",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                    className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-red-600",
-                    onClick: function onClick() {
-                      return confirmToggle('decline');
-                    },
-                    children: "Decline"
-                  })
+                  className: "h-40"
                 })]
-              }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-                className: "w-full",
-                children: requestInfo.accepted ? requestInfo.status == 1 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                  className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md",
-                  style: {
-                    background: 'rgb(88,183,189)'
-                  },
-                  onClick: function onClick() {
-                    return confirmToggle('deposit');
-                  },
-                  children: "Create Deposit"
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                  className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md",
-                  style: {
-                    background: 'rgb(88,183,189)'
-                  },
-                  disabled: true,
-                  children: "Deposit Made"
-                }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("button", {
-                  className: "block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md",
-                  style: {
-                    background: 'rgb(88,183,189)'
-                  },
-                  onClick: function onClick() {
-                    return popUpToggle('show');
-                  },
-                  children: "Update offer"
-                })
               })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-              className: "h-40"
             })]
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {

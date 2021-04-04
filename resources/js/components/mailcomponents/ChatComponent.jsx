@@ -76,6 +76,7 @@ const ChatComponent = (props) => {
     const headers ={
       'Accept': 'application/json'
     };
+    
     var api_token = $("meta[name=api-token]").attr('content');
     API.get('chat/' + props.inboxID + '?api_token=' + api_token, {
       headers: headers
@@ -142,11 +143,13 @@ const ChatComponent = (props) => {
         }
       }
     });
+
     var element = document.getElementById('chatcontainer');
     if(element != null) {
       console.log('+++++++++++');
       element.scrollIntoView(false);
     }
+
     return () => {
       isMount = true;
     };

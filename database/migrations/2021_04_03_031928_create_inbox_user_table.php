@@ -16,7 +16,7 @@ class CreateInboxUserTable extends Migration
         Schema::create('inbox_user', function (Blueprint $table) {
             $table->integer('inbox_id');
             $table->integer('user_id');
-            $table->integer('opened');
+            $table->integer('isRead');
             $table->timestamps();
         });
     }

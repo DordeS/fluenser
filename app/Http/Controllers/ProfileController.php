@@ -21,7 +21,7 @@ class ProfileController extends Controller
         $this->middleware('auth');
     }
 
-    public function index($username) {
+    public function index(Request $request, $username) {
         $userInfo = User::where('username', '=', $username)->get();
         $user_id = $userInfo[0]->id;
         $user = new User();
@@ -45,6 +45,7 @@ class ProfileController extends Controller
 
         return view('profile', [
             'page' => 4,
+            'unread' => $request->get('unread'),
             'accountInfo' => $accountInfo[0],
             'influencerInfo' => $influencerInfo[0],
             'profile' => $profile[0],

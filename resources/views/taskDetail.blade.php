@@ -52,12 +52,13 @@
       </div>
       <div class="w-10/12 mx-auto">
         @if ($requests->status < 3)
-          <button class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white" style="background: #0ac2c8" id="release" onclick="onReleaseClick()">Release</button>
+        <button class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white" style="background: #0ac2c8" id="release" onclick="onReleaseClick()">Release</button>
         @endif
       </div>
+      <div id="taskDetail"></div>
     </div>
   </main>
-
+  <script src="{{ asset('js/app.js') }}"></script>
   <script>
     function onReleaseClick() {
       $('button#release').css({'pointer-events':'none', 'background':'#999'});

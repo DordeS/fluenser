@@ -13,3 +13,4 @@ require('./bootstrap');
  */
 
 require('./components/App.js');
+require('./components/Task.js');

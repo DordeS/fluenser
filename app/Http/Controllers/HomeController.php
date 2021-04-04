@@ -10,6 +10,9 @@ use App\Models\User;
 use App\Models\InfluencerInfo;
 use App\Models\BrandInfo;
 use App\Models\Profile;
+use App\Models\UserInbox;
+use App\Models\UserRequest;
+use App\Models\UserTask;
 use Stripe\Stripe;
 
 class HomeController extends Controller
@@ -29,7 +32,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         $page = 1;
         $account = new User();
@@ -46,7 +49,10 @@ class HomeController extends Controller
             'type' => 'account_onboarding'
         ]);
 
+        $unread = $request->get('unread');
+
         return view('home', [
+            'unread' => $unread,
             'portfolios' => $portfolios,
             'accountType' => $accountInfo[0]->accountType,
             'accountInfo' => $accountInfo[0],

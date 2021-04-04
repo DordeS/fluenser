@@ -24,6 +24,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+    <!-- pusher.js -->
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    
     <!-- croper js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css" integrity="sha256-jKV9n9bkk/CTP8zbtEtnKaKf+ehRovOYeKoyfthwbC8=" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js" integrity="sha256-CgvH7sz3tHhkiVKh05kSUgG97YtzYNnWt6OXcmYzqHY=" crossorigin="anonymous"></script>
@@ -185,12 +188,22 @@
           
                   <a href="{{ route('inbox') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center unread" id="inbox">
                       <i class="far fa-envelope relative">
-                          <div class="absolute w-2 h-2 -top-1 -right-1 rounded-full bg-red-500" id="newInboxNotif"></div>
-                      </i>
-                  </a>
-          
-                  <a href="{{ route('task') }}" id="task" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
-                      <i class="fas fa-paperclip"></i>
+                          @if ($unread->inbox != 0)
+                            <div class="absolute w-4 h-4 -top-2 -right-2 rounded-full text-white text-xs bg-red-500" id="newInboxNotif" style="font-weight: 900; display:block">{{ $unread->inbox }}</div>
+                          @else
+                            <div class="absolute w-4 h-4 -top-2 -right-2 rounded-full text-white text-xs bg-red-500" id="newInboxNotif" style="font-weight: 900; display:none">{{ $unread->inbox }}</div>
+                          @endif
+                        </i>
+                    </a>
+                    
+                    <a href="{{ route('task') }}" id="task" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
+                        <i class="fas fa-paperclip relative">
+                        @if ($unread->task != 0)
+                          <div class="absolute w-4 h-4 -top-2 -right-3 text-white text-xs rounded-full bg-red-500" id="newTaskNotif" style="display: block">{{ $unread->task }}</div>
+                        @else
+                          <div class="absolute w-4 h-4 -top-2 -right-3 text-white text-xs rounded-full bg-red-500" id="newTaskNotif" style="display: none">{{ $unread->task }}</div>
+                        @endif
+                        </i>
                   </a>
           
                   <a href="{{ route('search') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center">
@@ -344,6 +357,47 @@
                 $("div#profileModal").hide();
             }
         }
-    </script>
+        
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('da7cd3b12e18c9e2e461', {
+      cluster: 'eu',
+    });
+
+    var channel = pusher.subscribe('fluenser-channel');
+    channel.bind('fluenser-event', function(data) {
+      console.log('newRequest');
+      if(data.trigger == 'newRequest') {
+        console.log(data);
+            if(data.request.send_id == "{{ Auth::user()->id}}" || data.request.receive_id == "{{Auth::user()->id}}") {
+              if($("#newInboxNotif").css('display') == 'block') {
+                var count = $("#newInboxNotif").text();
+                console.log(count);
+                $("#newInboxNotif").text(parseInt(count) + 1);
+              } else {
+                $("#newInboxNotif").text(1);
+                $("#newInboxNotif").show();
+              }
+            }
+        }
+
+        if(data.trigger == 'newRequestChat') {
+          if(data.requestChat.receive_id == "{{Auth::user()->id}}") {
+              console.log(data);
+              $("div#" + data.requestChat.request_id + " p span").show();
+
+              if($("#newInboxNotif").css('display') == 'block') {
+                var count = $("#newInboxNotif").text();
+                console.log(count);
+                $("#newInboxNotif").text(parseInt(count) + 1);
+              } else {
+                $("#newInboxNotif").text(1);
+                $("#newInboxNotif").show();
+              }
+            }
+        }
+    });
+
+</script>
 </body>
 </html>

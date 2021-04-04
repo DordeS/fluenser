@@ -100,7 +100,7 @@ const InboxComponent = (props) => {
         </div>
       )
     } else {
-      var containerHeight = innerHeight - 255;
+      var containerHeight = innerHeight - 230;
       return (
         <div>
           <div id="inboxSearch">

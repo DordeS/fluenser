@@ -27,7 +27,7 @@ Route::get('message', function() {
     return $success;
 });
 
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth', 'CheckUnread'])->group(function() {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');    
 

@@ -13,6 +13,9 @@ use App\Models\RequestInfo;
 use App\Models\RequestChat;
 use App\Models\RequestImg;
 use App\Models\User;
+use App\Models\UserInbox;
+use App\Models\UserRequest;
+use App\Models\UserTask;
 
 class MessageController extends Controller
 {
@@ -20,13 +23,17 @@ class MessageController extends Controller
         $this->middleware('auth');
     }
 
-    public function index() {
+    public function index(Request $request) {
         $account = new User();
         $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
+
+        $unread = $request->get('unread');
+
         return view('message', [
             'page' => 2,
+            'unread' => $unread,
             'accountInfo' => $accountInfo[0]
-            ]);
+        ]);
     }
 
     public function inbox() {
@@ -89,6 +96,14 @@ class MessageController extends Controller
                 $requestsInfo[$i]->requestContent = $requestContent;
                 $requestsInfo[$i]->contactID = $contact_id;
 
+                $userRequest = UserRequest::where('request_id', '=', $requestInfo->id)
+                        ->where('user_id', '=', Auth::user()->id)
+                        ->get();
+                if(count($userRequest) > 0)
+                    $requestsInfo[$i]->unread = true;
+                else
+                    $requestsInfo[$i]->unread = false;
+
                 $i ++;
             }
         }
@@ -146,7 +161,7 @@ class MessageController extends Controller
     public function requestDetaliShow($request_id) {
         $requests = new Requests;
         $request = $requests->find($request_id);
-        $send_id = $request->send_id;
+        $send_id = ($request->send_id == Auth::user()->id)?$request->receive_id:$request->send_id;
 
         $user = new User();
         $contactInfo = $user->getAccountInfoByUserID($send_id)[0];
@@ -199,10 +214,28 @@ class MessageController extends Controller
         $requestChat->upload = 'none';
         $requestChat->save();
 
+        echo $requestChat;
+
         $pusher = new Pusher\Pusher('da7cd3b12e18c9e2e461', '566ee6622fcab95b7709', '1168466', array('cluster' => 'eu'));
 
         $pusher->trigger('fluenser-channel', 'fluenser-event', [
             'trigger' => 'requestChat',
+            'requestChat' => $requestChat,
+        ]);
+
+        $userRequest = UserRequest::where('request_id', '=', $request_id)
+                ->where('user_id', '=', $receive_id)
+                ->get();
+        if(count($userRequest) == 0) {
+            $userRequest = new UserRequest;
+            $userRequest->request_id = $request_id;
+            $userRequest->user_id = $receive_id;
+            $userRequest->isRead = 0;
+            $userRequest->save();
+        }
+
+        $pusher->trigger('fluenser-channel', 'fluenser-event', [
+            'trigger' => 'newRequestChat',
             'requestChat' => $requestChat,
         ]);
 
@@ -211,67 +244,29 @@ class MessageController extends Controller
         ]);
     }
 
-    public function acceptRequest($request_id) {
-        $request = RequestInfo::where('request_id', '=', $request_id)->get();
+    public function readItem($item, $id) {
+        switch ($item) {
+            case 'request':
+                $item = UserRequest::where('request_id', '=', $id);
+                break;
 
-        $request = RequestInfo::find($request[0]->id);
-        $request->accepted = 1;
-        $request->save();
+            case 'inbox':
+                $item = UserRequest::where('inbox', '=', $id);
+                break;
 
-        $pusher = new Pusher\Pusher('da7cd3b12e18c9e2e461', '566ee6622fcab95b7709', '1168466', array('cluster' => 'eu'));
+            case 'tast':
+                $item = UserRequest::where('task', '=', $id);
+                break;
+            
+            default:
+                break;
+        }
 
-        $pusher->trigger('fluenser-channel', 'fluenser-event', [
-            'trigger' => 'acceptRequest',
-            'data' => 'accepted',
-            'request_id' => $request_id
-        ]);
-
-        $request = Requests::find($request_id);
-
-        $requestChat = new RequestChat;
-        $requestChat->request_id = $request_id;
-        $requestChat->send_id = $request->receive_id;
-        $requestChat->receive_id = $request->send_id;
-        $requestChat->content = 'Congratulations! The request has been accepted! The deposit can be made to start your work!';
-        $requestChat->upload = 'none';
-
-        $requestChat->save();
-
-
+        $item = $item->where('user_id', '=', Auth::user()->id)->get();
+        if(count($item) > 0) $item[0]->delete();
+    
         return response()->json([
             'status' => 200,
-            'newRequestChat' => $requestChat,
-        ]);
-    }
-
-    public function declineRequest($request_id) {
-        echo $request_id;
-        // delete form the request_info table
-        $requestInfo = RequestInfo::where('request_id', '=', $request_id)->get();
-        if(count($requestInfo) > 0) $requestInfo[0]->delete();
-        
-        // delete form the request_images table
-        $requestImages = RequestImg::where('request_id', '=', $request_id)->get();
-        if(count($requestImages) > 0) {
-            foreach ($requestImages as $requestImage) {
-                $requestImage->delete();
-            }
-        }
-
-        // delete from the request_chat table
-        $requestChats = RequestChat::where('request_id', '=', $request_id)->get();
-        if(count($requestChats) > 0) {
-            foreach ($requestChats as $requestChat) {
-                $requestChat->delete();
-            }
-        }
-       
-        // delete from the request table
-        $request = Requests::find($request_id);
-        $request->delete();
-
-        return response()->json([
-            'status' => true,
         ]);
     }
 }

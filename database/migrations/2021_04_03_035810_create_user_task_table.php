@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserRequestTable extends Migration
+class CreateUserTaskTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class CreateUserRequestTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_request', function (Blueprint $table) {
-            $table->integer('request_id');
+        Schema::create('user_task', function (Blueprint $table) {
+            $table->integer('task_id');
             $table->integer('user_id');
             $table->integer('isRead');
             $table->timestamps();
@@ -28,6 +28,6 @@ class CreateUserRequestTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_request');
+        Schema::dropIfExists('user_task');
     }
 }

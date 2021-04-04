@@ -36,15 +36,34 @@ const Mail = (props) => {
   }
 
   const afterDeposit = () => {
-    console.log('redirect');
-    setShowItem('mail');
-    history.push('/inbox');
+    history.push('/collaborations');
+    window.location.reload();
   }
 
   const handleReview = (request_id) => {
     console.log('review');
     history.push('/leaveReview/' + request_id);
     window.location.reload();
+  }
+
+  const handleRequestClick = (requestID) => {
+    const headers ={
+      'Accept': 'application/json'
+    };
+    var api_token = $("meta[name=api-token]").attr('content');
+    API.get('read/request/' + requestID + '?api_token=' + api_token, {headers:headers}).then((res) => {
+      if(res.status == 200) {
+        console.log('ooooo');
+        setrequestID(requestID);
+        setShowItem('requestDetail');
+
+        var count = $("#newInboxNotif").text();
+        $("#newInboxNotif").text(parseInt(count) - 1);
+        if(count == 1) {
+          $("#newInboxNotif").hide();
+        }
+      }
+    }).catch(err => {console.log(err)});
   }
 
   if (showItem == 'mail') {
@@ -82,11 +101,7 @@ const Mail = (props) => {
 
         <Route path="/request" exact>
           <RequestComponent
-            onRequestClick = {(requestID) => {
-              console.log('ooooo');
-              setrequestID(requestID);
-              setShowItem('requestDetail');
-            }}
+            onRequestClick = {(requestID) => handleRequestClick(requestID)}
             selectTab = {(tabName) => selectTab(tabName)}
           />
         </Route>

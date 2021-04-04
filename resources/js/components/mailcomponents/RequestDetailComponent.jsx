@@ -88,16 +88,18 @@ const RequestDetailComponent = (props) => {
       //   setUpdate(!update);
       // }
     });
-    var element = document.getElementById('requestChatContainer');
-    console.log(element);
-    if(element != null) {
-      console.log("+++++++");
-      element.scrollIntoView(false);
+    if(!isMount) {
+      var element = document.getElementById('requestChatContainer');
+      console.log(element);
+      if(element != null) {
+        console.log("+++++++");
+        element.scrollIntoView(false);
+      }
     }
     return() => {
       isMount = true;
     }
-  }, [requestInfo.accepted, requestInfo.status, update] );
+  }, [isWaiting, requestInfo.status, update] );
 
   const handlePriceChange = (e) => {
     setPrice(e.target.value);
@@ -158,41 +160,6 @@ const RequestDetailComponent = (props) => {
     }
   }
 
-  const onAccept = () => {
-    const headers ={
-      'Accept': 'application/json'
-    };
-      var api_token = $("meta[name=api-token]").attr('content');
-    API.get('acceptRequest/' + requestInfo.id + '?api_token=' + api_token, {
-      headers: headers
-    }).then((response) => {
-      if(response.status == 200)
-      console.log(response.data);
-        var requestInfos = requestInfo;
-        requestInfos.accepted = 1;
-        var newRequestChat = response.data.newRequestChat;
-        var tmpRequestChats = requestChats;
-        tmpRequestChats.push(newRequestChat);
-        setRequestChats(tmpRequestChats);
-        setRequestInfo(requestInfos);
-        setUpdate(!update);
-    });
-    confirmToggle('hide');
-  }
-
-  const onDecline = () => {
-    const headers ={
-      'Accept': 'application/json'
-    };
-      var api_token = $("meta[name=api-token]").attr('content');
-    API.get('declineRequest/' + requestInfo.id + '?api_token=' + api_token, {
-      headers: headers
-    }).then((response) => {
-      if(response.status == 200)
-        props.back();
-    });
-  }
-
   const popUpToggle = (a) => {
     if(a == 'show') {
       $("div#modal").css('display', 'block');
@@ -209,12 +176,6 @@ const RequestDetailComponent = (props) => {
         $("div#confirmModal").hide();
         break;
 
-      case 'accept':
-        $('div.acceptConfirm').show();
-        break;
-      case 'decline':
-        $('div.declineConfirm').show();
-        break;
       case 'deposit':
         $('div.depositConfirm').show();
         break;
@@ -232,7 +193,7 @@ const RequestDetailComponent = (props) => {
       </div>
     )
   } else {
-    var containerHeight = innerHeight - 170;
+    var containerHeight = innerHeight - 315;
     console.log($('main').css('width'));
     var messengerWidth = $('main').css('width').slice(0, -2) - 110;
     console.log(requestInfo.images);
@@ -284,49 +245,10 @@ const RequestDetailComponent = (props) => {
                     </select>
                   </div>
                 </div>
-                <div className="w-11/12 mx-auto mt-3">
-                  <button className="block mx-auto px-4 py-1 rounded-lg text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={updateOffer}>
+                <div className="w-11/12 mx-auto mt-4">
+                  <button className="block mx-auto px-4 py-2 rounded-lg text-white text-sm md:text-md font-semibold" style={{ background:'rgb(88,183,189)' }} onClick={updateOffer}>
                     Update
                   </button>
-                </div>
-              </div>
-          </div>
-
-
-          <div id="confirmModal" className="acceptConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
-              <div className="w-11/12 h-48 bg-white absolute rounded-xl pt-4" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
-                <div className="w-8/12 mx-auto h-26 mt-4">
-                  <p className="text-center text-lg md:text-xl font-bold">Are you sure?</p>
-                  <p className="text-center text-md md:text-lg text-gray-700 mt-3 mb-5">Do you really want to accept this request?</p>
-                </div>
-                <div className="w-full h-16" id="confirmBtn">
-                  <div className="w-full grid grid-cols-2 h-full">
-                    <div className="col-span-1 h-full">
-                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white" onClick={() => confirmToggle('hide')}>Cancel</button>
-                    </div>
-                    <div className="col-span-1">
-                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg" style={{ background:'rgb(88,183,189)' }} onClick={onAccept}>Yes</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          </div>
-
-          <div id="confirmModal" className="declineConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
-              <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
-                <div className="w-8/12 mx-auto h-26 mt-4">
-                  <p className="text-center text-lg md:text-xl font-bold">Are you sure?</p>
-                  <p className="text-center text-md md:text-lg text-gray-700 mt-3 mb-5">Do you really want to decline this request?</p>
-                </div>
-                <div className="w-full h-16" id="confirmBtn">
-                  <div className="w-full grid grid-cols-2 h-full">
-                    <div className="col-span-1 h-full">
-                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white" onClick={() => confirmToggle('hide')}>Cancel</button>
-                    </div>
-                    <div className="col-span-1">
-                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg bg-red-500" onClick={onDecline}>Yes</button>
-                    </div>
-                  </div>
                 </div>
               </div>
           </div>
@@ -365,9 +287,9 @@ const RequestDetailComponent = (props) => {
             </span>
             </p>
           </div>
-          <div className="bg-gray-100 pt-2" style={{height:containerHeight+'px', overflow:'auto'}}>
-            <div id="requestChatContainer">
-              <div id="requestdetail">
+          <div className="bg-gray-100 pt-2">
+            <div className="relative">
+              <div id="requestdetail absolute top-1">
                 <p className="text-center text-xs md:text-sm text-gray-400">{ datetime }</p>
                 <div className="w-10/12 mx-auto bg-white py-1 py-2">
                   <p className="text-center text-gray-700 text-sm md:text-md">
@@ -393,15 +315,8 @@ const RequestDetailComponent = (props) => {
                   </div>
                 </div>
               </div>
-              {
-                (requestChats.length == 0) ?
-                <div id="chatContainer">
-                  <p className="text-sm md:text-md text-center">
-                    Start your chat here.
-                  </p>
-                </div>
-                :
-                <div id="chatContainer">
+              <div id="chatContainer" style={{height:containerHeight+'px', overflow:'auto'}}>
+                <div id="requestChatContainer">
                 {
                   requestChats.map((chat, i)=>{
                     var datetime = new Date(chat.created_at);
@@ -452,43 +367,33 @@ const RequestDetailComponent = (props) => {
                         );
                       })
                     }
-                </div>
-              }
-              <div id="buttons" className="mt-16">
-                {
-                  (accountInfo.accountType == 'influencer')
-                  ?
-                  <div className="w-full grid grid-cols-2 gap-x-4">
-                    <div className="col-span-1">
-                      {
-                        (requestInfo.accepted)
-                        ?
-                        <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-gray-500" disabled>Accepted</button>
-                        :
-                        <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-green-600" onClick={() => confirmToggle('accept')}>Accept</button>
-                      }
-                    </div>
-                    <div className="col-span-1">
-                      <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-red-600" onClick={() => confirmToggle('decline')}>Decline</button>
-                    </div>
-                  </div>
-                  :
-                  <div className="w-full">
+                  <div id="buttons" className="mt-16">
                     {
-                      (requestInfo.accepted)
+                      (accountInfo.accountType == 'influencer')
                       ?
-                        (requestInfo.status == 1)
-                        ?
-                          <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={() => confirmToggle('deposit')}>Create Deposit</button>
-                        :
-                          <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} disabled>Deposit Made</button>
+                      <div></div>
                       :
-                        <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md" style={{ background:'rgb(88,183,189)' }} onClick={() => popUpToggle('show')}>Update offer</button>
+                      <div className="w-full">
+                        {
+                          (requestInfo.status == 1)
+                          ?
+                          <div className="flex justify-evenly">
+                            <div>
+                              <button className="mx-auto px-3 py-2 rounded-sm text-white text-sm md:text-md font-semibold " style={{ background:'rgb(88,183,189)' }} onClick={() => confirmToggle('deposit')}>Add Deposit</button>
+                            </div>
+                            <div>
+                              <button className="mx-auto px-3 py-2 rounded-sm text-white text-sm md:text-md font-semibold " style={{ background:'rgb(88,183,189)' }} onClick={() => popUpToggle('show')}>Update offer</button>
+                            </div>
+                          </div>
+                          :
+                            <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-gray-500" disabled>Deposit Made</button>
+                        }
+                      </div>
                     }
                   </div>
-                }
+                  <div className="h-40"></div>
+                </div>
               </div>
-              <div className="h-40"></div>
             </div>
           </div>
           <div className="w-full md:max-w-7xl fixed bottom-0">

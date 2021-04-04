@@ -12,6 +12,7 @@ use App\Models\RequestInfo;
 use App\Models\RequestImg;
 use App\Models\Review;
 use App\Models\BrandInfo;
+use App\Models\UserRequest;
 use Illuminate\Support\Facades\Validator;
 
 class CollaborateController extends Controller
@@ -20,7 +21,7 @@ class CollaborateController extends Controller
         $this->middleware('auth');
     }
 
-    public function index($user_id) {
+    public function index(Request $request, $user_id) {
         $user = new User();
         $accountInfo = $user->getAccountInfoByUserID(Auth::user()->id);
         
@@ -28,6 +29,7 @@ class CollaborateController extends Controller
 
         return view('collaborate', [
             'page' => 4,
+            'unread' => $request->get('unread'),
             'accountInfo' => $accountInfo[0],
             'influencerInfo' => $influencerInfo[0],
         ]);
@@ -110,6 +112,17 @@ class CollaborateController extends Controller
             'influencer_id' => $input['influencer_id'],
             'request' => $request,
             'trigger' => 'request',
+        ]);
+
+        $receiveUserRequest = new UserRequest;
+        $receiveUserRequest->request_id = $request->id;
+        $receiveUserRequest->user_id = $request->receive_id;
+        $receiveUserRequest->isRead = 0;
+        $receiveUserRequest->save();
+
+        $pusher->trigger('fluenser-channel', 'fluenser-event', [
+            'trigger' => 'newRequest',
+            'request' => $request,
         ]);
 
         return redirect('request');

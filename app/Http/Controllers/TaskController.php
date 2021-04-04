@@ -19,7 +19,7 @@ class TaskController extends Controller
         $this->middleware('auth');
     }
 
-    public function index() {
+    public function index(Request $request) {
         $user = new User();
         $requests = new Requests();
         $user_id = Auth::user()->id;
@@ -34,8 +34,11 @@ class TaskController extends Controller
         }
         $account = new User();
         $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
+
+        $unread = $request->get('unread');
         return view('task', [
             'page' => 3,
+            'unread' => $unread,
             'acceptedTasks' => $acceptedTasks,
             'completedTasks' => $completedTasks,
             'disputedTasks' => $disputedTasks,
@@ -43,16 +46,17 @@ class TaskController extends Controller
         ]);
     }
 
-    public function taskDetailShow($request_id) {
+    public function taskDetailShow(Request $request, $request_id) {
         $requests = new Requests();
-        $request = $requests->getRequestInfoByID($request_id);
+        $requestsInfo = $requests->getRequestInfoByID($request_id);
 
         $user = new User();
-        $accountInfo = $user->getAccountInfoByUserID($request->user_id);
+        $accountInfo = $user->getAccountInfoByUserID($requestsInfo->user_id);
 
         return view('taskDetail', [
             'page' => 3,
-            'requests' => $request,
+            'unread' => $request->get('unread'),
+            'requests' => $requestsInfo,
             'accountInfo' => $accountInfo[0],
         ]);
     }
@@ -91,7 +95,10 @@ class TaskController extends Controller
         $influencers = new Influencers();
         $foundInfluencers = $influencers->findInfluencers($category, $location, $name, $keyword, $perpage);
 
+        $unread = $request->get('unread');
+
         return view('search', [
+            'unread' => $unread,
             'selectedCategory' => $category,
             'selectedLocation' => $location,
             'selectedName' => $name,

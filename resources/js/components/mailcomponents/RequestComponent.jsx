@@ -9,6 +9,7 @@ const RequestComponent =(props) => {
   const [showRequests, setShowRequests] = useState([]);
   const [isWaiting, setIsWaiting] = useState(true);
   const [requestSearch, setRequestSearch] = useState("");
+  const [update, setUpdate] = useState(true);
 
   const onSearch = (e) => {
     e.preventDefault();
@@ -50,6 +51,7 @@ const RequestComponent =(props) => {
           setRequests(requests);
           setShowRequests(requests);
           setUserID(response.data.user_id);
+          setUpdate(update);
         }
       }
     }).catch(error => {
@@ -69,13 +71,14 @@ const RequestComponent =(props) => {
     channel.bind('fluenser-event', function(data) {
       console.log('pusher_data');
       if(data.trigger == 'request') {
-        console.log(data.influencer_id);
+        console.log(data);
         if(data.influencer_id == user_id) {
           console.log(data.request);
           var requests = requests;
           requests.unshift(data.request);
           console.log(requests);
           setRequests(requests);
+          setUpdate(update);
         }
       }
     });
@@ -85,7 +88,7 @@ const RequestComponent =(props) => {
     return() => {
       isMount = true;
     }
-  }, []);
+  }, [update]);
   
   if(isWaiting) {
     return (
@@ -94,7 +97,7 @@ const RequestComponent =(props) => {
       </div>
     )
   } else {
-    var containerHeight = innerHeight - 255;
+    var containerHeight = innerHeight - 230;
     return (
       <div>
         <div id="requestSearch">
@@ -114,17 +117,24 @@ const RequestComponent =(props) => {
             </p>
           </div>
           :
-          <div className="pt-2 mt-8 w-11/12 mx-auto rounded" style={{boxShadow:'0 0 3px 3px #eee'}}>
+          <div className="pt-2 mt-3 w-11/12 mx-auto rounded" style={{boxShadow:'0 0 3px 3px #eee'}}>
           <div style={{ height:containerHeight, overflow:'auto'}}>
             {
               showRequests.map((request, i)=>{
                 return(
-                  <div key={i} className="w-11/12 mx-auto">
+                  <div key={i} className="w-11/12 mx-auto" id={ request.id }>
                     <div className='pt-5'>
                       <img src={ constant.baseURL + 'img/profile-image/' + request.accountInfo[0].avatar + '.jpg' } alt={ request.accountInfo[0].avatar } className="rounded-full" style={{width:'55px', height:'55px', float:'left'}}/>
                       <div style={{marginLeft:'70px'}}>
-                        <p className="text-sm md:text-md font-bold">
+                        <p className="text-md md:text-lg font-bold relative">
                           { request.accountInfo[0].name }
+                          {
+                            (request.unread)
+                            ?
+                            <span className="block absolute -top-2 right-1 text-xs font-light h-2 w-2 rounded-full bg-red-500 text-white"></span>
+                            :
+                            <span className="block absolute -top-2 right-1 text-xs font-light h-2 w-2 rounded-full bg-red-500 text-white" style={{display:'none'}}></span>
+                          }
                         </p>
                       </div>
                       <div style={{margin:'0 0 0 70px'}}>
