@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import API from '../api';
 import constant from '../const';
 import $ from 'jquery';
+import { create } from 'lodash';
 
 const ChatComponent = (props) => {
   const [chats, setChats] = useState([]);
@@ -16,7 +17,7 @@ const ChatComponent = (props) => {
   
   const sendMessage = (e) => {
     e.preventDefault();
-    var msg = message;
+    var msg = message.replace(/\?/g, '‏‏‎ ‎');
     console.log(msg);
     var api_token = $("meta[name=api-token]").attr('content');
     API.get('sendMessage/' + chats[0].inbox_id + '/' + msg + '?api_token=' + api_token, {
@@ -33,41 +34,13 @@ const ChatComponent = (props) => {
     });
   }
 
-  const handleMessageClick = (e) => {
+  const handleMessageChange = (e) => {
     setMessage(e.target.value);
   }
 
-  const releaseDeposit = () => {
-    const headers ={
-      'Accept': 'application/json'
-    };
-    var api_token = $("meta[name=api-token]").attr('content');
-    console.log(requestInfo.id);
-
-    API.get('releaseDeposit/' + requestInfo.id + '?api_token=' + api_token, {
-      headers: headers,
-    }
-    ).then((res) => {
-      if(res.status == 200) {
-        console.log(res.status);
-        confirmToggle('hide');
-      }
-    }).catch(err=>{console.log(err);});
+  const handleMessageClick = () => {
+    props.inboxClickEvent(props.inboxID);
   }
-
-  const confirmToggle = (a) => {
-    switch (a) {
-      case 'hide':
-        $("div#confirmModal").hide();
-        break;
-      case 'release':
-        $('div.releaseConfirm').show();
-        break;
-      default:
-        break;
-    }
-  }
-
 
   useEffect(() => {
     $("nav").hide();
@@ -76,7 +49,7 @@ const ChatComponent = (props) => {
     const headers ={
       'Accept': 'application/json'
     };
-    
+
     var api_token = $("meta[name=api-token]").attr('content');
     API.get('chat/' + props.inboxID + '?api_token=' + api_token, {
       headers: headers
@@ -197,25 +170,6 @@ const ChatComponent = (props) => {
         return (
           <div className="w-full text-center">
 
-            <div id="confirmModal" className="releaseConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
-              <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
-                <div className="w-8/12 mx-auto h-26 mt-4">
-                  <p className="text-center text-lg md:text-xl font-bold">Are you sure?</p>
-                  <p className="text-center text-md md:text-lg text-gray-700 mt-3 mb-5">Do you really want to release?</p>
-                </div>
-                <div className="w-full h-16" id="confirmBtn">
-                  <div className="w-full grid grid-cols-2 h-full">
-                    <div className="col-span-1 h-full">
-                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white" onClick={() => confirmToggle('hide')}>Cancel</button>
-                    </div>
-                    <div className="col-span-1">
-                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg" style={{ background:'rgb(88,183,189)' }} onClick={() => releaseDeposit()}>Yes</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div className="w-full flex justify-between" style={{height:'70px'}}>
               <div style={{float:'left', marginLeft:'15px'}} className="flex-shrink-0">
                 <a className="text-center float-left text-gray-500" onClick={()=> props.back()} style={{lineHeight:'70px'}}>
@@ -230,58 +184,21 @@ const ChatComponent = (props) => {
                   </p>
                 </div>
               </div>
-                {
-                  (contactInfo.accountType == 'brand')
-                  ?
-                    (requestInfo.status == 3)
-                    ?
-                    <button className="flex-shrink-0 float-right bg-white rounded-xl" style={{marginRight:'15px', height:'35px', marginTop:'10px', boxShadow:'0 0 8px 0 #999'}} onClick={(request_id) => props.leaveReview(requestInfo.id)}>
-                      <p style={{lineHeight:'35px'}} className="px-3 text-sm text-gray-500">Leave a Review</p>
-                    </button>
-                    :
-                      (requestInfo.status == 4)
-                      ?
-                      <button className="flex-shrink-0 float-right bg-white rounded-xl" style={{marginRight:'15px', height:'35px', marginTop:'10px', boxShadow:'0 0 8px 0 #999'}} disabled>
-                        <p style={{lineHeight:'35px'}} className="px-3 text-sm text-gray-500">completed</p>
-                      </button>
-                      :
-                      <button className="flex-shrink-0 float-right bg-white rounded-xl" style={{marginRight:'15px', height:'35px', marginTop:'10px', boxShadow:'0 0 8px 0 #999'}}>
-                        <p style={{lineHeight:'35px'}} className="px-3 text-sm text-gray-500">Request to release</p>
-                      </button>
-                  :
-                    (currency == undefined)
-                    ?
-                    <p></p>
-                    :
-                    (requestInfo.status == 3)
-                      ?
-                      <button className="flex-shrink-0 float-right bg-white rounded-xl" style={{marginRight:'15px', height:'35px', marginTop:'10px', boxShadow:'0 0 8px 0 #999'}} onClick={(request_id) => props.leaveReview(requestInfo.id)}>
-                      <p style={{lineHeight:'35px'}} className="px-3 text-sm text-gray-500">Leave a Review</p>
-                      </button>
-                      :
-                        (requestInfo.status == 4)
-                        ?
-                        <button className="flex-shrink-0 float-right bg-white rounded-xl" style={{marginRight:'15px', height:'35px', marginTop:'10px', boxShadow:'0 0 8px 0 #999'}} disabled>
-                        <p style={{lineHeight:'35px'}} className="px-3 text-sm text-gray-500">Completed</p>
-                        </button>
-                        :
-                        <button className="flex-shrink-0 float-right bg-white rounded-xl" style={{marginRight:'15px', height:'35px', marginTop:'10px', boxShadow:'0 0 8px 0 #999'}} onClick={() => confirmToggle('release')}>
-                        <p style={{lineHeight:'35px'}} className="px-3 text-sm text-gray-500">Release <span className="font-bold">{ requestInfo.amount + currency }</span></p>
-                        </button>
-                }
             </div>
             <div style={{height:containerHeight+'px', overflow:'auto'}} className="bg-gray-100">
               <div id="chatcontainer">
                 {
                   chats.map((chat, i)=>{
-                    var datetime = new Date(chat.created_at);
-                    if(datetime.getHours() >= 12){
-                      var time = datetime.getHours() - 12 + ":" + datetime.getMinutes() + " PM";
+                    var created_at = chat.created_at;
+                    created_at = created_at.replace(/:| |-/g, ',');
+                    var datetime = created_at.split(',');
+                    if(datetime[3] >= 12){
+                      var time = datetime[3] - 12 + ":" + datetime[4] + " PM";
                     } else {
-                      var time = datetime.getHours() + ":" + datetime.getMinutes() + " AM";
+                      var time = datetime[3] + ":" + datetime[4] + " AM";
                     }
-                    var month = constant.month[datetime.getMonth()];
-                    var day = datetime.getDate();
+                    var month = constant.month[parseInt(datetime[1])];
+                    var day = datetime[2];
                     datetime = time + ', ' + month + ' ' + day;
                     var isUser = (chat.send_id == userID) ? true : false;
                     return(
@@ -338,7 +255,7 @@ const ChatComponent = (props) => {
                   </a>                  
                 </div>
                 <div>
-                  <input type="text" value={ message } id="message" className="w-full border-none" autoComplete="off" placeholder="Type your message ..." onChange={handleMessageClick} style={{width:messengerWidth+'px', margin:'10px 0'}}/>
+                  <input type="text" value={ message } id="message" className="w-full border-none" autoComplete="off" placeholder="Type your message ..." onChange={handleMessageChange} style={{width:messengerWidth+'px', margin:'10px 0'}} onClick={handleMessageClick}/>
                 </div>
                 <div className="clearfix"></div>
               </div>

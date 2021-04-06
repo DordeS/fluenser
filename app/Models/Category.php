@@ -25,4 +25,14 @@ class Category extends Model
 
         return $categories;
     }
+
+    public function getBrandCategories($brand_id) {
+        $categories = DB::table('category_brand')
+            ->where('brand_id', '=', $brand_id)
+            ->join('categories', 'category_brand.category_id', '=', 'categories.id')
+            ->limit(2)
+            ->get();
+
+        return $categories;
+    }
 }

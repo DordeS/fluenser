@@ -64,7 +64,6 @@ class RegisterController extends Controller
             'name.required' => 'Please enter your name!',
             'email.required' => 'Please enter your email!',
             'password.confirmed' => 'Retype your password!',
-            'accountType.required' => 'Please select the account type!',
             'agreement.required' => 'Do you agree with our terms and conditions?'
         ];
 
@@ -72,7 +71,6 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'accountType' => ['required'],
             'agreement' => ['required'],
         ], $messages);
     }
@@ -96,8 +94,6 @@ class RegisterController extends Controller
             ],
         ]);
 
-        echo "OK";
-        echo $stripeAccount->id;
         $token = Str::random(60);
         $user = new User;
         $user->name = $data['name'];
@@ -109,8 +105,10 @@ class RegisterController extends Controller
         $user->stripe_id = $stripeAccount->id;
         $user->save();
 
+        $accountType = (isset($data['accountType'])) ? $data['accountType'] : 'influencer';
+
         if($user->id != NULL) {
-            if($data['accountType'] == 'influencer'){
+            if($accountType == 'influencer'){
                 $influencer = new Influencers;
                 $influencer->user_id = $user->id;
                 $influencer->save();

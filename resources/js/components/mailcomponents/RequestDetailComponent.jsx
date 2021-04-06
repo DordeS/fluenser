@@ -113,6 +113,10 @@ const RequestDetailComponent = (props) => {
     setMessage(e.target.value);
   }
 
+  const handleMessageClick = () => {
+    props.onRequestClick(props.requestID);
+  }
+
   const createDeposit = () => {
     setShowPayment(!showPayment);
   }
@@ -120,12 +124,13 @@ const RequestDetailComponent = (props) => {
   const sendMessage = (e) => {
     e.preventDefault();
     console.log(message);
+    var msg = message.replace(/\?/g, '‏‏‎ ‎');
     if(message != '') {
       const headers ={
         'Accept': 'application/json'
       };
         var api_token = $("meta[name=api-token]").attr('content');
-      API.get('saveRequestChat/' + requestInfo.id + '/' + accountInfo.id + '/' + contactInfo.id + '/' + message + '?api_token=' + api_token, {
+      API.get('saveRequestChat/' + requestInfo.id + '/' + accountInfo.id + '/' + contactInfo.id + '/' + msg + '?api_token=' + api_token, {
         headers: headers
       }).then((response) => {
         console.log(response);
@@ -256,8 +261,7 @@ const RequestDetailComponent = (props) => {
           <div id="confirmModal" className="depositConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
               <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
               <div className="w-8/12 mx-auto h-26 mt-4">
-                  <p className="text-center text-lg md:text-xl font-bold">Are you sure?</p>
-                  <p className="text-center text-md md:text-lg text-gray-700 mt-3 mb-5">Do you really want to create deposit for this request?</p>
+                  <p className="text-center text-md md:text-lg text-gray-700 mt-5 mb-5">  you like to create a deposit for this project? </p>
                 </div>
                 <div className="w-full h-16" id="confirmBtn">
                   <div className="w-full grid grid-cols-2 h-full">
@@ -319,14 +323,16 @@ const RequestDetailComponent = (props) => {
                 <div id="requestChatContainer">
                 {
                   requestChats.map((chat, i)=>{
-                    var datetime = new Date(chat.created_at);
-                    if(datetime.getHours() >= 12){
-                      var time = datetime.getHours() - 12 + ":" + datetime.getMinutes() + " PM";
+                    var created_at = chat.created_at;
+                    created_at = created_at.replace(/:| |-/g, ',');
+                    var datetime = created_at.split(',');
+                    if(datetime[3] >= 12){
+                      var time = datetime[3] - 12 + ":" + datetime[4] + " PM";
                     } else {
-                      var time = datetime.getHours() + ":" + datetime.getMinutes() + " AM";
+                      var time = datetime[3] + ":" + datetime[4] + " AM";
                     }
-                    var month = constant.month[datetime.getMonth()];
-                    var day = datetime.getDate();
+                    var month = constant.month[parseInt(datetime[1])];
+                    var day = datetime[2];
                     datetime = time + ', ' + month + ' ' + day;
                     var isUser = (chat.send_id == accountInfo.id) ? true : false;
                     return(
@@ -409,7 +415,7 @@ const RequestDetailComponent = (props) => {
                 </a>                  
               </div>
               <div>
-                <input type="text" value={message} id="message" className="w-full border-none" autoComplete="off" placeholder="Type your message ..." onChange={handleMessageChange} style={{width:messengerWidth+'px', margin:'10px 0'}}/>
+                <input type="text" value={message} id="message" className="w-full border-none" autoComplete="off" placeholder="Type your message ..." onChange={handleMessageChange} style={{width:messengerWidth+'px', margin:'10px 0'}} onClick={handleMessageClick}/>
               </div>
               <div className="clearfix"></div>
             </div>

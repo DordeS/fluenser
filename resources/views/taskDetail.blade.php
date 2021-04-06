@@ -36,14 +36,26 @@
           <div class="w-full grid grid-cols-2 gap-x-5">
             <div class="col-span-1">
               <div class="w-8/12 float-right rounded-xl px-3 py-3" style="box-shadow: 0 0 10px 0 #999">
-                <p class="text-lg md:text-xl font-bold" id="progress">{{ number_format($requests->amount, 2) . ' '. strtoupper($requests->unit) }}</p>
+                <p class="text-lg md:text-xl font-bold">
+                  @if ($requests->status < 3)
+                    <span id="progress">{{ number_format($requests->amount, 2)}}</span>
+                  @else
+                    <span id="progress">0.00</span>
+                  @endif
+                  {{' ' . strtoupper($requests->unit) }}</p>
                 <p class="text-xs md:text-sm">in progress</p>
               </div>
               <div class="clearfix"></div>
             </div>
             <div class="col-span-1">
               <div class="w-8/12 float-left rounded-xl px-3 py-3" style="box-shadow: 0 0 10px 0 #999" >
-                <p class="text-lg md:text-xl font-bold" id="released">{{ '0.00 '. strtoupper($requests->unit) }}</p>
+                <p class="text-lg md:text-xl font-bold">
+                  @if ($requests->status < 3)
+                    <span id="released">0.00</span>                    
+                  @else
+                    <span id="released">{{ number_format($requests->amount, 2)}}</span>
+                  @endif
+                  {{" " . strtoupper($requests->unit) }}</p>
                 <p class="text-xs md:text-sm">Released</p>
               </div>
               <div class="clearfix"></div>
@@ -52,34 +64,53 @@
       </div>
       <div class="w-10/12 mx-auto">
         @if ($requests->status < 3)
-        <button class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white" style="background: #0ac2c8" id="release" onclick="onReleaseClick()">Release</button>
+          @if ($accountInfo->accountType == 'influencer')
+            <button class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white" style="background: #0ac2c8" id="release" onclick="$('div#confirmModal').show()">Release Deposit</button>            
+          @else
+            <button class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white" style="background: #0ac2c8" id="release" onclick="$('div#confirmModal').show()">Request to Release</button>
+          @endif
+        @else
+          @if ($accountInfo->accountType == 'influencer')
+            @if ($requests->rs_review == 0)
+              <a class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white" style="background: #0ac2c8" id="release" href="{{ route('leaveReview', ['request_id' => $requests->id]) }}">Leave a Review</a>
+            @else
+              <a class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white" style="background: #0ac2c8" id="release" href="#">Completed</a>
+            @endif
+          @else
+            @if ($requests->sr_review == 0)
+             <a class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white" style="background: #0ac2c8" id="release" href="{{ route('leaveReview', ['request_id' => $requests->id]) }}">Leave a Review</a>
+            @else
+             <a class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white" style="background: #0ac2c8" id="release" href="#">Completed</a>
+            @endif
+          @endif
         @endif
       </div>
-      <div id="taskDetail"></div>
     </div>
   </main>
-  <script src="{{ asset('js/app.js') }}"></script>
+
   <script>
     function onReleaseClick() {
-      $('button#release').css({'pointer-events':'none', 'background':'#999'});
+      $("div#confirmModal #modalBody").html('');
+      var element = $("<img src={{asset('img/loading.gif')}} class='mx-auto' />");
+      $("div#confirmModal #modalBody").append(element);
+
       const headers ={
         'Accept': 'application/json'
       };
       var api_token = $("meta[name=api-token]").attr('content');
       var url = "{{ url('/') }}/api/releaseDeposit/{{$requests->id}}?api_token=";
       url = url + api_token;
-      console.log(api_token, url);
+      console.log(url);
       $.ajax({
         url: url,
         type: "GET",
         headers: headers,
         success: function(res) {
-          var temp = $("p#release").text();
-          console.log(temp);
-          $("p#released").text($("p#progress").text());
-          $("p#progress").html(temp);
-          $("button#release").text('Released');
-          $("p#status").html('Completed');
+          console.log(res);
+          $("span#released").text("{{number_format($requests->amount, 2)}}");
+          $("span#progress").text('0.00');
+          $("div#confirmModal").hide();
+          $("div#reviewModal").show();
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
           console.log(XMLHttpRequest, textStatus, errorThrown);

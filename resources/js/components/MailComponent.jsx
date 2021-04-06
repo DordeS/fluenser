@@ -15,21 +15,6 @@ const Mail = (props) => {
 
   const history = useHistory();
 
-  const handleChatClick = (user1_id, user2_id) => {
-    console.log(user1_id, user2_id);
-    const headers ={
-      'Accept': 'application/json'
-    };
-    var api_token = $("meta[name=api-token]").attr('content');
-    API.get('checkInbox/' + user1_id + '/' + user2_id + '?api_token=' + api_token, {headers:headers}).then((res) => {
-      if(res.status == 200) {
-        console.log(res.data.inbox_id);
-        setShowItem('chat');
-        setInboxID(res.data.inbox_id);
-      }
-    }).catch(err => {console.log(err)});
-  }
-
   const selectTab = (tabName) => {
     $("#messageTab a.active").removeClass('active');
     $("#messageTab #"+ tabName).addClass('active');
@@ -40,22 +25,38 @@ const Mail = (props) => {
     window.location.reload();
   }
 
-  const handleReview = (request_id) => {
-    console.log('review');
-    history.push('/leaveReview/' + request_id);
-    window.location.reload();
-  }
-
   const handleRequestClick = (requestID) => {
     const headers ={
       'Accept': 'application/json'
     };
     var api_token = $("meta[name=api-token]").attr('content');
-    API.get('read/request/' + requestID + '?api_token=' + api_token, {headers:headers}).then((res) => {
+    API.get('read/request/' + requestID + '?api_token=' + api_token, {headers:headers})
+      .then((res) => {
       if(res.status == 200) {
         console.log('ooooo');
         setrequestID(requestID);
         setShowItem('requestDetail');
+
+        var count = $("#newInboxNotif").text();
+        $("#newInboxNotif").text(parseInt(count) - 1);
+        if(count == 1) {
+          $("#newInboxNotif").hide();
+        }
+      }
+    }).catch(err => {console.log(err)});
+  }
+
+  const handleInboxClick = (inboxID) => {
+    const headers ={
+      'Accept': 'application/json'
+    };
+    var api_token = $("meta[name=api-token]").attr('content');
+    API.get('read/inbox/' + inboxID + '?api_token=' + api_token, {headers:headers})
+      .then((res) => {
+      if(res.status == 200) {
+        console.log('ooooo');
+        setInboxID(inboxID);
+        setShowItem('chat');
 
         var count = $("#newInboxNotif").text();
         $("#newInboxNotif").text(parseInt(count) - 1);
@@ -75,26 +76,25 @@ const Mail = (props) => {
       >
         <Link
           to="/inbox"
-          className="px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8 mx-4 active" 
+          className="px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8 mx-4 active relative" 
           id="inbox"
         >
+          <div className="absolute w-2 h-2 rounded-full bg-red-500 top-1 -right-1 hidden" id="inboxNotif"></div>
           INBOX
         </Link>
 
         <Link
           to="/request"
-          className="px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8 mx-4" 
+          className="px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8 mx-4 relative" 
           id="requests"
         >
+          <div className="absolute w-2 h-2 rounded-full bg-red-500 top-1 -right-1 hidden" id="requestNotif"></div>
           REQUESTS
         </Link>
 
         <Route path="/inbox" exact>
           <InboxComponent 
-            inboxClickEvent = {(inboxID) => {
-              setInboxID(inboxID);
-              setShowItem('chat');
-            }}
+            onInboxClick = {(inboxID) => handleInboxClick(inboxID)}
             selectTab = {(tabName) => selectTab(tabName)}
           />
         </Route>
@@ -113,8 +113,8 @@ const Mail = (props) => {
         <ChatComponent 
           inboxID = {inboxID}
           back = {() => setShowItem('mail')}
-          leaveReview = {(request_id) => handleReview(request_id)}
-        />
+          inboxClickEvent = {(inboxID) => handleInboxClick(inboxID)}
+          />
       )
     } else {
       console.log(showItem);
@@ -122,9 +122,9 @@ const Mail = (props) => {
         <RequestDetailComponent 
           requestID = {requestID}
           back = {() => setShowItem('mail')}
-          onChatClick = {(user1_id, user2_id) => handleChatClick(user1_id, user2_id)}
           afterDeposit = {() => afterDeposit()}
-        />
+          onRequestClick = {(requestID) => handleRequestClick(requestID)}
+          />
       )
     }
   }

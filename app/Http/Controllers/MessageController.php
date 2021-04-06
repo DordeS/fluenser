@@ -39,6 +39,9 @@ class MessageController extends Controller
     public function inbox() {
         $user_id = Auth::user()->id;
 
+        $user = new User();
+        $accountInfo = $user->getAccountInfoByUserID($user_id);
+
         $inboxes = new Inboxes();
         $inboxesInfo = $inboxes->where('user1_id', $user_id)
                 ->orWhere('user2_id', $user_id)
@@ -61,11 +64,22 @@ class MessageController extends Controller
                 $inboxesInfo[$i]->inboxContent = $inboxContent;
                 $inboxesInfo[$i]->contactID = $contact_id;
 
+                $userInbox = UserInbox::where("inbox_id", '=', $inboxInfo->id)
+                        ->where('user_id', '=', Auth::user()->id)
+                        ->get();
+
+                if(count($userInbox) > 0) {
+                    $inboxesInfo[$i]->unread = true;
+                } else {
+                    $inboxesInfo[$i]->unread = false;
+                }
+
                 $i ++;
             }
         }
         
         return response()->json([
+            'accountInfo' => $accountInfo[0],
             'data' => $inboxesInfo,
             'user_id' => $user_id,
         ]);
@@ -142,7 +156,7 @@ class MessageController extends Controller
         $inboxInfo->inbox_id = $inbox_id;
         $inboxInfo->send_id = Auth::user()->id;
         $inboxInfo->receive_id = $receive_id;
-        $inboxInfo->content =  $message;
+        $inboxInfo->content =  str_replace('‏‏‎ ‎', '?', $message);
         $inboxInfo->upload = 'none';
         $inboxInfo->save();
 
@@ -151,6 +165,22 @@ class MessageController extends Controller
         $pusher->trigger('fluenser-channel', 'fluenser-event', [
             'trigger' => 'chat',
             'inboxInfo' => $inboxInfo
+        ]);
+
+        $userInbox = UserInbox::where('inbox_id', '=', $inbox_id)
+                ->where('user_id', '=', Auth::user()->id)
+                ->get();
+        if(count($userInbox) == 0) {
+            $userInbox = new UserInbox;
+            $userInbox->inbox_id = $inbox_id;
+            $userInbox->user_id = $receive_id;
+            $userInbox->isRead = 0;
+            $userInbox->save();
+        }
+
+        $pusher->trigger('fluenser-channel', 'fluenser-event', [
+            'trigger' => 'newInboxChat',
+            'inboxInfo' => $inboxInfo,
         ]);
 
         return response()->json([
@@ -210,7 +240,7 @@ class MessageController extends Controller
         $requestChat->request_id = $request_id;
         $requestChat->send_id = $send_id;
         $requestChat->receive_id = $receive_id;
-        $requestChat->content = $message;
+        $requestChat->content = str_replace('‏‏‎ ‎', '?', $message);
         $requestChat->upload = 'none';
         $requestChat->save();
 
@@ -251,11 +281,11 @@ class MessageController extends Controller
                 break;
 
             case 'inbox':
-                $item = UserRequest::where('inbox', '=', $id);
+                $item = UserInbox::where('inbox_id', '=', $id);
                 break;
 
             case 'tast':
-                $item = UserRequest::where('task', '=', $id);
+                $item = UserTask::where('task_id', '=', $id);
                 break;
             
             default:

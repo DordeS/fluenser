@@ -8,7 +8,7 @@
 <main>
   <input type="file" name="image" id="hidden-input" hidden>
   <div class="w-full md:max-w-7xl mx-auto mb-12">
-  <form method="post" action={{route('updateProfile', ['user_id' => $influencerInfo->id])}}>
+  <form method="post" action={{route('updateProfile', ['user_id' => $accountInfo->id])}}>
     {{ csrf_field() }}
     <!-- Replace with your content -->
       <div class="bg-white">
@@ -36,18 +36,18 @@
           </div>
           <div class="w-11/12 mx-auto" style="margin-top:15vw">
             <label for="name" class="text-gray-500 text-sm md:text-md">Name</label>
-            <input type="text" name="name" id="name" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('name') is-invalid @enderror" value="{{ $influencerInfo->name }}">
+            <input type="text" name="name" id="name" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('name') is-invalid @enderror" value="{{ $accountInfo->name }}">
 
             <label for="username" class="text-gray-500 text-sm md:text-md">Username</label>
-            <input type="text" name="username" id="username" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('username') is-invalid @enderror" value="{{ $influencerInfo->username }}">
+            <input type="text" name="username" id="username" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('username') is-invalid @enderror" value="{{ $accountInfo->username }}">
 
             <label for="state" class="text-gray-500 text-sm md:text-md">City</label>
-            <input type="text" name="state" id="state" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('state') is-invalid @enderror" value="{{ $influencerInfo->state }}">
+            <input type="text" name="state" id="state" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('state') is-invalid @enderror" value="{{ $accountInfo->state }}">
 
             <label for="country" class="text-gray-500 text-sm md:text-md">Country</label>
             <select name="country" id="country" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('state') is-invalid @enderror">
               @foreach ($countries as $country)
-                @if ($country->name == $influencerInfo->country)
+                @if ($country->name == $accountInfo->country)
                   <option value={{ $country->id }}>{{ $country->name }}</option selected>
                 @else
                   <option value={{ $country->id }}>{{ $country->name }}</option>
@@ -78,25 +78,28 @@
               <div class="clearfix"></div>
             </div>
 
-            <label for="partnership" class="text-gray-500 text-sm md:text-md">Add brand logos you have worked with</label>
-            <div class="bg-gray-100 block w-full border-none rounded text-gray-700 font-semibold mb-3 shadow-inner px-2 py-1 relative" style="min-height: 3rem">
-              <textarea name="partnership-image" id="input-partnership" hidden></textarea>
-              <div class="float-right w-20 text-center absolute" style="top: 50%; transform:translateY(-50%); right: 10px">
-                <a onclick="editImg('partnership')">
-                  <img src="{{ asset("img/add-image.png") }}" alt="add-image" class="w-1/3 mx-auto">
-                  <p class="text-xs md:text-sm text-gray-500">Add Image</p>
-                </a>
-              </div>
-              <div id="partnership-gallery" class="mr-20">
-                @foreach ($partnerships as $partnership)
-                  <div id="gallery-item" class="float-left mr-3 my-2 relative">
-                    <img src="{{ asset('img/partnership-image/'.$partnership->partnership_img.'.jpg') }}" alt="{{ $partnership->partnership_img }}" class="rounded-sm" style="width: 65px; box-shadow:0 0 5px #333">
-                    <a class="block absolute w-5 h-5 text-center rounded-full bg-red-600 text-white text-xs -top-2 -right-2" onclick="{$(this).parent().remove();}"><span class="leading-5">X</span></a>
-                  </div>
-                @endforeach
-              </div>
-              <div class="clearfix"></div>
-            </div>
+            @if ($accountInfo->accountType == 'influencer')
+              <label for="partnership" class="text-gray-500 text-sm md:text-md">Add brand logos you have worked with</label>
+              <div class="bg-gray-100 block w-full border-none rounded text-gray-700 font-semibold mb-3 shadow-inner px-2 py-1 relative" style="min-height: 3rem">
+                <textarea name="partnership-image" id="input-partnership" hidden></textarea>
+                <div class="float-right w-20 text-center absolute" style="top: 50%; transform:translateY(-50%); right: 10px">
+                  <a onclick="editImg('partnership')">
+                    <img src="{{ asset("img/add-image.png") }}" alt="add-image" class="w-1/3 mx-auto">
+                    <p class="text-xs md:text-sm text-gray-500">Add Image</p>
+                  </a>
+                </div>
+                <div id="partnership-gallery" class="mr-20">
+                  @foreach ($partnerships as $partnership)
+                    <div id="gallery-item" class="float-left mr-3 my-2 relative">
+                      <img src="{{ asset('img/partnership-image/'.$partnership->partnership_img.'.jpg') }}" alt="{{ $partnership->partnership_img }}" class="rounded-sm" style="width: 65px; box-shadow:0 0 5px #333">
+                      <a class="block absolute w-5 h-5 text-center rounded-full bg-red-600 text-white text-xs -top-2 -right-2" onclick="{$(this).parent().remove();}"><span class="leading-5">X</span></a>
+                    </div>
+                  @endforeach
+                </div>
+                <div class="clearfix"></div>
+              </div>                
+            @endif
+
             
             <label for="categories" class="text-gray-500 text-sm md:text-md">Choose 2 categories that describe your content the best</label>
             <div class="bg-gray-100 block w-full border-none rounded text-gray-700 font-semibold shadow-inner px-2 py-1 relative pt-3 mb-3">
@@ -130,7 +133,7 @@
                     <option>How many followers?</option>
                     <option value="11">1k-10k</option>
                     <option value="60">10k-50k</option>
-                    <option value="600">100k-50k</option>
+                    <option value="600">100k-500k</option>
                   </select>
                 </div>
               </div>

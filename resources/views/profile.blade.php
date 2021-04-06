@@ -38,13 +38,13 @@
               </div>
               <div class="relative ml-2">
                 <div class="float-left w-9/12">
-                  <p class="text-md md:text-lg font-bold">{{ $influencerInfo->name }}</p>
-                  <p class="text-xs md:text-sm text-gray-700 mt-1">{{ '@'.$influencerInfo->username }}</p>
+                  <p class="text-md md:text-lg font-bold">{{ $accountInfo->name }}</p>
+                  <p class="text-xs md:text-sm text-gray-700 mt-1">{{ '@'.$accountInfo->username }}</p>
                   <div class="text-sm md:text-md">
-                    <span class="px-1 rounded text-white font-bold bg-yellow-400 rounded-lg mr-1 text-xs md:text-sm" style="padding: 3px; line-height:20px;">{{ number_format($influencerInfo->rating, 1) }}</span>
+                    <span class="px-1 rounded text-white font-bold bg-yellow-400 rounded-lg mr-1 text-xs md:text-sm" style="padding: 3px; line-height:20px;">{{ number_format($accountInfo->rating, 1) }}</span>
                     <span style="line-height:26px;">
                       @for ($i = 0; $i < 5 ; $i++)
-                        @if ($influencerInfo->rating > $i)
+                        @if ($accountInfo->rating > $i)
                           <i class="fas fa-star text-yellow-400"></i>
                         @else
                           <i class="fas fa-star text-gray-400"></i>
@@ -52,7 +52,7 @@
                       @endfor
                     </span>
                   </div>
-                  <p class="text-sm md:text-md text-gray-700 mt-1"><i style="color: #119dab" class="fas fa-map-marker-alt"></i> {{ $influencerInfo->country.' '.$influencerInfo->state }}</p>
+                  <p class="text-sm md:text-md text-gray-700 mt-1"><i style="color: #119dab" class="fas fa-map-marker-alt"></i> {{ $accountInfo->country.' '.$accountInfo->state }}</p>
                 </div>
                 <div class="float-right w-3/12 pr-2 pt-3">
                   @if(count($categories) > 0)
@@ -130,47 +130,47 @@
               </div>
             </div>
 
-              <div id="partnership" class="w-full mx-auto rounded pb-3" style="box-shadow: 0 0 3px 4px #f0f0f0;">
-                <p class="text-center text-gray-500 py-2 mt-5 text-lg md:text-xl">
-                  INFLUNECER PARTNERSHIPS
-                </p>
-                <div id="partnership_slide">
-                  <div class="w-11/12 mx-auto">
-                    <div id="partnerships" class="carousel slide rounded-xl relative z-10" data-ride="carousel">
-                      <!-- Indicators -->
-                      <ul class="carousel-indicators">
-                        <li data-target="#partnerships" data-slide-to="0" class="active"></li>
-                        @for ($i = 1; $i < count($partnerships); $i++)
-                          <li data-target="#partnerships" data-slide-to={{ $i + 1 }}></li>
-                        @endfor
-                      </ul>
-                      <!-- The slideshow -->
-                      <div class="carousel-inner">
-                        @if(count($partnerships) > 0)
-                        <div class="carousel-item active">
-                          <img src={{ asset('img/partnership-image/'.$partnerships[0]->partnership_img).'.jpg' }} alt={{ $partnerships[0]->partnership_img }} class="w-full rounded-xl">
-                        </div>
-                        
-                        @for ($i = 1; $i < count($partnerships); $i++)
-                        <div class="carousel-item">
-                          <img src={{ asset('img/partnership-image/'.$partnerships[$i]->partnership_img).'.jpg' }} alt={{ $partnerships[$i]->partnership_img }} class="w-full rounded-xl">
-                        </div>
-                        @endfor
-                        @else
-                        <div class="text-center w-full">
-                          <p class="text-sm md:text-md">Please complete you profile</p>
-                        </div>
-                        @endif
-      
+          @if ($accountInfo->accountType == 'influencer')
+            <div id="partnership" class="w-full mx-auto rounded pb-3" style="box-shadow: 0 0 3px 4px #f0f0f0;">
+              <p class="text-center text-gray-500 py-2 mt-5 text-lg md:text-xl">
+                INFLUNECER PARTNERSHIPS
+              </p>
+              <div id="partnership_slide">
+                <div class="w-11/12 mx-auto">
+                  <div id="partnerships" class="carousel slide rounded-xl relative z-10" data-ride="carousel">
+                    <!-- Indicators -->
+                    <ul class="carousel-indicators">
+                      <li data-target="#partnerships" data-slide-to="0" class="active"></li>
+                      @for ($i = 1; $i < count($partnerships); $i++)
+                        <li data-target="#partnerships" data-slide-to={{ $i + 1 }}></li>
+                      @endfor
+                    </ul>
+                    <!-- The slideshow -->
+                    <div class="carousel-inner">
+                      @if(count($partnerships) > 0)
+                      <div class="carousel-item active">
+                        <img src={{ asset('img/partnership-image/'.$partnerships[0]->partnership_img).'.jpg' }} alt={{ $partnerships[0]->partnership_img }} class="w-full rounded-xl">
                       </div>
+                      
+                      @for ($i = 1; $i < count($partnerships); $i++)
+                      <div class="carousel-item">
+                        <img src={{ asset('img/partnership-image/'.$partnerships[$i]->partnership_img).'.jpg' }} alt={{ $partnerships[$i]->partnership_img }} class="w-full rounded-xl">
+                      </div>
+                      @endfor
+                      @else
+                      <div class="text-center w-full">
+                        <p class="text-sm md:text-md">Please complete you profile</p>
+                      </div>
+                      @endif
+    
                     </div>
                   </div>
                 </div>
               </div>
-
-
+            </div>              
+          @endif
               
-            </div>
+        </div>
           <div id="reviews" class="tabcontent w-11/12 mx-auto pb-10">
             <div id="reviews" class="w-11/12 mx-auto my-8">
               @if (count($reviews) == 0)
@@ -211,7 +211,7 @@
     <div class="w-full fixed bottom-0 z-50 bg-white">
       <div class="w-full md:max-w-7xl mx-auto py-2" style="box-shadow: 0 0 10px 0 #333">
         <div class="w-8/12 mx-auto">
-          <a href={{ route('collaborate', ['user_id' => $influencerInfo->id]) }} class="block w-full py-2 text-center text-white font-bold text-lg md:text-xl rounded-lg" style="background: linear-gradient(to right, #1277d3, #06ebbe)">Collaborate</a> 
+          <a href={{ route('collaborate', ['user_id' => $accountInfo->id]) }} class="block w-full py-2 text-center text-white font-bold text-lg md:text-xl rounded-lg" style="background: linear-gradient(to right, #1277d3, #06ebbe)">Collaborate</a> 
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ const InboxComponent = (props) => {
   const [isWaiting, setIsWaiting] = useState(true);
   const [inboxSearch, setInboxSearch] = useState("");
   const [inboxes, setInboxes] = useState([]);
+  const [accountInfo, setAccountInfo] = useState({});
 
   const onSearch = (e) => {
     var keyword = inboxSearch;
@@ -25,7 +26,7 @@ const InboxComponent = (props) => {
   }
 
   const onInboxClick = (inboxID) => {
-    props.inboxClickEvent(inboxID);
+    props.onInboxClick(inboxID);
   }
 
   const handleOnChange = (e) => {
@@ -48,6 +49,7 @@ const InboxComponent = (props) => {
         console.log('-------------');
         console.log(response.data.data);
         var inboxes = response.data.data;
+        setAccountInfo(response.data.accountInfo);
         setInboxes(inboxes);
         setShowInboxes(inboxes);
       }
@@ -65,10 +67,14 @@ const InboxComponent = (props) => {
     });
     var channel = pusher.subscribe('fluenser-channel');
     channel.bind('fluenser-event', function(data) {
-      const inboxe = inboxes;
-      inboxe.push(data.data);
-      setInboxes(inboxe);
-      setShowInboxes(inboxe);
+      if(data.trigger == 'newInbox') {
+        if(data.request.receive_id == accountInfo.id) {
+          const inboxe = inboxes;
+          inboxe.push(data.data);
+          setInboxes(inboxe);
+          setShowInboxes(inboxe);
+        }
+      }
     });
 
     props.selectTab('inbox');
@@ -135,8 +141,16 @@ const InboxComponent = (props) => {
                                 { time }
                               </span>
                             </div>
-                            <div style={{marginLeft:'75px', height:'40px', paddingTop:'3px',paddingBottom:'10px', overflow:'hidden'}}>
-                              <p style={{height:'20px', overflow:'hidden'}} className="text-gray-500 text-md">{inbox.inboxContent[0].content}</p>
+                            <div style={{marginLeft:'75px', height:'40px', paddingTop:'3px',paddingBottom:'10px', overflow:'hidden'}} id={inbox.inboxContent[0].inbox_id}>
+                              <p style={{height:'20px', overflow:'hidden'}} className="text-gray-500 text-md relative">{inbox.inboxContent[0].content}
+                              {
+                                (inbox.unread)
+                                ?
+                                <span className="w-2 h-2 absolute rounded-full bg-red-500 bottom-1 right-1 block"></span>
+                                :
+                                <span className="w-2 h-2 absolute rounded-full bg-red-500 bottom-1 right-1 hidden"></span>
+                              }
+                              </p>
                             </div>
                           </div>
                         </div>

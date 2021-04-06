@@ -128,17 +128,18 @@ class CollaborateController extends Controller
         return redirect('request');
     }
 
-    public function leaveReview($request_id){
-        $request = Requests::find($request_id);
+    public function leaveReview(Request $request, $request_id){
+        $requests = Requests::find($request_id);
         
         $requestInfo = RequestInfo::where('request_id', '=', $request_id)->get();
 
-        $user_id = (Auth::user()->id == $request->send_id) ? $request->receive_id : $request->send_id;
+        $user_id = (Auth::user()->id == $requests->send_id) ? $requests->receive_id : $requests->send_id;
         $user = new User();
         $accountInfo = $user->getAccountInfoByUserID($user_id);
 
         return view('review', [
             'page' => 0,
+            'unread' => $request->get('unread'),
             "accountInfo" => $accountInfo[0],
             'requestInfo' => $requestInfo[0],
         ]);
@@ -185,6 +186,8 @@ class CollaborateController extends Controller
             $influencerInfo[0]->rating = $totalRating;
             $influencerInfo[0]->reviews = count($reviews);
         }
+
+        
 
         return redirect()->route('home');
     }

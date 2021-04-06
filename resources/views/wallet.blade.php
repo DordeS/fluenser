@@ -24,10 +24,10 @@
       <div class="w-full bg-gray-200 px-2 py-3 mt-3">
         <div class="flex justify-center md:justify-around">
           <div class="mx-2">
-            <button class="w-full rounded-lg py-2 px-3 text-white" style="background: #119dab"><img src={{ asset('img/deposit.png') }} alt="deposit" style="width: 19px; margin-top:3px; float:left">&nbsp;&nbsp;&nbsp;Deposit Funds</button>
+            <button class="w-full rounded-lg py-2 px-3 text-white" style="background: #119dab;font-size:12px;"><img src={{ asset('img/deposit.png') }} alt="deposit" style="width: 19px; margin-top:3px; float:left">&nbsp;&nbsp;&nbsp;Deposit Funds</button>
           </div>
           <div class="mx-2">
-            <button class="w-full rounded-lg text-white px-3 py-2 bg-gray-500"><img src={{ asset('img/withdraw.png') }} alt="deposit" style="width: 19px; margin-top:3px; float:left">&nbsp;&nbsp;&nbsp;Withdraw Money</button>
+            <button class="w-full rounded-lg text-white px-3 py-2 bg-gray-500" style="font-size: 12px;"><img src={{ asset('img/withdraw.png') }} alt="deposit" style="width: 19px; margin-top:3px; float:left">&nbsp;&nbsp;&nbsp;Withdraw Money</button>
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\Review;
 use App\Models\Countries;
+use App\Models\UserTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -35,6 +36,8 @@ class TaskController extends Controller
         $account = new User();
         $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
 
+        // echo $acceptedTasks;
+
         $unread = $request->get('unread');
         return view('task', [
             'page' => 3,
@@ -52,6 +55,11 @@ class TaskController extends Controller
 
         $user = new User();
         $accountInfo = $user->getAccountInfoByUserID($requestsInfo->user_id);
+
+        $userTask = UserTask::where("task_id", '=', $request_id)
+                ->where('user_id', '=', Auth::user()->id)
+                ->get();
+        if(count($userTask) > 0) $userTask[0]->delete();
 
         return view('taskDetail', [
             'page' => 3,

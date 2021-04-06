@@ -10,7 +10,7 @@
     <a class="mx-2 px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8 collTab" onclick="openTab('disputed')" id="disputed">{{ __('DISPUTED') }}</a>
 </div>
 <main>
-  <div class="w-full md:max-w-7xl mx-auto">
+  <div class="w-full md:max-w-7xl mx-auto overflow-auto pb-3" id="tabContainer">
     <div class="tabContent w-11/12 mx-auto" id="accepted" >
       @foreach ($acceptedTasks as $task)
           <div class="relative w-full mt-3 rounded px-3 py-3" style="box-shadow: 0 0 8px 0 #999">
@@ -23,30 +23,41 @@
             <div class="absolute right-3" style="top: 50%; transform:translateY(-50%)">
               <a style="color: #53b5c1" href={{ route('taskDetail', ['request_id' => $task->id ]) }}><i class="fas fa-chevron-right"></i></a>
             </div>
+            @if ($task->unread)
+              <div id="notif" class="w-2 h-2 rounded-full bg-red-500 absolute top-1 right-1"></div>
+            @else
+              <div id="notif" class="w-2 h-2 rounded-full bg-red-500 absolute top-1 right-1" style="display: none;"></div>
+            @endif
           </div>
       @endforeach
     </div>
     <div class="tabContent w-11/12 mx-auto" id="completed">
       @foreach ($completedTasks as $task)
-          <div class="w-full mt-3 rounded px-3 py-3" style="box-shadow: 0 0 8px 0 #999">
+          <div class="w-full mt-3 rounded px-3 py-3 relative" style="box-shadow: 0 0 8px 0 #999">
             <p class="text-md md:text-lg font-bold">{{ $task->title }}</p>
             <p class="text-xs md:text-sm text-gray-500">
               <span>{{ $task->name }}</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
               <span>{{ $task->amount . ' ' . strtoupper($task->unit) }}</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
               <span>{{ $task->interval. ' ago' }}</span>
             </p>
+            <div class="absolute right-3" style="top: 50%; transform:translateY(-50%)">
+              <a style="color: #53b5c1" href={{ route('taskDetail', ['request_id' => $task->id ]) }}><i class="fas fa-chevron-right"></i></a>
+            </div>
           </div>
       @endforeach
     </div>
     <div class="tabContent w-11/12 mx-auto" id="disputed">
       @foreach ($disputedTasks as $task)
-          <div class="w-full mt-3 rounded px-3 py-3" style="box-shadow: 0 0 8px 0 #999">
+          <div class="w-full mt-3 rounded px-3 py-3 relative" style="box-shadow: 0 0 8px 0 #999">
             <p class="text-md md:text-lg font-bold">{{ $task->title }}</p>
             <p class="text-xs md:text-sm text-gray-500">
               <span>{{ $task->name }}</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
               <span>{{ $task->amount . ' ' . strtoupper($task->unit) }}</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
               <span>{{ $task->interval. ' ago' }}</span>
             </p>
+            <div class="absolute right-3" style="top: 50%; transform:translateY(-50%)">
+              <a style="color: #53b5c1" href={{ route('taskDetail', ['request_id' => $task->id ]) }}><i class="fas fa-chevron-right"></i></a>
+            </div>
           </div>
       @endforeach
     </div>
@@ -60,5 +71,7 @@
     $("div.tabContent").hide();
     $("div#" + id).show();
   }
+
+  $("div#tabContainer").css('height', innerHeight - 130);
 </script>
 @endsection

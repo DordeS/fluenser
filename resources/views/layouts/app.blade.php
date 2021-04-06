@@ -172,6 +172,46 @@
     </style>
 </head>
 <body>
+  <div id="confirmModal" class="h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
+    <div class="w-11/12 h-48 bg-white absolute rounded-xl" style="top:50%; margin-top:-6rem; left:50%; margin-left:-45.83333%;" id="modalBody">
+      <div class="w-8/12 mx-auto h-26 mt-4">
+        <p class="text-center text-md md:text-lg text-gray-700 mt-5 mb-5">Would you like to release a deposit for this project?</p>
+      </div>
+      <div class="w-full h-16" id="confirmBtn">
+        <div class="w-full grid grid-cols-2 h-full">
+          <div class="col-span-1 h-full">
+            <button class="w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white" onclick="$('div#confirmModal').hide()">Cancel</button>
+          </div>
+          <div class="col-span-1">
+            <button class="w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg" style="background:rgb(88,183,189)" onclick="onReleaseClick()">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="reviewModal" class="h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
+    <div class="w-11/12 h-68 bg-white absolute rounded-xl" style="top:50%; transform:translateY(-50%); left:50%; margin-left:-45.83333%;" id="modalBody">
+      <div class="w-10/12 mx-auto h-26 mt-4">
+        <p class="text-center text-lg md:text-xl font-bold">Congratulations!</p>
+        <p class="text-center text-sm md:text-md text-gray-500 mt-3 mb-3">You have completed your project.<br/><span class="font-bold text-gray-700">PLEASE LEAVE A REVIEW!</span><br/>Or you can leave a review on <span class="font-semibold">COLLABORATIONS/COMPLETED</span><br/> page later.</p>
+      </div>
+      <div class="w-full h-16" id="confirmBtn">
+        <div class="w-full grid grid-cols-2 h-full">
+          <div class="col-span-1 h-full">
+            <a class="text-center w-full h-full block mx-auto px-4 rounded-bl-lg text-gray-500 text-md md:text-lg bg-white" href="{{route('home')}}" style="line-height: 60px;">Cancel</a>
+          </div>
+          <div class="col-span-1">
+            @if (isset($requests))
+              <a class="text-center w-full h-full block mx-auto px-4 rounded-br-lg text-white font-bold text-md md:text-lg" style="background:rgb(88,183,189); line-height:60px;" href="{{route('leaveReview', ['request_id' => $requests->id])}}">Leave a Review</a>              
+            @endif
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
     <div>
         <nav class="shadow-xl">      
@@ -188,10 +228,10 @@
           
                   <a href="{{ route('inbox') }}" class="text-gray-400 text-xl md:text-2xl hover:text-black block py-2 text-center unread" id="inbox">
                       <i class="far fa-envelope relative">
-                          @if ($unread->inbox != 0)
-                            <div class="absolute w-4 h-4 -top-2 -right-2 rounded-full text-white text-xs bg-red-500" id="newInboxNotif" style="font-weight: 900; display:block">{{ $unread->inbox }}</div>
+                          @if (($unread->inbox + $unread->requests) != 0)
+                            <div class="absolute w-4 h-4 -top-2 -right-2 rounded-full text-white text-xs bg-red-500" id="newInboxNotif" style="font-weight: 900; display:block">{{ $unread->inbox + $unread->requests }}</div>
                           @else
-                            <div class="absolute w-4 h-4 -top-2 -right-2 rounded-full text-white text-xs bg-red-500" id="newInboxNotif" style="font-weight: 900; display:none">{{ $unread->inbox }}</div>
+                            <div class="absolute w-4 h-4 -top-2 -right-2 rounded-full text-white text-xs bg-red-500" id="newInboxNotif" style="font-weight: 900; display:none">{{ $unread->inbox + $unread->requests }}</div>
                           @endif
                         </i>
                     </a>
@@ -251,8 +291,8 @@
                   </div>
                 </div>
             </div>
-
-        @endguest
+            <div id="loggedIn" class="loggedIn" hidden></div>
+            @endguest
         </nav>
         @yield('content')
     </div>
@@ -262,9 +302,10 @@
         var experCount = 0;
         var professCount = 0;
         var againCount = 0;
+        var page = {{ $page }};
 
         $(document).ready(function() {
-          var page = {{ $page }};
+
           var element = $("#mobile-menu a").eq(page - 1);
           console.log("loaded");
           console.log(element);
@@ -363,41 +404,103 @@
         var pusher = new Pusher('da7cd3b12e18c9e2e461', {
       cluster: 'eu',
     });
+  </script>
 
+  @guest
+  @else
+  <script>
+    $(document).ready(function() {
+      if(page == 2) {
+        var unreadInbox = {{ $unread->inbox }};
+        var unreadRequest = {{ $unread->requests }};
+        console.log(unreadInbox, unreadRequest);
+        if(unreadInbox > 0) {
+          $("a#inbox div#inboxNotif").show();
+        }
+        if(unreadRequest > 0) {
+          $("a#requests div#requestNotif").show();
+        }
+      }
+    });
     var channel = pusher.subscribe('fluenser-channel');
     channel.bind('fluenser-event', function(data) {
       console.log('newRequest');
       if(data.trigger == 'newRequest') {
         console.log(data);
-            if(data.request.send_id == "{{ Auth::user()->id}}" || data.request.receive_id == "{{Auth::user()->id}}") {
-              if($("#newInboxNotif").css('display') == 'block') {
-                var count = $("#newInboxNotif").text();
-                console.log(count);
-                $("#newInboxNotif").text(parseInt(count) + 1);
-              } else {
-                $("#newInboxNotif").text(1);
-                $("#newInboxNotif").show();
-              }
+          if(data.request.send_id == "{{ Auth::user()->id}}" || data.request.receive_id == "{{Auth::user()->id}}") {
+            if($("#newInboxNotif").css('display') == 'block') {
+              var count = $("#newInboxNotif").text();
+              console.log(count);
+              $("#newInboxNotif").text(parseInt(count) + 1);
+            } else {
+              $("#newInboxNotif").text(1);
+              $("#newInboxNotif").show();
             }
+
+            if($("a#requests div#requestNotif").css('display') != 'block') {
+              $("a#requests div#requestNotif").css('display', 'block');
+            }
+          }
         }
 
         if(data.trigger == 'newRequestChat') {
           if(data.requestChat.receive_id == "{{Auth::user()->id}}") {
-              console.log(data);
-              $("div#" + data.requestChat.request_id + " p span").show();
+          console.log(data);
 
-              if($("#newInboxNotif").css('display') == 'block') {
-                var count = $("#newInboxNotif").text();
-                console.log(count);
-                $("#newInboxNotif").text(parseInt(count) + 1);
-              } else {
-                $("#newInboxNotif").text(1);
-                $("#newInboxNotif").show();
-              }
+          if($("#newInboxNotif").css('display') == 'block') {
+            var count = $("#newInboxNotif").text();
+            console.log(count);
+            if($("div#" + data.requestChat.request_id + " p span").css('display') == 'none') {
+              $("#newInboxNotif").text(parseInt(count) + 1);
             }
+          } else {
+            $("#newInboxNotif").text(1);
+            $("#newInboxNotif").show();
+          }
+          if($("a#requests div#requestNotif").css('display') != 'block') {
+            $("a#requests div#requestNotif").css('display', 'block');
+          }
+          $("div#" + data.requestChat.request_id + " p span").show();
+        }
+        }
+
+        if(data.trigger == 'newInboxChat') {
+          if(data.inboxInfo.receive_id == "{{Auth::user()->id}}") {
+            console.log(data);
+
+            if($("#newInboxNotif").css('display') == 'block') {
+              var count = $("#newInboxNotif").text();
+              console.log(count);
+              if($("div#" + data.inboxInfo.inbox_id + " p span").css('display') == 'none') {
+              $("#newInboxNotif").text(parseInt(count) + 1);
+              }
+            } else {
+              $("#newInboxNotif").text(1);
+              $("#newInboxNotif").show();
+            }
+            if($("a#inbox div#inboxNotif").css('display') != 'block') {
+              $("a#inbox div#inboxNotif").css('display', 'block');
+            }
+            $("div#" + data.inboxInfo.inbox_id + " p span").show();
+          }
+        }
+
+        if(data.trigger == 'newTask') {
+          if(data.request.receive_id == "{{Auth::user()->id}}") {
+            console.log(data);
+            if($("#newTaskNotif").css('display') == 'block') {
+              var count = $("#newTaskNotif").text();
+              console.log(count);
+              $("#newTaskNotif").text(parseInt(count) + 1);
+            } else {
+              $("#newTaskNotif").text(1);
+              $("#newTaskNotif").show();
+            }
+          }
         }
     });
 
-</script>
+  </script>
+  @endguest
 </body>
 </html>

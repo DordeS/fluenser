@@ -21,8 +21,7 @@ class Requests extends Model
     public function getInfluencerTasksByID($user_id, $param) {
         $tasks = DB::table('requests')
                 ->where('requests.receive_id', '=', $user_id)
-                ->join('request_info', 'requests.id', '=', 'request_info.request_id')
-                ->where('request_info.accepted', '=', 1);
+                ->join('request_info', 'requests.id', '=', 'request_info.request_id');
         switch ($param) {
             case 'accepted':
                 $tasks = $tasks->where('status', '=', 2)->get();
@@ -39,19 +38,35 @@ class Requests extends Model
 
         $user = new User();
         foreach ($tasks as $task) {
+
             $users = $user->getAccountInfoByUserID($task->send_id);
             $task->name = $users[0]->name;
 
             $created = date_create($task->created_at);
             $now = date_create(date('Y-m-d h:i:sa'));
             $interval = date_diff($created, $now);
-            if($interval->format('%m') > 0) $task->interval = $interval->format('%m month');
+            if($interval->format('%m') > 0) 
+                $task->interval = $interval->format('%m month');
+            
             if($interval->format('%m') == 0 && $interval->format('%h') > 0)
-            $task->interval = $interval->format("%h hour");
+                $task->interval = $interval->format("%h hour");
+            
             if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') > 0)
-                $review->interval = $interval->format('%i minutes');
+                $task->interval = $interval->format('%i minutes');
+            
             if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') == 0 && $interval->formate("%sa") > 0) 
-                $review->interval = $interval->format('%sa seconds');
+                $task->interval = $interval->format('%sa seconds');
+            
+            if($param == 'accepted') {
+                $userTask = UserTask::where('task_id', '=', $task->id)
+                        ->where('user_id', '=', Auth::user()->id)
+                        ->get();
+                if(count($userTask) > 0) {
+                    $task->unread = true;
+                } else {
+                    $task->unread = false;
+                }
+            }
         }
 
         return $tasks;
@@ -66,14 +81,17 @@ class Requests extends Model
             case 'accepted':
                 $tasks = $tasks->where('status', '=', 2)->get();
                 break;
+
             case 'completed':
                 $tasks = $tasks->where('status', '=', 3)
                         ->orWhere('status', '=', 4)
                         ->get();
                 break;
+
             case 'disputed':
                 $tasks = $tasks->where('status', '=', 5)->get();
                 break;
+
             default:
                 break;
         }
@@ -86,8 +104,26 @@ class Requests extends Model
             $now = date_create(date('Y-m-d h:i:sa'));
             $interval = date_diff($created, $now);
             if($interval->format('%m') > 0) $task->interval = $interval->format('%m month');
+
             if($interval->format('%m') == 0 && $interval->format('%h') > 0)
-            $task->interval = $interval->format("%h hour");
+                $task->interval = $interval->format("%h hour");
+
+            if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') > 0)
+                $task->interval = $interval->format('%i minutes');
+            
+            if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') == 0 && $interval->formate("%sa") > 0) 
+                $task->interval = $interval->format('%sa seconds');
+
+            if($param == 'accepted') {
+                $userTask = UserTask::where('task_id', '=', $task->id)
+                        ->where('user_id', '=', Auth::user()->id)
+                        ->get();
+                if(count($userTask) > 0) {
+                    $task->unread = true;
+                } else {
+                    $task->unread = false;
+                }
+            }
         }
 
         return $tasks;

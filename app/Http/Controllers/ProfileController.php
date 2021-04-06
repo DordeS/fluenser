@@ -12,7 +12,9 @@ use App\Models\Portfolio;
 use App\Models\Category;
 use App\Models\Partnership;
 use App\Models\Influencers;
+use App\Models\Brands;
 use App\Models\InfluencerInfo;
+use App\Models\BrandInfo;
 use App\Models\Countries;
 
 class ProfileController extends Controller
@@ -25,9 +27,22 @@ class ProfileController extends Controller
         $userInfo = User::where('username', '=', $username)->get();
         $user_id = $userInfo[0]->id;
         $user = new User();
-        $influencerInfo = $user->getAccountInfoByUserID($user_id);
+        $accountInfo = $user->getAccountInfoByUserID($user_id);
 
-        $accountInfo = $user->getAccountInfoByUserID(Auth::user()->id);
+        // echo $accountInfo;
+
+        if($accountInfo[0]->accountType == 'influencer') {
+    
+            $category = new Category();
+            $categories = $category->getCategories($accountInfo[0]->influencer_id);
+    
+            $partnerships = Partnership::where('influencer_id', $accountInfo[0]->influencer_id)->get();
+        } else {
+            $category = new Category();
+            $categories = $category->getBrandCategories($accountInfo[0]->brand_id);
+
+            $partnerships = [];
+        }
 
         $review = new Review();
         $reviews = $review->getReviewsByUserID($user_id);
@@ -36,18 +51,12 @@ class ProfileController extends Controller
 
         $portfolios = Portfolio::where('profile_id', $profile[0]->id)->get();
 
-        $category = new Category();
-        $categories = $category->getCategories($influencerInfo[0]->influencer_id);
-
-        $partnerships = Partnership::where('influencer_id', $influencerInfo[0]->influencer_id)->get();
-
         // echo $reviews;
 
         return view('profile', [
             'page' => 4,
             'unread' => $request->get('unread'),
             'accountInfo' => $accountInfo[0],
-            'influencerInfo' => $influencerInfo[0],
             'profile' => $profile[0],
             'portfolios' => $portfolios,
             'reviews' => $reviews,
@@ -56,30 +65,33 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function editProfile($username) {
+    public function editProfile(Request $request, $username) {
         $userInfo = User::where('username', '=', $username)->get();
         $user_id = $userInfo[0]->id;
         $user = new User();
-        $influencerInfo = $user->getAccountInfoByUserID($user_id);
+        $accountInfo = $user->getAccountInfoByUserID($user_id);
         
-        $accountInfo = $user->getAccountInfoByUserID(Auth::user()->id);
-
         $profile = Profile::where('user_id', $user_id)->get();
 
         $portfolios = Portfolio::where('profile_id', $profile[0]->id)->get();
 
         $category = new Category();
-        $selectedCategories = $category->getCategories($influencerInfo[0]->influencer_id);
+        if($accountInfo[0]->accountType == 'influencer') {
+            $selectedCategories = $category->getCategories($accountInfo[0]->influencer_id);
+            $partnerships = Partnership::where('influencer_id', $accountInfo[0]->influencer_id)->get();
+        }
+        else {
+            $selectedCategories = $category->getBrandCategories($accountInfo[0]->brand_id);
+            $partnerships = [];
+        }
         $categories = Category::all();
 
         $countries = Countries::all();
 
-        $partnerships = Partnership::where('influencer_id', $influencerInfo[0]->influencer_id)->get();
-
         return view('editProfile', [
             'page' => 5,
+            'unread' => $request->get('unread'),
             'accountInfo' => $accountInfo[0],
-            'influencerInfo' => $influencerInfo[0],
             'countries' => $countries,
             'profile' => $profile[0],
             'portfolios' => $portfolios,
@@ -168,13 +180,16 @@ class ProfileController extends Controller
             }
             $influencerInfo->save();
         } else {
-            $brand = Brands::where('user_id', '=', $user_id);
-            $brand_id = $brand->id;
+            $brand = Brands::where('user_id', '=', $user_id)->get();
+            $brand_id = $brand[0]->id;
             $brandInfo = BrandInfo::where('brand_id', '=', $brand_id)->get();
             $brandInfo = $brandInfo[0];
-            if($input['location'] != '') {
-                $brandInfo->country = explode(', ', $input['location'])[1];
-                $brandInfo->state = explode(', ', $input['location'])[0];
+            if($input['state'] != '') {
+                $brandInfo->country = $input['state'];
+            }
+            if($input['country'] != '') {
+                $country = Countries::find($input['country']);
+                $brandInfo->country = $country->name;
             }
             if($input['round-image'] != '') {
                 $brandInfo->avatar = $profile[0]->round_img;
@@ -193,8 +208,6 @@ class ProfileController extends Controller
         }
         // // save portfolios
         if($input['portfolio-image'] != '') {
-            $influencer = Influencers::where('user_id', '=', $user_id)->get();
-            $influencer_id = $influencer[0]->id;
             $images = json_decode($input['portfolio-image']);
             foreach ($images as $image) {
                 if(substr($image, 0, 4) == 'data') {
@@ -229,7 +242,7 @@ class ProfileController extends Controller
             $influencer = Influencers::where('user_id', '=', $user_id)->get();
             $influencer_id = $influencer[0]->id;
             $partnerships = Partnership::where('influencer_id', '=', $influencer_id)->get();
-            // $folderPath = public_path('img/partnership-image/');
+            $folderPath = public_path('img/partnership-image/');
             foreach ($partnerships as $partnership) {
                 // $file = $folderPath . $partnership->partnership_img . '.jpg';
                 // unlink($file);
@@ -259,7 +272,7 @@ class ProfileController extends Controller
                         $partnership = new Partnership;
                         $partnership->influencer_id = $influencer_id;
                         $partnership->partnership_img = $filename;
-                        $partnership->save();    
+                        $partnership->save();
                     }
                 }
             }

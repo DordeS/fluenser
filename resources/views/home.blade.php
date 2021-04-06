@@ -8,21 +8,23 @@
     <div class="w-full md:max-w-7xl mx-auto px-2 h-8" style="border-bottom: 1px solid lightgray">
         <span class="mx-4 px-1 pt-2 pb-1 font-bold text-sm md:text-md leading-8" style="border-bottom: 2px solid #4db3c1">{{ __('NEWS FEED') }}</span>
     </div>
-    <div class="w-full md:max-w-7xl mx-auto">
-        <a href="{{ $account_link }}">
-            <div class="w-11/12 mx-auto rounded-xl px-2 py-2 mt-3" style="box-shadow: 0 0 10px 0 #999">
-                <div class="float-left h-12 w-12 px-1 py-1 rounded-full my-2" style="background: #feeaef">
-                    <img src="{{ asset('img/caution.png') }}" alt="caution" class="w-full">
+    @if ($account_link != '')
+        <div class="w-full md:max-w-7xl mx-auto">
+            <a href="{{ $account_link->url }}">
+                <div class="w-11/12 mx-auto rounded-xl px-2 py-2 mt-3" style="box-shadow: 0 0 10px 0 #999">
+                    <div class="float-left h-12 w-12 px-1 py-1 rounded-full my-2" style="background: #c2c2c2">
+                        <img src="{{ asset('img/caution.png') }}" alt="caution" class="w-full">
+                    </div>
+                    <div class="float-right py-2 px-1 my-2">
+                        <i class="fas fa-chevron-right text-gray-500" style="line-height: 1.75rem"></i>
+                    </div>
+                    <p class="text-sm md:text-md font-bold pl-14">Connect to Stripe</p>
+                    <p class="text-gray-500 text-xs md:text-sm tracking-tighter pl-14">We've partnered with stripe for fast, secure payments. Fill out a few more details to complete your profile and start getting paid.</p>
+                    <div class="clearfix"></div>
                 </div>
-                <div class="float-right py-2 px-1 my-2">
-                    <i class="fas fa-chevron-right text-gray-500" style="line-height: 1.75rem"></i>
-                </div>
-                <p class="text-sm md:text-md font-bold pl-14">Connect to Stripe</p>
-                <p class="text-gray-500 text-xs md:text-sm tracking-tighter pl-14">We've partnered with stripe for fast, secure payments. Fill out a few more details to complete your profile and start getting paid.</p>
-                <div class="clearfix"></div>
-            </div>
-        </a>
-    </div>
+            </a>
+        </div>        
+    @endif
   </header>
   
 	<main class="w-full md:max-w-7xl mx-auto pb-20">

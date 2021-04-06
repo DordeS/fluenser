@@ -1,5 +1,5 @@
 var constant = {
-  baseURL: 'http://localhost:8000/',
+  baseURL: 'https://fluee123.host/',
   month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',   'Sep', 'Oct', 'Nev', 'Dec'],
 };
 

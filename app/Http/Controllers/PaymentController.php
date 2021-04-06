@@ -13,6 +13,7 @@ use App\Models\InboxInfo;
 use App\Models\WalletAction;
 use App\Models\WalletUser;
 use App\Models\Wallet;
+use App\Models\UserTask;
 use Stripe\Stripe;
 use Pusher;
 use Session;
@@ -40,6 +41,13 @@ class PaymentController extends Controller
         $chat->request_id = $request_id;
         $chat->save();
 
+        $pusher = new Pusher\Pusher('da7cd3b12e18c9e2e461', '566ee6622fcab95b7709', '1168466', array('cluster' => 'eu'));
+
+        $pusher->trigger('fluenser-channel', 'fluenser-event', [
+            'trigger' => 'newInbox',
+            'request' => $request,
+        ]);
+
         $chatInfo = new InboxInfo;
         $chatInfo->inbox_id = $chat->id;
         $chatInfo->send_id = $user_id;
@@ -56,7 +64,6 @@ class PaymentController extends Controller
             'confirm' => true
         ]);
 
-        $pusher = new Pusher\Pusher('da7cd3b12e18c9e2e461', '566ee6622fcab95b7709', '1168466', array('cluster' => 'eu'));
 
         $pusher->trigger('fluenser-channel', 'fluenser-event', [
             'trigger' => 'request_status',
@@ -90,6 +97,17 @@ class PaymentController extends Controller
                 break;
         }
         $wallet->save();
+
+        $userTask = new UserTask;
+        $userTask->task_id = $request_id;
+        $userTask->user_id = $request->receive_id;
+        $userTask->isRead = 0;
+        $userTask->save();
+
+        $pusher->trigger('fluenser-channel', 'fluenser-event', [
+            'trigger' => 'newTask',
+            'request' => $request,
+        ]);
 
 
         return response()->json([
@@ -130,7 +148,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function balance() {
+    public function balance(Request $request) {
         $walletUser = WalletUser::where('user_id', '=', Auth::user()->id)->get();
         $wallet_id = $walletUser[0]->wallet_id;
 
@@ -140,6 +158,7 @@ class PaymentController extends Controller
         
         return view('wallet', [
             'page' => 5,
+            'unread' => $request->get('unread'),
             'wallet' => $wallet,
             'walletActions' => $walletAction,
         ]);

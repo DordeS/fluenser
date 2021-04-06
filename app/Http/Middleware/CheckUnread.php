@@ -20,12 +20,16 @@ class CheckUnread
      */
     public function handle(Request $request, Closure $next)
     {
-        $unread = UserInbox::where('user_id', '=', Auth::user()->id)->where('isRead', '=', 0)->get();
-        $count = count($unread);
-        $unread = UserRequest::where('user_id', '=', Auth::user()->id)->where('isRead', '=', 0)->get();
-        $unread->inbox = $count + count($unread);
+        $unread = UserInbox::where('user_id', '=', Auth::user()->id)
+                ->get();
+        $unread->inbox = count($unread);
+        
+        $unreadrequests = UserRequest::where('user_id', '=', Auth::user()->id)
+                ->get();
+        $unread->requests = count($unreadrequests);
 
-        $unreadTask = UserTask::where('user_id', '=', Auth::user()->id)->where('isRead', '=', 0)->get();
+        $unreadTask = UserTask::where('user_id', '=', Auth::user()->id)
+                ->get();
         $unread->task = count($unreadTask);
 
         $request->attributes->add([

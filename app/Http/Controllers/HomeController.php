@@ -41,13 +41,23 @@ class HomeController extends Controller
         $profile = new Profile();
         $portfolios = $profile->getPortfolios(Auth::user()->id);
 
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-        $account_links = \Stripe\AccountLink::create([
-            'account' => Auth::user()->stripe_id,
-            'refresh_url' => route('home'),
-            'return_url' => route('home'),
-            'type' => 'account_onboarding'
-        ]);
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+
+        $account_info = $stripe->accounts->retrieve(
+            Auth::user()->stripe_id,
+            []
+        );
+
+        if($account_info->charges_enabled && $account_info->payouts_enabled) {
+            $account_links = '';
+        } else {
+            $account_links = $stripe->accountLinks->create([
+                'account' => Auth::user()->stripe_id,
+                'refresh_url' => route('home'),
+                'return_url' => route('home'),
+                'type' => 'account_onboarding'
+            ]);
+        }
 
         $unread = $request->get('unread');
 
@@ -57,7 +67,7 @@ class HomeController extends Controller
             'accountType' => $accountInfo[0]->accountType,
             'accountInfo' => $accountInfo[0],
             'page' => $page,
-            'account_link' => $account_links->url,
+            'account_link' => $account_links,
         ]);
     }
 
