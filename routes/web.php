@@ -62,8 +62,8 @@ Route::middleware(['auth', 'CheckUnread'])->group(function() {
     Route::get('leaveReview/{request_id}', [App\Http\Controllers\CollaborateController::class, 'leaveReview'])->name('leaveReview');
 
     Route::post('submitReview/{request_id}', [App\Http\Controllers\CollaborateController::class, 'submitReview'])->name('submitReview');
-
-    Route::get('/{username}',[App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 });
+
+Route::get('/{username}',[App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 
 Route::get('referral/{ref_link}', [App\Http\Controllers\ReferralsController::class, 'newUser'])->name('newUser')->where('ref_link', '[a-z0-9]{128}+');

@@ -6,11 +6,7 @@
       <div class="bg-white">
         <div class="w-full relative">
           <div class="relative">
-            @if($page == 5)
-            <a href={{ route('dashboard') }}>
-            @else
-            <a href={{ route('search') }}>
-            @endif
+            <a href={{ route('home') }}>
               <div class="absolute top-4 left-2 rounded-full h-8 w-8 bg-white text-center" style="box-shadow: 0 0 15px #999">
                 <p class="leading-8 text-gray-400 text-lg">
                   <i class="fas fa-arrow-left"></i>

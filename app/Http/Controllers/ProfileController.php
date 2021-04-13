@@ -21,7 +21,7 @@ use App\Models\Saved;
 class ProfileController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['index']]);
     }
 
     public function index(Request $request, $username) {
@@ -52,13 +52,17 @@ class ProfileController extends Controller
 
         $portfolios = Portfolio::where('profile_id', $profile[0]->id)->get();
 
-        $saved = Saved::where('user1_id', '=', Auth::user()->id)->
-                where('user2_id', '=', $user_id)
-                ->get();
-        if(count($saved) == 0) {
-            $saved = 0;
+        if(isset(Auth::user()->id)) {
+            $saved = Saved::where('user1_id', '=', Auth::user()->id)->
+                    where('user2_id', '=', $user_id)
+                    ->get();
+            if(count($saved) == 0) {
+                $saved = 0;
+            } else {
+                $saved =1;
+            }
         } else {
-            $saved =1;
+            $saved = 0;
         }
 
         // echo $reviews;

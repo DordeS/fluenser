@@ -256,7 +256,7 @@
                     </div>
                     <div id="featured_img" style="width: 200%;" class="px-1 py-1">
                         @foreach ($featuredInfluencers as $influencer)
-                            <div class="w-3/12 float-left px-2">
+                            <a class="w-3/12 float-left px-2" href="{{ route('profile', ['username' => $influencer->username]) }}">
                                 <div class="rounded-2xl px-1 py-1 " style="box-shadow: 0 0 3px 3px #ccc">
                                     <div class="relative">
                                         <img src="{{asset('img/profile-image/'.$influencer->top_img.'.jpg')}}" alt="hidden image" style="width: 100%;" class="rounded-t-2xl">
@@ -277,7 +277,7 @@
                                     </div>
                                     <p class="text-sm my-2 text-center"><i class="fas fa-map-marker-alt" style="color: #0ac2c8"></i><span style="font-size: 11px"> {{ $influencer->state.', '.$influencer->country }}</span></p>
                                 </div>
-                            </div>                            
+                            </a>                            
                         @endforeach
                     </div>
                     <div class="clearfix"></div>
