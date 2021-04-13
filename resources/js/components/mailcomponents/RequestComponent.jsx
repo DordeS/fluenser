@@ -160,7 +160,7 @@ const RequestComponent =(props) => {
                     </div>
                     <div className="clearfix"></div>
                     <div className="w-full">
-                      <a className="block rounded-md text-center text-white w-full py-2 my-3 font-bold text-xs md:text-sm" onClick={() => props.onRequestClick(request.id)} style={{background:'#119dac'}}> Read More</a>
+                      <a className="block text-center text-white w-full py-2 my-3 font-semibold text-sm md:text-md rounded-sm" onClick={() => props.onRequestClick(request.id)} style={{background:'#0ac2c8', boxShadow:'0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%)'}}> Read More</a>
                     </div>
                     <hr className="mt-5"/>
                   </div>

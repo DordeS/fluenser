@@ -245,17 +245,17 @@ const ChatComponent = (props) => {
             <div className="w-full md:max-w-7xl fixed bottom-0">
               <div className="w-full bg-white" style={{height:'60px', borderTop:'1px solid lightgray'}}>
                 <div className="float-right">
-                  <a onClick={sendMessage} style={{display:'block',height:'60px', width:'60px', background:'rgb(88,183,189)', fontSize:'20px', lineHeight:'60px', color:'white'}}>
+                  <a onClick={sendMessage} style={{display:'block',height:'60px', width:'60px', background:'rgb(10, 192, 198)', fontSize:'20px', lineHeight:'60px', color:'white'}}>
                     <i className="fas fa-paper-plane"></i>
                   </a>
                 </div>
                 <div className="float-left">
                   <a href="#" style={{fontSize:'20px', lineHeight:'60px', padding:'0 10px'}} className="text-gray-400">
                     <i className="fas fa-paperclip"></i>
-                  </a>                  
+                  </a>
                 </div>
                 <div>
-                  <input type="text" value={ message } id="message" className="w-full border-none" autoComplete="off" placeholder="Type your message ..." onChange={handleMessageChange} style={{width:messengerWidth+'px', margin:'10px 0'}} onClick={handleMessageClick}/>
+                  <input type="text" value={ message } id="message" className="w-full border-none" autoComplete="off" placeholder="Write a Message ..." onChange={handleMessageChange} style={{width:messengerWidth+'px', margin:'10px 0'}} onClick={handleMessageClick}/>
                 </div>
                 <div className="clearfix"></div>
               </div>

@@ -54,7 +54,7 @@ class Requests extends Model
             if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') > 0)
                 $task->interval = $interval->format('%i minutes');
             
-            if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') == 0 && $interval->formate("%sa") > 0) 
+            if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') == 0 && $interval->format("%sa") > 0) 
                 $task->interval = $interval->format('%sa seconds');
             
             if($param == 'accepted') {
@@ -111,7 +111,7 @@ class Requests extends Model
             if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') > 0)
                 $task->interval = $interval->format('%i minutes');
             
-            if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') == 0 && $interval->formate("%sa") > 0) 
+            if($interval->format('%h') == 0 && $interval->format('%m') == 0 && $interval->format('%i') == 0 && $interval->format("%sa") > 0) 
                 $task->interval = $interval->format('%sa seconds');
 
             if($param == 'accepted') {

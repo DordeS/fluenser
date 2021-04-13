@@ -130,6 +130,18 @@ class PaymentController extends Controller
             'destination' => $user->stripe_id
         ]);
 
+        // check if has a referral user
+        $referral = Referral::where('referral_user_id', '=', $user_id)->get();
+        if(count($referral) > 0) {
+            $ref_user_id = $referral[0]->user_id;
+            $ref_user = User::find($ref_user_id);
+            $paymentIntent = \Stripe\Transfer::create([
+                'amount' => $requestInfo->amount * 10,
+                'currency' => strtolower($requestInfo->unit),
+                'destination' => $ref_user->stripe_id
+            ]);
+        }
+
         $requestInfo = RequestInfo::where('request_id', '=', $request_id)->get();
         $requestInfo = $requestInfo[0];
         $requestInfo->status = 3;

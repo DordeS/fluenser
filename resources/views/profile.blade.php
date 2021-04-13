@@ -4,8 +4,8 @@
   <div class="w-full md:max-w-7xl mx-auto mb-12">
     <!-- Replace with your content -->
       <div class="bg-white">
-        <div class="w-full">
-          <div class="relative overflow-hidden">
+        <div class="w-full relative">
+          <div class="relative">
             @if($page == 5)
             <a href={{ route('dashboard') }}>
             @else
@@ -17,50 +17,55 @@
                 </p>
               </div>
             </a>
-            <a href='#'>
+            <a onclick="toggleSaved()">
               <div class="absolute top-4 right-2 rounded-full h-8 w-8 bg-white text-center" style="box-shadow: 0 0 15px #999">
-                <p class="leading-8 text-gray-400 text-lg">
-                  <i class="fas fa-heart"></i>
-                </p>
+                @if ($saved)
+                  <p class="leading-8 text-gray-400" style="color: #0f97cd" id="saved">
+                    <i class="fas fa-heart"></i>
+                  </p>
+                @else
+                  <p class="leading-8 text-gray-400 text-lg" id="saved">
+                    <i class="fas fa-heart"></i>
+                  </p>
+                @endif
               </div>
             </a>
             <img src={{ asset('img/profile-image/'.$profile->top_img.'.jpg') }} alt={{ $profile->top_img }} class="w-full">
-            <img src="{{ asset('img/gradient.png') }}" alt="gradient" style="position: absolute; bottom:-50%;" class="w-full">
-            <div class="w-10/12 absolute px-2 pb-2 bottom-5 bg-white h-36 md:h-40" style="left: 50%; margin-left: -41%; bottom:30px">
+            <div class="w-10/12 absolute px-2 pb-2 bottom-5 bg-white h-36 md:h-40" style="left: 50%; margin-left: -41%; bottom:60px">
               <div class="relative ml-2 h-8">
                 <div class="absolute" style="width: 33%;bottom:0;">
                   <img src={{ asset('img/profile-image/'.$profile->round_img.'.jpg') }} alt={{ $profile->round_img }} class="rounded-full" style="border:3px solid white">
                 </div>
                 <div style="margin-left: 30%;" class="h-full text-gray-500">
                   <span><i class="fas fa-circle" style="font-size: 5px; line-height:2rem;"></i></span>
-                  <span class="leading-8 text-xs md:text-sm" style="line-height: 2rem;">last seen 5 minutes ago</span>
+                  <span class="leading-8 text-xs md:text-sm" style="line-height: 2rem;" style="font-family: 'Poppins', sans-serif; font-weight: 500;">last seen 5 minutes ago</span>
                 </div>
               </div>
               <div class="relative ml-2">
-                <div class="float-left w-9/12">
-                  <p class="text-md md:text-lg font-bold">{{ $accountInfo->name }}</p>
-                  <p class="text-xs md:text-sm text-gray-700 mt-1">{{ '@'.$accountInfo->username }}</p>
+                <div class="float-left w-9/12" style="font-family: 'Poppins', sans-serif;">
+                  <p class="text-md md:text-lg font-bold" style="font-weight:600">{{ $accountInfo->name }}</p>
+                  <p class="text-xs md:text-sm text-gray-700" style="font-weight: 400;">{{ '@'.$accountInfo->username }}</p>
                   <div class="text-sm md:text-md">
-                    <span class="px-1 rounded text-white font-bold bg-yellow-400 rounded-lg mr-1 text-xs md:text-sm" style="padding: 3px; line-height:20px;">{{ number_format($accountInfo->rating, 1) }}</span>
+                    <span class="px-1 rounded text-white font-bold rounded-lg mr-1 text-xs md:text-sm" style="padding: 1px 3px; line-height:20px; background:#f5a321;">{{ number_format($accountInfo->rating, 1) }}</span>
                     <span style="line-height:26px;">
                       @for ($i = 0; $i < 5 ; $i++)
                         @if ($accountInfo->rating > $i)
-                          <i class="fas fa-star text-yellow-400"></i>
+                          <i class="fas fa-star" style="color: #f5a321"></i>
                         @else
                           <i class="fas fa-star text-gray-400"></i>
                         @endif
                       @endfor
                     </span>
                   </div>
-                  <p class="text-sm md:text-md text-gray-700 mt-1"><i style="color: #119dab" class="fas fa-map-marker-alt"></i> {{ $accountInfo->country.' '.$accountInfo->state }}</p>
+                  <p class="text-sm md:text-md text-gray-700 mt-1" style="font-weight: 400;"><i style="color: #119dab" class="fas fa-map-marker-alt"></i> {{ $accountInfo->state.', '.$accountInfo->country }}</p>
                 </div>
-                <div class="float-right w-3/12 pr-2 pt-3">
+                <div class="float-right w-3/12 pr-2 pt-3" style="font-family: 'Poppins', sans-serif;">
                   @if(count($categories) > 0)
                   <div class="mb-2 px-1 py-1 rounded-lg w-full" style="background:#f0effe">
-                    <p class="text-sm text-center" style="color: #6f60fa">{{ $categories[0]->category_name }}</p>
+                    <p class="text-sm text-center" style="color: #6f60fa; font-weight:500;">{{ $categories[0]->category_name }}</p>
                   </div>
                   <div class="mb-2 px-1 py-1 rounded-lg w-full" style="background: #fcefed">
-                    <p class="text-sm text-center" style="color: #ea5e51">{{ $categories[1]->category_name }}</p>
+                    <p class="text-sm text-center" style="color: #ea5e51; font-weight:500;">{{ $categories[1]->category_name }}</p>
                   </div>
                   @endif
                 </div>
@@ -80,9 +85,10 @@
               </div>
             </div>
           </div>
+          <div class="h-8 rounded-t-2xl bg-white w-full absolute -bottom-1"></div>
         </div>
-        <div class="w-full mt-10 pb-16">
-          <div class="w-11/12 mx-auto rounded-lg bg-gray-200">
+        <div class="w-full pt-2 pb-8">
+          <div class="w-11/12 mx-auto rounded-lg bg-gray-200" style="font-family: 'Poppins', sans-serif; font-weight: 600; ">
             <div class="w-full grid grid-cols-2">
               <div class="col-span-1 px-1 py-1">
                 <button class="tablink py-1 rounded-lg w-full text-gray-500 font-bold" onclick="openTab('profile', this)" id="defaultOpen">Profile</button>
@@ -93,50 +99,42 @@
             </div>
           </div>
           <div id="profile" class="tabcontent w-11/12 mx-auto">
-            <div id="introduction" class="w-full my-5 py-3" style="box-shadow:0px 13px 20px -15px grey">
-              <p class="text-center text-md md:text-lg">
+            <div id="introduction" class="w-full my-2 py-3">
+              <p class="text-md md:text-lg">
                 {{ $profile->introduction }}
               </p>
             </div>
+            <hr class="my-4" />
             <div id="portfolio" class="w-full mx-auto">
-              <div class="portfolio_slides relative">
-                <div id="demo" class="carousel slide rounded-xl relative z-10" data-ride="carousel">
-                  {{-- <!-- Indicators -->
-                  <ul class="carousel-indicators">
-                    <li data-target="#demo" data-slide-to="0" class="active"></li>
-                    @for ($i = 1; $i < count($portfolios); $i++)
-                      <li data-target="#demo" data-slide-to={{ $i + 1 }}></li>
-                    @endfor
-                  </ul> --}}
-                  <!-- The slideshow -->
-                  <div class="carousel-inner">
-                    @if (count($portfolios) > 0)
-                    <div class="carousel-item active">
-                      <img src={{ asset('img/profile-image/'.$portfolios[0]->slide_img).'.jpg' }} alt={{ $portfolios[0]->slide_img }} class="w-10/12 rounded-xl">
-                    </div>
-                    
-                    @for ($i = 1; $i < count($portfolios); $i++)
-                    <div class="carousel-item">
-                      <img src={{ asset('img/profile-image/'.$portfolios[$i]->slide_img).'.jpg' }} alt={{ $portfolios[$i]->slide_img }} class="w-10/12 rounded-xl">
-                    </div>
-                    @endfor
-                    @else
-                    <div class="text-center w-full">
-                      <p class="text-sm md:text-md">Please complete you profile</p>
-                    </div>
-                    @endif
-                  </div>
+              @if (count($portfolios) > 0)
+              <div id="portfolio-slide" class="w-full overflow-hidden relative">
+                <div style="visibility: hidden;" class="w-4/5 px-2">
+                  <img src="{{asset('img/profile-image/'.$portfolios[0]->slide_img.'.jpg')}}" alt="hidden image" style="width: 100%;">
                 </div>
+                <div id="portfolio-img" class="absolute top-0" style="right: -80%">
+                  @foreach ($portfolios as $portfolio)
+                  <div class="slide_item float-left px-3">
+                    <img src="{{asset('img/profile-image/'.$portfolio->slide_img.'.jpg')}}" alt="slide1" class="w-full rounded-lg">
+                  </div>
+                  @endforeach
+                </div>
+                <div class="clearfix"></div>
               </div>
+              @else
+              <div class="w-full my-2">
+                Please update your profile.
+              </div>                  
+              @endif
+
             </div>
 
           @if ($accountInfo->accountType == 'influencer')
-            <div id="partnership" class="w-full mx-auto rounded pb-3" style="box-shadow: 0 0 3px 4px #f0f0f0;">
-              <p class="text-center text-gray-500 py-2 mt-5 text-lg md:text-xl">
-                INFLUNECER PARTNERSHIPS
+            <div id="partnership" class="w-full mx-auto pb-3">
+              <p class="text-center text-gray-400 py-2 mt-3 text-md md:text-lg tracking-wide" style="font-family: 'Poppins', sans-serif; font-weight:500;">
+                INFLUENCER PARTNERSHIPS
               </p>
-              <div id="partnership_slide">
-                <div class="w-11/12 mx-auto">
+              <div id="partnership_slide" class="py-1 px-1 rounded-xl" style="box-shadow: 0 0 3px 3px lightgray">
+                <div class="w-full mx-auto">
                   <div id="partnerships" class="carousel slide rounded-xl relative z-10" data-ride="carousel">
                     <!-- Indicators -->
                     <ul class="carousel-indicators">
@@ -167,7 +165,7 @@
                   </div>
                 </div>
               </div>
-            </div>              
+            </div>
           @endif
               
         </div>
@@ -209,14 +207,33 @@
       </div>
     </div>
     <div class="w-full fixed bottom-0 z-50 bg-white">
-      <div class="w-full md:max-w-7xl mx-auto py-2" style="box-shadow: 0 0 10px 0 #333">
+      <div class="w-full md:max-w-7xl mx-auto py-3" style="border-top: 1px solid lightgray">
         <div class="w-8/12 mx-auto">
-          <a href={{ route('collaborate', ['user_id' => $accountInfo->id]) }} class="block w-full py-2 text-center text-white font-bold text-lg md:text-xl rounded-lg" style="background: linear-gradient(to right, #1277d3, #06ebbe)">Collaborate</a> 
+          <a href={{ route('collaborate', ['user_id' => $accountInfo->id]) }} class="block w-full py-2 text-center text-white font-bold text-lg md:text-xl rounded-lg" style="background: #0ac2c8; font-family:'Poppins', sans-serif; font-weight:500;">Collaborate</a> 
         </div>
       </div>
     </div>
 </main>
 <script>
+  var firstPos, interval;
+  var portfolio_count = "{{ count($portfolios) }}";
+  $("#portfolio-img").css('width', (portfolio_count * 80) + '%');
+  $(".slide_item").css('width', (100/portfolio_count) + '%');
+  $(document).ready(function () {
+    firstPos = $("div#portfolio-img").css('right').slice(0, -2);
+    interval = setInterval(slideMove, 12);
+  });
+
+  function slideMove() {
+    var pos = $("div#portfolio-img").css('right').slice(0, -2);
+    if (pos == 0) {
+      var element = $("#portfolio-img").children()[0];
+      $("#portfolio-img").children()[0].remove();
+      $("#portfolio-img").append(element);
+      pos = firstPos;
+    }
+    $("div#portfolio-img").css('right', parseInt(pos) + 1);
+  }
   function openTab(tabname, elmnt) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
@@ -236,8 +253,35 @@
   // Add the specific color to the button used to open the tab content
   elmnt.style.backgroundColor = 'white';
   }
+    
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+    
+    
+  function toggleSaved() {
+    const headers ={
+        'Accept': 'application/json'
+      };
+      var api_token = $("meta[name=api-token]").attr('content');
+      var url = "{{ url('/') }}/api/savedToggle/{{$accountInfo->id}}?api_token=";
+      url = url + api_token;
+      console.log(url);
+      $.ajax({
+        url: url,
+        type: "GET",
+        headers: headers,
+        success: function(res) {
+          if(res.data == 1) {
+            $("p#saved").css('color', '#0f97cd');
+          } else {
+            $("p#saved").css('color', 'rgb(156, 163, 175)')
+          }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          console.log(XMLHttpRequest, textStatus, errorThrown);
+        }
+      });
+  }
 
-// Get the element with id="defaultOpen" and click on it
-document.getElementById("defaultOpen").click();
 </script>
 @endsection

@@ -48,4 +48,10 @@ Route::middleware('auth:api')->group(function() {
     Route::get('releaseDeposit/{request_id}', [App\Http\Controllers\PaymentController::class, 'releaseDeposit'])->name('releaseDeposit');
 
     Route::get('read/{item}/{id}', [App\Http\Controllers\MessageController::class, 'readItem'])->name('readItem');
+    
+    Route::get('savedToggle/{user2_id}', [App\Http\Controllers\ProfileController::class, 'saveToggle'])->name('savedToggle');
+    
+    Route::post('saveImage', [App\Http\Controllers\ProfileController::class, 'saveImage'])->name('savedImage');
+    
+    Route::post('deleteImage', [App\Http\Controllers\ProfileController::class, 'deleteImage'])->name('deleteImage');
 });

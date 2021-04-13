@@ -63,6 +63,8 @@ const ElementDemos = ( props ) => {
           <Route key={path} path={'/request' + path}>
             <div className="Demo">
               <Component 
+                price = {props.price}
+                currency = {props.currency}
                 requestID = { props.requestID }
                 afterDeposit = {() => props.afterDeposit()}
               />

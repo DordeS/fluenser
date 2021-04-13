@@ -71,10 +71,10 @@
           @endif
         @else
           @if ($accountInfo->accountType == 'influencer')
-            @if ($requests->rs_review == 0)
+            @if ($requests->sr_review == 0)
               <a class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white" style="background: #0ac2c8" id="release" href="{{ route('leaveReview', ['request_id' => $requests->id]) }}">Leave a Review</a>
             @else
-              <a class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white" style="background: #0ac2c8" id="release" href="#">Completed</a>
+              <a class="rounded mt-4 block w-full py-2 text-center text-md md:text-lg font-bold text-white bg-gray-500" id="release" href="#">Completed</a>
             @endif
           @else
             @if ($requests->sr_review == 0)

@@ -47,6 +47,10 @@ Route::middleware(['auth', 'CheckUnread'])->group(function() {
 
     Route::get('balance', [App\Http\Controllers\PaymentController::class, 'balance'])->name('balance');
 
+    Route::get('referrals', [App\Http\Controllers\ReferralsController::class, 'index'])->name('referrals');
+    
+    Route::get('saved', [App\Http\Controllers\ProfileController::class, 'saved'])->name('saved');
+    
     Route::get('/collaborate/{user_id}',[App\Http\Controllers\CollaborateController::class, 'index'])->name('collaborate');
 
     Route::post('/request/save',[App\Http\Controllers\CollaborateController::class, 'saveRequest'])->name('saveRequest');
@@ -61,3 +65,5 @@ Route::middleware(['auth', 'CheckUnread'])->group(function() {
 
     Route::get('/{username}',[App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 });
+
+Route::get('referral/{ref_link}', [App\Http\Controllers\ReferralsController::class, 'newUser'])->name('newUser')->where('ref_link', '[a-z0-9]{128}+');

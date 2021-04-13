@@ -19,14 +19,11 @@
                 <i class="fas fa-pencil-alt"></i>
               </p>
             </a>
-            <textarea name="top-image" id="input-top" hidden></textarea>
             <img src={{ asset('img/profile-image/'.$profile->top_img.'.jpg') }} alt={{ $profile->top_img }} class="w-full" id="top-image">
-            <img src="{{ asset('img/gradient.png') }}" alt="gradient" style="position: absolute; bottom:-50%;" class="w-full">
           </div>
         </div>
         <div class="w-11/12 mx-auto relative -top-32 bg-white rounded-lg pb-3 pt-1" style="box-shadow: 0 0 10px 0 #999">
           <div class="w-1/3 absolute py-1 px-1 bg-white rounded-full" style="top:0; left:50%; transform: translate(-50%, -60%);box-shadow:0 0 8px #333">
-            <textarea name="round-image" id="input-round" hidden></textarea>
             <img class="rounded-full w-full" id="round-image" src={{ asset('img/profile-image/'.$profile->round_img.'.jpg') }} alt={{$profile->round_img}}>
             <a class="absolute block w-8 h-8 bg-white rounded-full text-center" style="right:5%; bottom:5%;box-shadow: 0 0 15px #999" onclick="editImg('round')">
               <p class="leading-8 text-lg" style="color: #4addc4">
@@ -47,8 +44,8 @@
             <label for="country" class="text-gray-500 text-sm md:text-md">Country</label>
             <select name="country" id="country" style="box-shadow:0 0 10px 0 gray" class="block w-full border-none rounded text-gray-700 font-semibold mb-3 h-10 shadow-inner @error('state') is-invalid @enderror">
               @foreach ($countries as $country)
-                @if ($country->name == $accountInfo->country)
-                  <option value={{ $country->id }}>{{ $country->name }}</option selected>
+                @if (strtoupper(trim($country->name)) == strtoupper(trim($accountInfo->country)))
+                  <option value={{ $country->id }} selected>{{ $country->name }}</option>
                 @else
                   <option value={{ $country->id }}>{{ $country->name }}</option>
                 @endif
@@ -60,7 +57,6 @@
 
             <label for="portfolio" class="text-gray-500 text-sm md:text-md">Add Your Portfolio Images</label>
             <div class="bg-gray-100 block w-full border-none rounded text-gray-700 font-semibold mb-3 shadow-inner px-2 py-1 relative" style="min-height: 4rem">
-              <textarea name="portfolio-image" id="input-portfolio" hidden></textarea>
               <div class="float-right w-20 text-center absolute" style="top: 50%; transform:translateY(-50%); right: 10px">
                 <a onclick="editImg('portfolio')">
                   <img src="{{ asset("img/add-image.png") }}" alt="add-image" class="w-1/3 mx-auto">
@@ -71,7 +67,7 @@
                 @foreach ($portfolios as $portfolio)
                   <div id="gallery-item" class="float-left mr-3 my-2 relative">
                     <img src="{{ asset('img/profile-image/'.$portfolio->slide_img.'.jpg') }}" alt="{{ $portfolio->slide_img }}" class="rounded-sm" style="width: 65px; box-shadow:0 0 5px #333">
-                    <a class="block absolute w-5 h-5 text-center rounded-full bg-red-600 text-white text-xs -top-2 -right-2" onclick="{$(this).parent().remove();}"><span class="leading-5">X</span></a>
+                    <a class="block absolute w-5 h-5 text-center rounded-full bg-red-600 text-white text-xs -top-2 -right-2" onclick="removeImage($(this), 'portfolio')"><span class="leading-5">X</span></a>
                   </div>
                 @endforeach
               </div>
@@ -81,7 +77,6 @@
             @if ($accountInfo->accountType == 'influencer')
               <label for="partnership" class="text-gray-500 text-sm md:text-md">Add brand logos you have worked with</label>
               <div class="bg-gray-100 block w-full border-none rounded text-gray-700 font-semibold mb-3 shadow-inner px-2 py-1 relative" style="min-height: 3rem">
-                <textarea name="partnership-image" id="input-partnership" hidden></textarea>
                 <div class="float-right w-20 text-center absolute" style="top: 50%; transform:translateY(-50%); right: 10px">
                   <a onclick="editImg('partnership')">
                     <img src="{{ asset("img/add-image.png") }}" alt="add-image" class="w-1/3 mx-auto">
@@ -92,7 +87,7 @@
                   @foreach ($partnerships as $partnership)
                     <div id="gallery-item" class="float-left mr-3 my-2 relative">
                       <img src="{{ asset('img/partnership-image/'.$partnership->partnership_img.'.jpg') }}" alt="{{ $partnership->partnership_img }}" class="rounded-sm" style="width: 65px; box-shadow:0 0 5px #333">
-                      <a class="block absolute w-5 h-5 text-center rounded-full bg-red-600 text-white text-xs -top-2 -right-2" onclick="{$(this).parent().remove();}"><span class="leading-5">X</span></a>
+                      <a class="block absolute w-5 h-5 text-center rounded-full bg-red-600 text-white text-xs -top-2 -right-2" onclick="removeImage($(this), 'partnership')"><span class="leading-5">X</span></a>
                     </div>
                   @endforeach
                 </div>
@@ -125,43 +120,43 @@
             <div class="bg-gray-100 block w-full border-none rounded text-gray-500 font-semibold shadow-inner px-2 py-1 relative pt-3 mb-3">
               <div class="w-11/12 mx-auto grid grid-cols-12 mb-3">
                 <div class="col-span-2 md:col-span-1">
-                  <input type="checkbox" name="instagram" id="instagramCheck" class="rounded w-4 h-4 mx-auto my-3 bg-gray-100 border-gray-400">
+                  <input type="checkbox" name="instagram" id="instagramCheck" class="rounded w-4 h-4 mx-auto my-3 bg-gray-100 border-gray-400" @if ($profile->instagram != '') checked @endif>
                 </div>
                 <div class="col-span-10 md:col-span-11">
-                  <input type="text" name="instagram-link" id="instagram-link" class="text-gray-700 rounded w-full my-2 border-none text-sm md:text-md py-1 px-2" style="box-shadow: 0 0 8px 0 #999" placeholder="Instagram.com/username">
+                  <input type="text" name="instagram-link" id="instagram-link" class="text-gray-700 rounded w-full my-2 border-none text-sm md:text-md py-1 px-2" style="box-shadow: 0 0 8px 0 #999" placeholder="Instagram.com/username" value="{{$profile->instagram}}">
                   <select name="instagram-follow" id="instagram-follow" class="text-gray-700 rounded-full w-full my-2 border-none text-sm md:text-md py-1 px-2" style="box-shadow: 0 0 8px 0 #999">
                     <option>How many followers?</option>
-                    <option value="11">1k-10k</option>
-                    <option value="60">10k-50k</option>
-                    <option value="600">100k-500k</option>
+                    <option value="11" @if($profile->instagram_follows == 11) selected @endif>1k-10k</option>
+                    <option value="60" @if($profile->instagram_follows == 60) selected @endif>10k-50k</option>
+                    <option value="600" @if($profile->instagram_follows == 600) selected @endif>100k-500k</option>
                   </select>
                 </div>
               </div>
               <div class="w-11/12 mx-auto grid grid-cols-12 mb-3">
                 <div class="col-span-2 md:col-span-1">
-                  <input type="checkbox" name="youtube" id="youtubeCheck" class="rounded w-4 h-4 mx-auto my-3 bg-gray-100 border-gray-400">
+                  <input type="checkbox" name="youtube" id="youtubeCheck" class="rounded w-4 h-4 mx-auto my-3 bg-gray-100 border-gray-400" @if ($profile->instagram != '') checked @endif>
                 </div>
                 <div class="col-span-10 md:col-span-11">
-                  <input type="text" name="youtube-link" id="youtube-link" class="text-gray-700 rounded w-full my-2 border-none text-sm md:text-md py-1 px-2" style="box-shadow: 0 0 8px 0 #999" placeholder="Youtube.com/username">
+                  <input type="text" name="youtube-link" id="youtube-link" class="text-gray-700 rounded w-full my-2 border-none text-sm md:text-md py-1 px-2" style="box-shadow: 0 0 8px 0 #999" placeholder="Youtube.com/username" value="{{$profile->youtube}}">
                   <select name="youtube-follow" id="youtube-follow" class="text-gray-700 rounded-full w-full my-2 border-none text-sm md:text-md py-1 px-2" style="box-shadow: 0 0 8px 0 #999">
-                    <option>How many subscribers?</option>
-                    <option value="11">1k-10k</option>
-                    <option value="60">10k-50k</option>
-                    <option value="600">100k-50k</option>
+                    <option>How many followers?</option>
+                    <option value="11" @if($profile->youtube_follows == 11) selected @endif>1k-10k</option>
+                    <option value="60" @if($profile->youtube_follows == 60) selected @endif>10k-50k</option>
+                    <option value="600" @if($profile->youtube_follows == 600) selected @endif>100k-500k</option>
                   </select>
                 </div>
               </div>
               <div class="w-11/12 mx-auto grid grid-cols-12 mb-2">
                 <div class="col-span-2 md:col-span-1">
-                  <input type="checkbox" name="tiktok" id="tiktokCheck" class="rounded w-4 h-4 mx-auto my-3 bg-gray-100 border-gray-400">
+                  <input type="checkbox" name="tiktok" id="tiktokCheck" class="rounded w-4 h-4 mx-auto my-3 bg-gray-100 border-gray-400" @if ($profile->instagram != '') checked @endif>
                 </div>
                 <div class="col-span-10 md:col-span-11">
-                  <input type="text" name="tiktok-link" id="tiktok-link" class="text-gray-700 rounded w-full my-2 border-none text-sm md:text-md py-1 px-2" style="box-shadow: 0 0 8px 0 #999" placeholder="TikTok.com/username">
+                  <input type="text" name="tiktok-link" id="tiktok-link" class="text-gray-700 rounded w-full my-2 border-none text-sm md:text-md py-1 px-2" style="box-shadow: 0 0 8px 0 #999" placeholder="TikTok.com/username" value="{{$profile->tiktok}}">
                   <select name="tiktok-follow" id="tiktok-follow" class="text-gray-700 rounded-full w-full my-2 border-none text-sm md:text-md py-1 px-2" style="box-shadow: 0 0 8px 0 #999">
                     <option>How many followers?</option>
-                    <option value="11">1k-10k</option>
-                    <option value="60">10k-50k</option>
-                    <option value="600">100k-50k</option>
+                    <option value="11" @if($profile->tiktok_follows == 11) selected @endif>1k-10k</option>
+                    <option value="60" @if($profile->tiktok_follows == 60) selected @endif>10k-50k</option>
+                    <option value="600" @if($profile->tiktok_follows == 600) selected @endif>100k-500k</option>
                   </select>
                 </div>
               </div>
@@ -169,7 +164,7 @@
           </div>
         </div>
         <div class="w-full">
-          <button onclick="submitForm()" type="button" class="relative text-white font-semibold block mx-auto px-20 py-2 rounded -top-16" style="background: #0ac2c8">Update</button>
+          <button type="submit" class="relative text-white font-semibold block mx-auto px-20 py-2 rounded -top-16" style="background: #0ac2c8">Update</button>
         </div>
       </div>
     </form>
@@ -210,6 +205,10 @@
   var filesValue;
   var width, height;
   var position;
+  const headers ={
+        'Accept': 'application/json'
+      };
+  var api_token = $("meta[name=api-token]").attr('content');
 
   function editImg(pos) {
     position = pos;
@@ -285,6 +284,8 @@
       height: height,
     });
 
+    $("#uploadModal").show();
+
     canvas.toBlob(function(blob) {
       url = URL.createObjectURL(blob);
       var reader = new FileReader();
@@ -294,28 +295,109 @@
         switch (position) {
           case 'top':
             $("img#top-image").attr('src', base64data);
-            $("textarea#input-top").val(base64data);
+            var url = "{{ url('/') }}/api/saveImage?api_token=";
+            url = url + api_token;
+            $.ajax({
+              url: url,
+              type: "POST",
+              headers: headers,
+              data: {
+                'image': base64data,
+                'position': 'top',
+              },
+              success: function(res) {
+                $("#uploadModal").hide();
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest, textStatus, errorThrown);
+              }
+            });
+
             break;
           case 'round':
             $("img#round-image").attr('src', base64data);
-            $("textarea#input-round").val(base64data);
+            var url = "{{ url('/') }}/api/saveImage?api_token=";
+            url = url + api_token;
+            $.ajax({
+              url: url,
+              type: "POST",
+              headers: headers,
+              data: {
+                'image': base64data,
+                'position': 'round',
+              },
+              success: function(res) {
+                console.log(res);
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest, textStatus, errorThrown);
+              }
+            });
+
             break;
           case 'portfolio':
             var divElement = $('<div id="gallery-item" class="float-left mr-3 my-2 relative"></div>');
             var imgElement = $('<img src="' + base64data + '" alt="" class="rounded-sm" style="width: 65px; box-shadow:0 0 5px #333">');
-            var linkElement = $('<a class="block absolute w-5 h-5 text-center rounded-full bg-red-600 text-white text-xs -top-2 -right-2" onclick="{$(this).parent().remove();}" onclick="{$(this).parent().remove();}"><span class="leading-5">X</span></a>');
+            var linkElement = $('<a class="block absolute w-5 h-5 text-center rounded-full bg-red-600 text-white text-xs -top-2 -right-2" onclick="removeImage($(this), \'portfolio\')"><span class="leading-5">X</span></a>');
             divElement.append(imgElement);
             divElement.append(linkElement);
             $("#portfolio-gallery").append(divElement);
+
+            var url = "{{ url('/') }}/api/saveImage?api_token=";
+            url = url + api_token;
+            $.ajax({
+              url: url,
+              type: "POST",
+              headers: headers,
+              data: {
+                'image': base64data,
+                'position': 'portfolio',
+              },
+              success: function(res) {
+                console.log(res.file);
+                var filename = res.file.split('/');
+                var filename = filename[filename.length - 1];
+                var src = "{{ asset('img/profile-image') }}" + '/' + filename;
+                $("#portfolio-gallery div:last-child img").attr("src", src);
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest, textStatus, errorThrown);
+              }
+            });
+
+            
             break;
           case 'partnership':
             var divElement = $('<div id="gallery-item" class="float-left mr-3 my-2 relative"></div>');
             var imgElement = $('<img src="' + base64data + '" alt="" class="rounded-sm" style="width: 65px; box-shadow:0 0 5px #333">');
-            var linkElement = $('<a class="block absolute w-5 h-5 text-center rounded-full bg-red-600 text-white text-xs -top-2 -right-2" onclick="{$(this).parent().remove();}"><span class="leading-5">X</span></a>');
+            var linkElement = $('<a class="block absolute w-5 h-5 text-center rounded-full bg-red-600 text-white text-xs -top-2 -right-2" onclick="removeImage($(this), \'partnership\')"><span class="leading-5">X</span></a>');
             divElement.append(imgElement);
             divElement.append(linkElement);
             $("#partnership-gallery").append(divElement);
+
+            var url = "{{ url('/') }}/api/saveImage?api_token=";
+            url = url + api_token;
+            $.ajax({
+              url: url,
+              type: "POST",
+              headers: headers,
+              data: {
+                'image': base64data,
+                'position': 'partnership',
+              },
+              success: function(res) {
+                console.log(res.file);
+                var filename = res.file.split('/');
+                var filename = filename[filename.length - 1];
+                var src = "{{ asset('img/partnership-image') }}" + '/' + filename;
+                $("#partnership-gallery div:last-child img").attr("src", src);
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest, textStatus, errorThrown);
+              }
+            });
             break;
+
           default:
             break;
         }
@@ -324,25 +406,29 @@
       });
     });
 
-    function submitForm() {
-      var images = $("div#portfolio-gallery img");
-      console.log(images);
-      var imageData = [];
-      for (let i = 0; i < images.length; i++) {
-        const image = images[i];
-        imageData.push(image.src);
-      }
-      $("textarea#input-portfolio").val(JSON.stringify(imageData));
-
-      images = $("div#partnership-gallery img");
-      imageData = [];
-      for (let i = 0; i < images.length; i++) {
-        const image = images[i];
-        imageData.push(image.src);
-      }
-      $("textarea#input-partnership").val(JSON.stringify(imageData));
-
-      $("form").submit();
+    function removeImage(elem, item) {
+      var src = elem.prev().attr('src').split('/');
+      var file = src[src.length - 1].split('.');
+      var filename = file[0];
+      var url = "{{ url('/') }}/api/deleteImage?api_token=";
+      url = url + api_token;
+      $.ajax({
+        url: url,
+        type: "POST",
+        headers: headers,
+        data: {
+          'filename': filename,
+          'position': item,
+        },
+        success: function(res) {
+          if(res.data == 'success') {
+            elem.parent().remove();
+          }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          console.log(XMLHttpRequest, textStatus, errorThrown);
+        }
+      });
     }
 </script>
 @endsection

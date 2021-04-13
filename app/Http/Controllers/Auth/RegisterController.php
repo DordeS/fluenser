@@ -14,11 +14,13 @@ use App\Models\Portfolio;
 use App\Models\Partnership;
 use App\Models\Wallet;
 use App\Models\WalletUser;
+use App\Models\Referral;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Stripe\Stripe;
+use Session;
 
 class RegisterController extends Controller
 {
@@ -61,14 +63,16 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         $messages = [
-            'name.required' => 'Please enter your name!',
+            'first_name.required' => 'Please enter your first name!',
+            'last_name.required' => 'Please enter your last name!',
             'email.required' => 'Please enter your email!',
             'password.confirmed' => 'Retype your password!',
             'agreement.required' => 'Do you agree with our terms and conditions?'
         ];
 
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'agreement' => ['required'],
@@ -83,6 +87,8 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $status = session('status', 'default');
+
         \Stripe\Stripe::setApiKey(env("STRIPE_SECRET"));
 
         $stripeAccount = \Stripe\Account::create([
@@ -96,11 +102,11 @@ class RegisterController extends Controller
 
         $token = Str::random(60);
         $user = new User;
-        $user->name = $data['name'];
+        $user->name = $data['first_name'] . ' ' . $data['last_name'];
         $user->email = $data['email'];
         $user->password = Hash::make($data['password']);
         $user->api_token = hash('sha256', $token);
-        $user->username = $data['name'];
+        $user->username = strtolower($data['first_name']) . strtolower($data['last_name']);
         $user->loggedIn = true;
         $user->stripe_id = $stripeAccount->id;
         $user->save();
@@ -150,6 +156,24 @@ class RegisterController extends Controller
             $walletUser->wallet_id = $wallet->id;
             $walletUser->save();
         
+            if($status != 'default') {
+                $users = User::all();
+                foreach ($users as $ref_user) {
+                    $ref = hash('sha512', $ref_user->email);
+                    if($ref == $status) {
+                        $referral = Referral::where('user_id', '=', $ref_user->id)
+                                ->where('referral_user_id', '=', $user->id)
+                                ->get();
+                        if(count($referral) < 1) {
+                            $new_ref = new Referral;
+                            $new_ref->user_id = $ref_user->id;
+                            $new_ref->referral_user_id = $user->id;
+                            $new_ref->save();
+                        }
+                    }
+                }
+            }
+
             return $user;
         }
     }

@@ -36,13 +36,16 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/css/all.css') }}">
     <style>
+      * {
+        font-family: 'Poppins', sans-serif;
+      }
         .col-md-8 {
             padding: 0 !important;
         }
@@ -57,12 +60,12 @@
             color: red;
         }
         a.selected {
-            background: linear-gradient(to right, RGB(5,235,189), RGB(19,120,212));
-            color: white;
+            background: white;
+            border-radius: 0.25rem;
+            color: #999;
         }
         a.unselected {
-            background: lightgrey;
-            color: grey;
+          color: #999;
         }
         .clearfix {
             display: table;
@@ -169,7 +172,16 @@
         .carousel-indicators li.active {
             box-shadow: 0 0 5px 3px white;
         }
-    </style>
+        input:focus {
+          border: #333 !important;
+        }
+        th:first-child {
+          border-top-left-radius: 10px; 
+        }
+        th:last-child {
+          border-top-right-radius: 10px; 
+        }
+      </style>
 </head>
 <body>
   <div id="confirmModal" class="h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
@@ -187,6 +199,18 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div id="uploadModal" class="h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
+    <div class="w-11/12 h-48 bg-white absolute rounded-xl" style="top:50%; margin-top:-6rem; left:50%; margin-left:-45.83333%;" id="modalBody">
+      <img src="{{ asset('img/uploading.gif') }}" alt="uploading" class="w-1/2 mx-auto">
+    </div>
+  </div>
+
+  <div id="deleteModal" class="h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
+    <div class="w-11/12 h-48 bg-white absolute rounded-xl" style="top:50%; margin-top:-6rem; left:50%; margin-left:-45.83333%;" id="modalBody">
+      <img src="{{ asset('img/deleting.gif') }}" alt="uploading" class="w-1/2 mx-auto">
     </div>
   </div>
 
@@ -273,9 +297,8 @@
                           <li class="my-4"><a href={{ route('profile', ['username' => Auth::user()->username]) }}><li class="fas fa-user inline-block w-7"></li>View Profile</a></li>
                           <li class="my-4"><a href={{ route('editProfile', ['username' => Auth::user()->username]) }}><li class="fas fa-user-edit inline-block w-7"></li>Edit Profile</a></li>
                           <li class="my-4"><a href={{ route('balance') }}><li class="fas fa-wallet inline-block w-7"></li>Wallet</a></li>
-                          <li class="my-4"><a href="#"><li class="fas fa-clipboard-list inline-block w-7"></li>Statements</a></li>
-                          <li class="my-4"><a href="#"><li class="fas fa-sync-alt inline-block w-7"></li>Referrals</a></li>
-                          <li class="my-4"><a href="#"><li class="fas fa-star inline-block w-7"></li>Reviews</a></li>
+                          <li class="my-4"><a href="{{route('referrals')}}"><li class="fas fa-sync-alt inline-block w-7"></li>Referrals</a></li>
+                          <li class="my-4"><a href="{{ route("saved") }}"><li class="fas fa-star inline-block w-7"></li>Saved</a></li>
                           <li class="my-4"><a href="#"><li class="fas fa-cog inline-block w-7"></li>Account Settings</a></li>
                       </ul>
                     </div>
@@ -302,10 +325,9 @@
         var experCount = 0;
         var professCount = 0;
         var againCount = 0;
-        var page = {{ $page }};
+        var page = {{ $page ?? 0 }};
 
         $(document).ready(function() {
-
           var element = $("#mobile-menu a").eq(page - 1);
           console.log("loaded");
           console.log(element);
@@ -318,20 +340,15 @@
             else $("#user-menu-content").css('display', 'block');
           });
           $("#togglebar a").click(function() {
+              console.log('clicked');
               var classname = $(this).attr('class');
-              if(classname == 'unselected') {
-                $("#togglebar a.selected").addClass('unselected').removeClass('selected');
-                $(this).addClass('selected').removeClass('unselected');
-                if($(this).attr('id') == 'influencer') {
-                  $("#radio-btn input[type=radio]")[0].checked = true;
-                  $("#radio-btn input[type=radio]")[1].checked = false;
-                  $("#accountAlert p").text('You are registering as an Influencer');
-                } else {
-                  $("#radio-btn input[type=radio]")[0].checked = false;
-                  $("#radio-btn input[type=radio]")[1].checked = true;
-                  $("#accountAlert p").text('You are registering as a Brand');
-                }
-              };
+              $("#togglebar a").removeClass('selected');
+              $(this).addClass('selected');
+              $("input#accountType").val($(this).attr('id'));
+              if($(this).attr('id') == 'influencer')
+                $("div#accountAlert p").text('You are registering as an Influencer');
+              else
+                $("div#accountAlert p").text('You are registering as a Brand');
             });
             
             $("#searchTab a").click(function() {

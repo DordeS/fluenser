@@ -216,6 +216,8 @@ const RequestDetailComponent = (props) => {
         <BrowserRouter>
           <Elements stripe={loadStripe('pk_test_51HtrYKJyHziuhAX0GAQs9a6fajsFjcQanWHSmb384TC5aJLZdsPv4oCRAbUJ20kHozUSmkACPtk6abdlWzICm6k600VHofe1zg')}>
             <ElementDemos
+              price = {requestInfo.amount}
+              currency = {requestInfo.unit}
               requestID = {props.requestID}
               afterDeposit = {() => props.afterDeposit()}
             />
@@ -226,8 +228,8 @@ const RequestDetailComponent = (props) => {
       return (
         <div>
           <div id="modal" className="h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
-              <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
-                <div className="rounded-t-xl h-10 pt-1" style={{ background:'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))' }}>
+              <div className="w-11/12 h-48 bg-white absolute rounded-md" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
+                <div className="rounded-t-md h-10 pt-1" style={{ background:'linear-gradient(to right, RGB(5,235,189), RGB(19,120,212))' }}>
                   <p className="text-md md:text-lg text-center text-white font-bold leading-10">Update Offer</p>
                   <a className="block h-6 w-6 absolute -top-2 -right-2 rounded-full bg-white text-center" onClick={() => popUpToggle('hide')} style={{ boxShadow:'0 0 8px #353535' }}>
                     <span className="leading-6"><i className="fas fa-times"></i></span>
@@ -251,7 +253,7 @@ const RequestDetailComponent = (props) => {
                   </div>
                 </div>
                 <div className="w-11/12 mx-auto mt-4">
-                  <button className="block mx-auto px-4 py-2 rounded-lg text-white text-sm md:text-md font-semibold" style={{ background:'rgb(88,183,189)' }} onClick={updateOffer}>
+                  <button className="block mx-auto px-4 py-2 rounded-sm text-white text-sm md:text-md font-semibold" style={{background:'#0ac2c8', boxShadow:'0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%)'}}onClick={updateOffer}>
                     Update
                   </button>
                 </div>
@@ -260,8 +262,8 @@ const RequestDetailComponent = (props) => {
 
           <div id="confirmModal" className="depositConfirm h-screen w-screen bg-black bg-opacity-70 fixed top-0 z-50 hidden">
               <div className="w-11/12 h-48 bg-white absolute rounded-xl" style={{ top:'50%', marginTop:'-6rem', left:'50%', marginLeft:'-45.83333%' }}>
-              <div className="w-8/12 mx-auto h-26 mt-4">
-                  <p className="text-center text-md md:text-lg text-gray-700 mt-5 mb-5">  you like to create a deposit for this project? </p>
+              <div className="w-8/12 mx-auto h-20 mt-4">
+                  <p className="text-center text-md md:text-lg text-gray-700 mt-5 mb-5">  Would you like to create a deposit for this project? </p>
                 </div>
                 <div className="w-full h-16" id="confirmBtn">
                   <div className="w-full grid grid-cols-2 h-full">
@@ -269,7 +271,7 @@ const RequestDetailComponent = (props) => {
                       <button className="w-full h-full block mx-auto px-4 py-1 rounded-bl-lg text-gray-500  text-md md:text-lg bg-white" onClick={() => confirmToggle('hide')}>Cancel</button>
                     </div>
                     <div className="col-span-1">
-                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg" style={{ background:'rgb(88,183,189)' }} onClick={createDeposit}>Yes</button>
+                      <button className="w-full h-full block mx-auto px-4 py-1 rounded-br-lg text-white font-bold text-md md:text-lg" style={{ background:'#0ac2c8' }} onClick={createDeposit}>Yes</button>
                     </div>
                   </div>
                 </div>
@@ -385,14 +387,14 @@ const RequestDetailComponent = (props) => {
                           ?
                           <div className="flex justify-evenly">
                             <div>
-                              <button className="mx-auto px-3 py-2 rounded-sm text-white text-sm md:text-md font-semibold " style={{ background:'rgb(88,183,189)' }} onClick={() => confirmToggle('deposit')}>Add Deposit</button>
+                              <button className="mx-auto px-3 py-2 rounded-sm text-white text-sm md:text-md font-semibold " style={{background:'#0ac2c8', boxShadow:'0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%)'}}onClick={() => confirmToggle('deposit')}>Add Deposit</button>
                             </div>
                             <div>
-                              <button className="mx-auto px-3 py-2 rounded-sm text-white text-sm md:text-md font-semibold " style={{ background:'rgb(88,183,189)' }} onClick={() => popUpToggle('show')}>Update offer</button>
+                              <button className="mx-auto px-3 py-2 rounded-sm text-white text-sm md:text-md font-semibold " style={{background:'#0ac2c8', boxShadow:'0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%)'}}onClick={() => popUpToggle('show')}>Update offer</button>
                             </div>
                           </div>
                           :
-                            <button className="block mx-auto px-4 py-1 rounded-sm text-white text-sm md:text-md bg-gray-500" disabled>Deposit Made</button>
+                            <button className="block mx-auto px-3 py-2 rounded-sm text-white text-sm md:text-md bg-gray-500" style={{ boxShadow:'0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%)'}} disabled>Deposit Made</button>
                         }
                       </div>
                     }
@@ -405,7 +407,7 @@ const RequestDetailComponent = (props) => {
           <div className="w-full md:max-w-7xl fixed bottom-0">
             <div className="w-full bg-white" style={{height:'60px', borderTop:'1px solid lightgray'}}>
               <div className="float-right">
-                <a onClick={sendMessage} style={{display:'block',height:'60px', width:'60px', background:'rgb(88,183,189)', fontSize:'20px', lineHeight:'60px', color:'white', textAlign:'center'}}>
+                <a onClick={sendMessage} style={{display:'block',height:'60px', width:'60px', background:'rgb(10, 192, 198)', fontSize:'20px', lineHeight:'60px', color:'white', textAlign:'center'}}>
                   <i className="fas fa-paper-plane"></i>
                 </a>
               </div>
@@ -415,7 +417,7 @@ const RequestDetailComponent = (props) => {
                 </a>                  
               </div>
               <div>
-                <input type="text" value={message} id="message" className="w-full border-none" autoComplete="off" placeholder="Type your message ..." onChange={handleMessageChange} style={{width:messengerWidth+'px', margin:'10px 0'}} onClick={handleMessageClick}/>
+                <input type="text" value={message} id="message" className="w-full border-none" autoComplete="off" placeholder="Write a Message ..." onChange={handleMessageChange} style={{width:messengerWidth+'px', margin:'10px 0'}} onClick={handleMessageClick}/>
               </div>
               <div className="clearfix"></div>
             </div>

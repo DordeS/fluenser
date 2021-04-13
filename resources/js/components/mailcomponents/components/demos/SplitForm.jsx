@@ -80,71 +80,89 @@ const SplitForm = (props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Card number
-        <CardNumberElement
-          options={options}
-          onReady={() => {
-            console.log("CardNumberElement [ready]");
-          }}
-          onChange={event => {
-            console.log("CardNumberElement [change]", event);
-          }}
-          onBlur={() => {
-            console.log("CardNumberElement [blur]");
-          }}
-          onFocus={() => {
-            console.log("CardNumberElement [focus]");
-          }}
-        />
-      </label>
-      <label>
-        Expiration date
-        <CardExpiryElement
-          options={options}
-          onReady={() => {
-            console.log("CardNumberElement [ready]");
-          }}
-          onChange={event => {
-            console.log("CardNumberElement [change]", event);
-          }}
-          onBlur={() => {
-            console.log("CardNumberElement [blur]");
-          }}
-          onFocus={() => {
-            console.log("CardNumberElement [focus]");
-          }}
-        />
-      </label>
-      <label>
-        CVC
-        <CardCvcElement
-          options={options}
-          onReady={() => {
-            console.log("CardNumberElement [ready]");
-          }}
-          onChange={event => {
-            console.log("CardNumberElement [change]", event);
-          }}
-          onBlur={() => {
-            console.log("CardNumberElement [blur]");
-          }}
-          onFocus={() => {
-            console.log("CardNumberElement [focus]");
-          }}
-        />
-      </label>
-        {
-          isWaiting
-          ?
-          <div className="w-1/3 mx-auto">
-            <img src={ constant.baseURL + 'img/loading.gif' } alt="loading" className="w-full"/>
+    <div className="w-full md:max-w-xl bg-gray-100 rounded pb-8">
+      <div className="w-11/12 mx-auto">
+        <div className="text-center text-2xl font-semibold mt-8">Submit Your Payment</div>
+        <hr className="mt-2" />
+        <form onSubmit={handleSubmit} autoComplete="off">
+          <label htmlFor="name" className="block w-full text-sm text-gray-700 mt-3">
+            Name on credit card
+            <input type="text" name="name" id="name" className="w-full" style={{ padding:"8px 15px" }}/>
+          </label>
+          <label className="block w-full mt-6 text-sm text-gray-700">
+            Card number
+            <CardNumberElement
+              options={options}
+              onReady={() => {
+                console.log("CardNumberElement [ready]");
+              }}
+              onChange={event => {
+                console.log("CardNumberElement [change]", event);
+              }}
+              onBlur={() => {
+                console.log("CardNumberElement [blur]");
+              }}
+              onFocus={() => {
+                console.log("CardNumberElement [focus]");
+              }}
+            />
+          </label>
+          <label className="block w-full mt-6 text-sm text-gray-700">
+            Expiration date
+            <CardExpiryElement
+              options={options}
+              onReady={() => {
+                console.log("CardNumberElement [ready]");
+              }}
+              onChange={event => {
+                console.log("CardNumberElement [change]", event);
+              }}
+              onBlur={() => {
+                console.log("CardNumberElement [blur]");
+              }}
+              onFocus={() => {
+                console.log("CardNumberElement [focus]");
+              }}
+            />
+          </label>
+          <label className="block w-full mt-6 text-sm text-gray-700">
+            CVC
+            <CardCvcElement
+              options={options}
+              onReady={() => {
+                console.log("CardNumberElement [ready]");
+              }}
+              onChange={event => {
+                console.log("CardNumberElement [change]", event);
+              }}
+              onBlur={() => {
+                console.log("CardNumberElement [blur]");
+              }}
+              onFocus={() => {
+                console.log("CardNumberElement [focus]");
+              }}
+            />
+          </label>
+          <div className="w-full mt-6">
+            <button className="w-full" type="submit" disabled={!stripe}>
+              {
+                isWaiting
+                ?
+                  <img src={ constant.baseURL + 'img/loading.gif' } alt="loading" className="mx-auto" style={{width:'30px', margin:'5px'}} />
+                :
+                <span>
+                  <i className="fas fa-lock"></i> Pay {props.price}{props.currency.toUpperCase()}
+                </span>
+              }
+            </button>
           </div>
-          :
-          <button type="submit" disabled={!stripe}>Pay</button>
-        }
-    </form>
+          <div className="w-full mt-6">
+            <img src={ constant.baseURL + 'img/stripe.png' } alt="powered by stripe" style={{ width:'70%' }} className="float-right"/>
+          </div>
+          <div className="mt-5"></div>
+        </form>
+      </div>
+    </div>
   );
 };
 
