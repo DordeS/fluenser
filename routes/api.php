@@ -54,4 +54,6 @@ Route::middleware('auth:api')->group(function() {
     Route::post('saveImage', [App\Http\Controllers\ProfileController::class, 'saveImage'])->name('savedImage');
     
     Route::post('deleteImage', [App\Http\Controllers\ProfileController::class, 'deleteImage'])->name('deleteImage');
+
+    Route::get('userLogOut', [App\Http\Controllers\HomeController::class, 'logOut'])->name('userLogOut');
 });

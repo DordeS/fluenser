@@ -38,6 +38,10 @@ class HomeController extends Controller
         $account = new User();
         $accountInfo = $account->getAccountInfoByUserID(Auth::user()->id);
 
+        $user = User::find(Auth::user()->id);
+        $user->loggedIn = 1;
+        $user->save();
+
         $profile = new Profile();
         $portfolios = $profile->getPortfolios(Auth::user()->id);
 
@@ -83,6 +87,17 @@ class HomeController extends Controller
             'accountType' => $accountInfo[0]->accountType,
             'accountInfo' => $accountInfo[0],
             'page' => $page,
+        ]);
+    }
+
+    public function logOut()
+    {
+        $user = User::find(Auth::user()->id);
+        $user->loggedIn = 0;
+        $user->save();
+
+        return response()->json([
+            'data' => 'success',
         ]);
     }
 }
